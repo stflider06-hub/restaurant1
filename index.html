@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Дастархан — меню и заказ</title>
+<meta name="description" content="Дастархан — кафе. Меню, заказ и корзина онлайн.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Nunito+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* =========================================================
+   DASTARKHAN CAFE — DEMO TEMPLATE
+   Design system: soft, elegant, warm minimalism
+   Fonts: Fraunces (display) / Nunito Sans (body)
+   No backend needed — order goes straight to WhatsApp.
+   ========================================================= */
+:root{
+  --bg:            #FBF6EF;
+  --bg-card:       #FFFFFF;
+  --ink:           #2E2A24;
+  --ink-soft:      #8A7F70;
+  --line:          rgba(46,42,36,0.09);
+  --primary:       #D97C4A;
+  --primary-dark:  #B85E31;
+  --primary-soft:  #F6E4D6;
+  --gold:          #C9A063;
+  --white:         #FFFFFF;
+
+  --shadow-sm: 0 2px 12px rgba(46,42,36,0.06);
+  --shadow-md: 0 10px 30px rgba(46,42,36,0.10);
+  --shadow-lg: 0 22px 55px rgba(46,42,36,0.20);
+
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Nunito Sans', sans-serif;
+
+  --container: 1100px;
+  --transition: 0.3s cubic-bezier(.25,.8,.25,1);
+  --nav-h: 68px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:96px;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; -webkit-tap-highlight-color:transparent; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18; letter-spacing:-0.01em; }
+.container{ max-width:var(--container); margin:0 auto; padding:0 20px; }
+:focus-visible{ outline:2px solid var(--primary); outline-offset:2px; }
+
+/* ============ HEADER ============ */
+.site-header{
+  background:linear-gradient(150deg,#E08F5C 0%,var(--primary) 45%,var(--primary-dark) 100%);
+  color:#fff;
+  padding:36px 0 50px;
+  position:relative;
+  overflow:hidden;
+}
+.site-header::after{
+  content:"";
+  position:absolute; inset:0;
+  background:radial-gradient(circle at 88% 15%, rgba(255,255,255,0.16), transparent 55%);
+  pointer-events:none;
+}
+.site-header .container{ position:relative; z-index:1; }
+.brand{ display:flex; align-items:center; gap:14px; margin-bottom:22px; }
+.brand-mark{
+  width:50px; height:50px; border-radius:50%;
+  background:rgba(255,255,255,0.16);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; padding:8px;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.22) inset;
+}
+.brand-mark svg{ width:100%; height:100%; }
+.brand-name{ font-family:var(--font-display); font-size:1.55rem; letter-spacing:0.01em; }
+.brand-sub{ font-size:0.8rem; opacity:0.88; font-weight:500; font-style:italic; font-family:var(--font-display); }
+.header-title{ font-size:2rem; max-width:540px; margin-bottom:10px; font-weight:600; }
+.header-desc{ opacity:0.92; font-size:0.97rem; max-width:480px; font-weight:500; }
+.header-meta{ display:flex; gap:20px; margin-top:22px; flex-wrap:wrap; }
+.header-meta span{ font-size:0.82rem; opacity:0.92; display:flex; align-items:center; gap:7px; font-weight:600; }
+
+/* ============ CATEGORY NAV ============ */
+.cat-nav-wrap{
+  position:sticky; top:0; z-index:20;
+  background:rgba(251,246,239,0.92);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  height:var(--nav-h);
+  display:flex; align-items:center;
+}
+.cat-nav{
+  position:relative;
+  display:flex; gap:4px; overflow-x:auto; padding:0 20px;
+  max-width:var(--container); margin:0 auto; width:100%;
+  scrollbar-width:none;
+}
+.cat-nav::-webkit-scrollbar{ display:none; }
+.nav-pill{
+  position:absolute; top:8px; bottom:8px; left:0; width:0;
+  background:var(--primary);
+  border-radius:999px;
+  box-shadow:var(--shadow-sm);
+  transition: transform 0.4s cubic-bezier(.22,1,.36,1), width 0.4s cubic-bezier(.22,1,.36,1);
+  z-index:0;
+}
+.cat-btn{
+  position:relative; z-index:1;
+  flex-shrink:0;
+  padding:10px 18px;
+  border-radius:999px;
+  font-weight:700; font-size:0.86rem;
+  color:var(--ink-soft);
+  display:flex; align-items:center; gap:8px;
+  transition:color var(--transition);
+  white-space:nowrap;
+}
+.cat-btn i{ font-size:0.82rem; opacity:0.75; }
+.cat-btn.active{ color:#fff; }
+.cat-btn.active i{ opacity:1; }
+
+/* ============ MENU ============ */
+.menu-section{ padding:34px 0 10px; }
+.menu-cat-block{ scroll-margin-top:calc(var(--nav-h) + 14px); margin-bottom:38px; }
+.menu-section-title{
+  font-size:1.4rem; margin:0 0 16px;
+  display:flex; align-items:center; gap:11px;
+}
+.menu-section-title i{ color:var(--primary); font-size:1.05rem; }
+.dish-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:18px;
+}
+.dish-card{
+  background:var(--bg-card);
+  border-radius:var(--radius-md);
+  overflow:hidden;
+  box-shadow:var(--shadow-sm);
+  cursor:pointer;
+  transition:transform var(--transition), box-shadow var(--transition);
+  display:flex; flex-direction:column;
+  border:1px solid var(--line);
+}
+.dish-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); }
+.dish-photo{
+  height:160px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:2.6rem;
+  position:relative;
+  overflow:hidden;
+}
+.dish-photo img{ width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; }
+.dish-card:hover .dish-photo img{ transform:scale(1.06); }
+.dish-photo .badge-unavail{
+  position:absolute; inset:0;
+  background:rgba(46,42,36,0.58);
+  color:#fff; font-size:0.78rem; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  text-transform:uppercase; letter-spacing:0.04em; z-index:2;
+}
+.dish-body{ padding:15px 16px 17px; display:flex; flex-direction:column; gap:6px; flex:1; }
+.dish-name{ font-family:var(--font-display); font-weight:700; font-size:1.03rem; }
+.dish-desc{ font-size:0.81rem; color:var(--ink-soft); flex:1;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.dish-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
+.dish-price{ font-weight:800; color:var(--primary-dark); font-size:1.02rem; font-family:var(--font-display); }
+.dish-add{
+  width:36px; height:36px; border-radius:50%;
+  background:var(--primary-soft); color:var(--primary-dark);
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.95rem; transition:var(--transition);
+}
+.dish-add:hover{ background:var(--primary); color:#fff; transform:scale(1.08); }
+
+/* gradient fallbacks if a photo fails to load */
+.g1{ background:linear-gradient(135deg,#FCE0C8,#F3B584); }
+.g2{ background:linear-gradient(135deg,#E9EFE2,#C3D6AC); }
+.g3{ background:linear-gradient(135deg,#FBE3D3,#E2632B22); }
+.g4{ background:linear-gradient(135deg,#EDE0F2,#CBAADD); }
+.g5{ background:linear-gradient(135deg,#DEEBF0,#A9C9D6); }
+.g6{ background:linear-gradient(135deg,#FDE7D9,#F0A868); }
+
+/* ============ DISH MODAL ============ */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(46,42,36,0.55);
+  display:flex; align-items:flex-end; justify-content:center;
+  z-index:100; opacity:0; pointer-events:none; transition:opacity var(--transition);
+}
+.modal-overlay.open{ opacity:1; pointer-events:auto; }
+@media (min-width:640px){ .modal-overlay{ align-items:center; } }
+.modal-card{
+  background:var(--bg-card);
+  width:100%; max-width:480px;
+  max-height:88vh; overflow-y:auto;
+  border-radius:26px 26px 0 0;
+  transform:translateY(24px);
+  transition:transform var(--transition);
+}
+@media (min-width:640px){ .modal-card{ border-radius:26px; transform:scale(0.96); } }
+.modal-overlay.open .modal-card{ transform:none; }
+.modal-photo{
+  height:230px; display:flex; align-items:center; justify-content:center;
+  font-size:4rem; position:relative; overflow:hidden;
+}
+.modal-photo img{ width:100%; height:100%; object-fit:cover; }
+.modal-close{
+  position:absolute; top:14px; right:14px;
+  width:38px; height:38px; border-radius:50%;
+  background:rgba(255,255,255,0.9); color:var(--ink);
+  display:flex; align-items:center; justify-content:center; font-size:1rem;
+  box-shadow:var(--shadow-sm); z-index:3;
+}
+.modal-body{ padding:24px 24px 28px; }
+.modal-name{ font-size:1.4rem; margin-bottom:9px; }
+.modal-desc{ color:var(--ink-soft); font-size:0.93rem; margin-bottom:20px; }
+.modal-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.qty-control{ display:flex; align-items:center; gap:14px; background:var(--bg); border-radius:999px; padding:6px 8px; border:1px solid var(--line); }
+.qty-btn{ width:32px; height:32px; border-radius:50%; background:var(--bg-card); box-shadow:var(--shadow-sm); font-size:0.85rem; display:flex; align-items:center; justify-content:center; }
+.qty-val{ min-width:20px; text-align:center; font-weight:800; }
+.modal-price{ font-size:1.35rem; font-weight:800; color:var(--primary-dark); font-family:var(--font-display); }
+.modal-add-btn{
+  margin-top:22px; width:100%; padding:16px;
+  background:var(--primary); color:#fff; border-radius:var(--radius-sm);
+  font-weight:800; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:9px;
+  box-shadow:var(--shadow-sm); transition:var(--transition);
+}
+.modal-add-btn:hover{ background:var(--primary-dark); }
+.modal-add-btn:disabled{ background:#D8CFC2; cursor:not-allowed; }
+
+/* ============ FLOATING CART BUTTON ============ */
+.cart-fab{
+  position:fixed; left:18px; right:18px; bottom:18px;
+  max-width:calc(var(--container) - 36px); margin:0 auto;
+  background:var(--primary); color:#fff;
+  border-radius:999px; padding:16px 24px;
+  display:none; align-items:center; justify-content:space-between;
+  box-shadow:var(--shadow-lg); z-index:60; font-weight:800;
+}
+.cart-fab.show{ display:flex; }
+.cart-fab-left{ display:flex; align-items:center; gap:11px; }
+.cart-count{
+  background:#fff; color:var(--primary-dark);
+  width:27px; height:27px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:0.8rem;
+}
+.cart-fab-total{ font-family:var(--font-display); }
+
+/* ============ CART PANEL ============ */
+.cart-panel{
+  position:fixed; inset:0; z-index:110;
+  background:rgba(46,42,36,0.55);
+  display:flex; justify-content:flex-end;
+  opacity:0; pointer-events:none; transition:opacity var(--transition);
+}
+.cart-panel.open{ opacity:1; pointer-events:auto; }
+.cart-sheet{
+  background:var(--bg); width:100%; max-width:420px; height:100%;
+  display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform var(--transition);
+}
+.cart-panel.open .cart-sheet{ transform:translateX(0); }
+.cart-head{ padding:22px 22px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); background:var(--bg-card); }
+.cart-head h3{ font-size:1.25rem; }
+.cart-items{ flex:1; overflow-y:auto; padding:16px 18px; display:flex; flex-direction:column; gap:12px; }
+.cart-empty{ text-align:center; color:var(--ink-soft); padding:60px 20px; font-size:0.92rem; }
+.cart-item{ display:flex; gap:12px; background:var(--bg-card); border-radius:var(--radius-sm); padding:10px; border:1px solid var(--line); align-items:center; }
+.cart-item-thumb{ width:52px; height:52px; border-radius:12px; flex-shrink:0; overflow:hidden; }
+.cart-item-thumb img{ width:100%; height:100%; object-fit:cover; }
+.cart-item-info{ flex:1; min-width:0; }
+.cart-item-name{ font-weight:700; font-size:0.88rem; font-family:var(--font-display); }
+.cart-item-price{ font-size:0.78rem; color:var(--ink-soft); }
+.cart-item-qty{ display:flex; align-items:center; gap:9px; }
+.cart-item-qty button{ width:27px; height:27px; border-radius:50%; background:var(--bg); border:1px solid var(--line); font-size:0.75rem; display:flex; align-items:center; justify-content:center; }
+.cart-foot{ padding:18px 22px 24px; background:var(--bg-card); border-top:1px solid var(--line); }
+.cart-total-row{ display:flex; justify-content:space-between; font-weight:800; font-size:1.15rem; margin-bottom:16px; font-family:var(--font-display); }
+.checkout-btn{
+  width:100%; padding:16px; background:#25D366; color:#fff; border-radius:var(--radius-sm);
+  font-weight:800; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.checkout-btn:disabled{ background:#D8CFC2; }
+.checkout-note{ text-align:center; font-size:0.75rem; color:var(--ink-soft); margin-top:11px; }
+
+/* ============ FOOTER ============ */
+.site-footer{ text-align:center; padding:38px 20px 22px; color:var(--ink-soft); font-size:0.82rem; }
+.site-footer strong{ color:var(--ink); font-family:var(--font-display); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs><radialGradient id="bgm" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#F3AE82"/><stop offset="55%" stop-color="#EDA679"/><stop offset="100%" stop-color="#E08F5C"/>
+          </radialGradient></defs>
+          <circle cx="100" cy="100" r="98" fill="url(#bgm)"/>
+          <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="0.5 7" stroke-linecap="round"/>
+          <path d="M78,88 C72,77 84,71 78,58" stroke="#FBF6EF" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.95"/>
+          <path d="M100,84 C94,71 106,64 100,50" stroke="#FBF6EF" stroke-width="4.6" stroke-linecap="round" fill="none"/>
+          <path d="M122,88 C116,77 128,71 122,58" stroke="#FBF6EF" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.95"/>
+          <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#FBF6EF"/>
+          <ellipse cx="100" cy="108" rx="44" ry="10" fill="#FBF6EF"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">Дастархан</div>
+        <div class="brand-sub">кафе &amp; чайхана</div>
+      </div>
+    </div>
+    <h1 class="header-title">Меню — выбирайте и заказывайте прямо здесь</h1>
+    <p class="header-desc">Нажмите на блюдо, чтобы увидеть состав и фото, добавьте в корзину и отправьте заказ официанту в один клик.</p>
+    <div class="header-meta">
+      <span><i class="fa-solid fa-location-dot"></i> ул. Чуй 123, Бишкек</span>
+      <span><i class="fa-solid fa-clock"></i> 09:00–23:00</span>
+    </div>
+  </div>
+</header>
+
+<div class="cat-nav-wrap">
+  <nav class="cat-nav" id="catNav"></nav>
+</div>
+
+<main class="container menu-section" id="menuSection"></main>
+
+<button class="cart-fab" id="cartFab">
+  <span class="cart-fab-left">
+    <span class="cart-count" id="cartCount">0</span>
+    <span>Корзина</span>
+  </span>
+  <span class="cart-fab-total" id="cartFabTotal">0 сом</span>
+</button>
+
+<!-- Dish modal -->
+<div class="modal-overlay" id="dishModal">
+  <div class="modal-card">
+    <div class="modal-photo" id="modalPhoto">
+      <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+      <img id="modalImg" alt="">
+    </div>
+    <div class="modal-body">
+      <h3 class="modal-name" id="modalName"></h3>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-row">
+        <div class="qty-control">
+          <button class="qty-btn" id="qtyMinus"><i class="fa-solid fa-minus"></i></button>
+          <span class="qty-val" id="qtyVal">1</span>
+          <button class="qty-btn" id="qtyPlus"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="modal-price" id="modalPrice"></div>
+      </div>
+      <button class="modal-add-btn" id="modalAddBtn"><i class="fa-solid fa-cart-plus"></i> Добавить в корзину</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cart panel -->
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-sheet">
+    <div class="cart-head">
+      <h3>Ваш заказ</h3>
+      <button class="modal-close" id="cartClose" style="position:static;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-foot">
+      <div class="cart-total-row"><span>Итого</span><span id="cartTotal">0 сом</span></div>
+      <button class="checkout-btn" id="checkoutBtn"><i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> Отправить заказ в WhatsApp</button>
+      <p class="checkout-note">Заказ придёт официанту, который подтвердит его и назовёт время готовности</p>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  Демо-шаблон меню для кафе и ресторанов · <strong>Дастархан</strong> · сделано для показа клиентам
+</footer>
+
+<script>
+/* ===================== DATA ===================== */
+// Замените CAFE_WHATSAPP на реальный номер заведения (в международном формате, без +)
+const CAFE_WHATSAPP = "996700123456";
+const CAFE_NAME = "Дастархан";
+
+function pexels(id){ return `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=800`; }
+
+const MENU = [
+  { id:1, cat:"soups", icon:"🍲", grad:"g1", photo:pexels(6249221), name:"Лагман-суп", desc:"Наваристый бульон с домашней лапшой, говядиной и овощами", price:220 },
+  { id:2, cat:"soups", icon:"🥣", grad:"g6", photo:pexels(1907227), name:"Шорпо", desc:"Классический бульон на баранине с картофелем и свежей зеленью", price:200 },
+  { id:3, cat:"soups", icon:"🍅", grad:"g5", photo:pexels(34636461), name:"Борщ", desc:"Свекольный суп со сметаной, зеленью и чесночными пампушками", price:180 },
+
+  { id:4, cat:"hot", icon:"🍚", grad:"g1", photo:pexels(10522937), name:"Плов", desc:"Рассыпчатый рис с говядиной, морковью, чесноком и специями", price:250 },
+  { id:5, cat:"hot", icon:"🥟", grad:"g6", photo:pexels(15220879), name:"Манты (5 шт)", desc:"Паровые манты с тыквой и бараниной, подаются со сметаной", price:230 },
+  { id:6, cat:"hot", icon:"🍜", grad:"g3", photo:pexels(2347311), name:"Лагман жареный", desc:"Домашняя лапша, обжаренная с говядиной, перцем и овощами", price:240 },
+  { id:7, cat:"hot", icon:"🍗", grad:"g6", photo:pexels(32067295), name:"Куриные крылья BBQ", desc:"Крылья в остром соусе барбекю, картофель фри, соус", price:260, unavailable:true },
+  { id:8, cat:"hot", icon:"🍔", grad:"g1", photo:pexels(7816894), name:"Бургер «Дастархан»", desc:"Говяжья котлета, чеддер, соус шеф, свежие овощи, булка бриошь", price:280 },
+
+  { id:9, cat:"salads", icon:"🍅", grad:"g2", photo:pexels(27662746), name:"Ачичук", desc:"Свежие помидоры, лук и зелень с ароматным маслом", price:120 },
+  { id:10, cat:"salads", icon:"🥗", grad:"g2", photo:pexels(28618643), name:"Салат «Цезарь»", desc:"Куриное филе гриль, пармезан, гренки, соус цезарь", price:210 },
+  { id:11, cat:"salads", icon:"🥑", grad:"g2", photo:pexels(29233927), name:"Салат с авокадо", desc:"Авокадо, черри, микс салата, кунжутная заправка", price:190 },
+
+  { id:12, cat:"drinks", icon:"🍵", grad:"g5", photo:pexels(8330323), name:"Чай (чайник)", desc:"Чёрный или зелёный чай, подаётся в традиционном чайнике", price:80 },
+  { id:13, cat:"drinks", icon:"🧃", grad:"g4", photo:pexels(5946588), name:"Компот домашний", desc:"Компот из сезонных фруктов и ягод", price:70 },
+  { id:14, cat:"drinks", icon:"☕", grad:"g6", photo:pexels(8340102), name:"Кофе американо", desc:"Свежесваренный кофе из отборных зёрен", price:110 },
+  { id:15, cat:"drinks", icon:"🍋", grad:"g5", photo:pexels(6541793), name:"Лимонад домашний", desc:"Освежающий лимонад с мятой и лаймом", price:130 },
+
+  { id:16, cat:"desserts", icon:"🍯", grad:"g6", photo:pexels(17834547), name:"Чак-чак", desc:"Традиционная сладость из теста с мёдом и орехами", price:150 },
+  { id:17, cat:"desserts", icon:"🍰", grad:"g4", photo:pexels(1098592), name:"Чизкейк Нью-Йорк", desc:"Нежный чизкейк со свежими ягодами", price:190 },
+];
+
+const CATEGORIES = [
+  { id:"soups", label:"Супы", icon:"fa-bowl-food" },
+  { id:"hot", label:"Горячее", icon:"fa-fire" },
+  { id:"salads", label:"Салаты", icon:"fa-leaf" },
+  { id:"drinks", label:"Напитки", icon:"fa-mug-hot" },
+  { id:"desserts", label:"Десерты", icon:"fa-cookie" },
+];
+
+/* ===================== STATE ===================== */
+let activeCat = CATEGORIES[0].id;
+let cart = {}; // id -> qty
+let modalDish = null;
+let modalQty = 1;
+let suppressScrollSpy = false;
+
+/* ===================== RENDER: CATEGORY NAV ===================== */
+const catNav = document.getElementById("catNav");
+function renderCatNav(){
+  catNav.innerHTML = `<span class="nav-pill" id="navPill"></span>` + CATEGORIES.map(c =>
+    `<button class="cat-btn" data-cat="${c.id}"><i class="fa-solid ${c.icon}"></i>${c.label}</button>`
+  ).join("");
+  catNav.querySelectorAll(".cat-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      scrollToSection(btn.dataset.cat);
+    });
+  });
+}
+
+function scrollToSection(cat){
+  const el = document.getElementById("section-"+cat);
+  if(!el) return;
+  suppressScrollSpy = true;
+  setActiveCat(cat);
+  const top = el.getBoundingClientRect().top + window.pageYOffset - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) + 14);
+  window.scrollTo({ top, behavior:"smooth" });
+  window.clearTimeout(scrollToSection._t);
+  scrollToSection._t = window.setTimeout(()=>{ suppressScrollSpy = false; }, 700);
+}
+
+function setActiveCat(cat){
+  activeCat = cat;
+  catNav.querySelectorAll(".cat-btn").forEach(b=> b.classList.toggle("active", b.dataset.cat===cat));
+  const activeBtn = catNav.querySelector(`.cat-btn[data-cat="${cat}"]`);
+  if(activeBtn) movePill(activeBtn);
+  autoScrollNav(activeBtn);
+}
+
+function movePill(btn){
+  const pill = document.getElementById("navPill");
+  if(!pill) return;
+  pill.style.width = btn.offsetWidth + "px";
+  pill.style.transform = `translateX(${btn.offsetLeft}px)`;
+}
+
+function autoScrollNav(btn){
+  if(!btn) return;
+  const target = btn.offsetLeft - (catNav.clientWidth/2) + (btn.offsetWidth/2);
+  const max = catNav.scrollWidth - catNav.clientWidth;
+  catNav.scrollTo({ left: Math.max(0, Math.min(target, max)), behavior:"smooth" });
+}
+
+/* ===================== RENDER: MENU (single continuous page) ===================== */
+const menuSection = document.getElementById("menuSection");
+function renderMenu(){
+  menuSection.innerHTML = CATEGORIES.map(cat=>{
+    const dishes = MENU.filter(d=>d.cat===cat.id);
+    if(!dishes.length) return "";
+    return `
+      <section class="menu-cat-block" id="section-${cat.id}">
+        <h2 class="menu-section-title"><i class="fa-solid ${cat.icon}"></i>${cat.label}</h2>
+        <div class="dish-grid">
+          ${dishes.map(dishCardHTML).join("")}
+        </div>
+      </section>
+    `;
+  }).join("");
+
+  menuSection.querySelectorAll(".dish-card").forEach(card=>{
+    card.addEventListener("click", ()=> openModal(Number(card.dataset.id)));
+  });
+  menuSection.querySelectorAll(".dish-add").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      const id = Number(btn.closest(".dish-card").dataset.id);
+      addToCart(id, 1);
+      pulse(btn);
+    });
+  });
+}
+
+function dishCardHTML(d){
+  return `
+    <div class="dish-card" data-id="${d.id}">
+      <div class="dish-photo ${d.grad}">
+        ${d.unavailable ? '<div class="badge-unavail">Нет в наличии</div>' : ''}
+        <img src="${d.photo}" alt="${d.name}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${d.icon}'}))">
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">${d.name}</div>
+        <div class="dish-desc">${d.desc}</div>
+        <div class="dish-footer">
+          <div class="dish-price">${d.price} сом</div>
+          ${d.unavailable ? '' : `<button class="dish-add" aria-label="Добавить"><i class="fa-solid fa-plus"></i></button>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function pulse(el){
+  el.style.transform = "scale(1.25)";
+  setTimeout(()=> el.style.transform = "", 150);
+}
+
+/* ===================== SCROLLSPY ===================== */
+function initScrollSpy(){
+  const sections = CATEGORIES.map(c=> document.getElementById("section-"+c.id)).filter(Boolean);
+  const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'));
+  const observer = new IntersectionObserver((entries)=>{
+    if(suppressScrollSpy) return;
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const cat = entry.target.id.replace("section-","");
+        if(cat !== activeCat) setActiveCat(cat);
+      }
+    });
+  }, { rootMargin: `-${navH+8}px 0px -65% 0px`, threshold: 0 });
+  sections.forEach(s=> observer.observe(s));
+}
+
+/* ===================== DISH MODAL ===================== */
+const dishModal = document.getElementById("dishModal");
+const modalImg = document.getElementById("modalImg");
+const modalName = document.getElementById("modalName");
+const modalDesc = document.getElementById("modalDesc");
+const modalPrice = document.getElementById("modalPrice");
+const qtyVal = document.getElementById("qtyVal");
+const modalAddBtn = document.getElementById("modalAddBtn");
+
+function openModal(id){
+  modalDish = MENU.find(d=>d.id===id);
+  if(!modalDish) return;
+  modalQty = 1;
+  qtyVal.textContent = modalQty;
+  modalImg.src = modalDish.photo;
+  modalImg.alt = modalDish.name;
+  modalImg.onerror = function(){ this.closest('.modal-photo').classList.add(modalDish.grad); this.replaceWith(Object.assign(document.createElement('span'),{textContent:modalDish.icon})); };
+  modalName.textContent = modalDish.name;
+  modalDesc.textContent = modalDish.desc;
+  updateModalPrice();
+  modalAddBtn.disabled = !!modalDish.unavailable;
+  modalAddBtn.innerHTML = modalDish.unavailable
+    ? '<i class="fa-solid fa-ban"></i> Сейчас нет в наличии'
+    : '<i class="fa-solid fa-cart-plus"></i> Добавить в корзину';
+  dishModal.classList.add("open");
+}
+function closeModal(){ dishModal.classList.remove("open"); }
+document.getElementById("modalClose").addEventListener("click", closeModal);
+dishModal.addEventListener("click", (e)=>{ if(e.target===dishModal) closeModal(); });
+
+function updateModalPrice(){
+  modalPrice.textContent = (modalDish.price * modalQty) + " сом";
+}
+document.getElementById("qtyMinus").addEventListener("click", ()=>{
+  if(modalQty>1){ modalQty--; qtyVal.textContent=modalQty; updateModalPrice(); }
+});
+document.getElementById("qtyPlus").addEventListener("click", ()=>{
+  modalQty++; qtyVal.textContent=modalQty; updateModalPrice();
+});
+modalAddBtn.addEventListener("click", ()=>{
+  if(modalDish.unavailable) return;
+  addToCart(modalDish.id, modalQty);
+  closeModal();
+});
+
+/* ===================== CART ===================== */
+const cartFab = document.getElementById("cartFab");
+const cartCount = document.getElementById("cartCount");
+const cartFabTotal = document.getElementById("cartFabTotal");
+const cartPanel = document.getElementById("cartPanel");
+const cartItemsEl = document.getElementById("cartItems");
+const cartTotalEl = document.getElementById("cartTotal");
+const checkoutBtn = document.getElementById("checkoutBtn");
+
+function addToCart(id, qty){
+  cart[id] = (cart[id]||0) + qty;
+  syncCart();
+}
+function setQty(id, qty){
+  if(qty<=0){ delete cart[id]; } else { cart[id]=qty; }
+  syncCart();
+}
+function cartEntries(){
+  return Object.entries(cart).map(([id,qty])=>({dish: MENU.find(d=>d.id===Number(id)), qty})).filter(e=>e.dish);
+}
+function cartTotal(){
+  return cartEntries().reduce((sum,e)=> sum + e.dish.price*e.qty, 0);
+}
+function cartItemCount(){
+  return Object.values(cart).reduce((a,b)=>a+b,0);
+}
+function syncCart(){
+  const count = cartItemCount();
+  const total = cartTotal();
+  cartCount.textContent = count;
+  cartFabTotal.textContent = total + " сом";
+  cartFab.classList.toggle("show", count>0);
+  renderCartPanel();
+}
+function renderCartPanel(){
+  const entries = cartEntries();
+  if(!entries.length){
+    cartItemsEl.innerHTML = `<div class="cart-empty"><i class="fa-solid fa-basket-shopping" style="font-size:1.8rem;display:block;margin-bottom:10px;"></i>Корзина пуста<br>Выберите блюда из меню</div>`;
+  } else {
+    cartItemsEl.innerHTML = entries.map(e=>`
+      <div class="cart-item" data-id="${e.dish.id}">
+        <div class="cart-item-thumb"><img src="${e.dish.photo}" alt="${e.dish.name}" onerror="this.parentElement.classList.add('${e.dish.grad}');this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${e.dish.icon}',style:'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:1.3rem;'}));"></div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${e.dish.name}</div>
+          <div class="cart-item-price">${e.dish.price} сом × ${e.qty}</div>
+        </div>
+        <div class="cart-item-qty">
+          <button class="cart-minus"><i class="fa-solid fa-minus"></i></button>
+          <span>${e.qty}</span>
+          <button class="cart-plus"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+    `).join("");
+    cartItemsEl.querySelectorAll(".cart-item").forEach(row=>{
+      const id = Number(row.dataset.id);
+      row.querySelector(".cart-minus").addEventListener("click", ()=> setQty(id, (cart[id]||0)-1));
+      row.querySelector(".cart-plus").addEventListener("click", ()=> setQty(id, (cart[id]||0)+1));
+    });
+  }
+  cartTotalEl.textContent = cartTotal() + " сом";
+  checkoutBtn.disabled = entries.length===0;
+}
+
+cartFab.addEventListener("click", ()=> cartPanel.classList.add("open"));
+document.getElementById("cartClose").addEventListener("click", ()=> cartPanel.classList.remove("open"));
+cartPanel.addEventListener("click", (e)=>{ if(e.target===cartPanel) cartPanel.classList.remove("open"); });
+
+checkoutBtn.addEventListener("click", ()=>{
+  const entries = cartEntries();
+  if(!entries.length) return;
+  let msg = `Здравствуйте! Хочу сделать заказ в ${CAFE_NAME}:%0A%0A`;
+  entries.forEach(e=>{
+    msg += `• ${e.dish.name} × ${e.qty} — ${e.dish.price*e.qty} сом%0A`;
+  });
+  msg += `%0AИтого: ${cartTotal()} сом`;
+  const url = `https://wa.me/${CAFE_WHATSAPP}?text=${msg}`;
+  window.open(url, "_blank");
+});
+
+/* ===================== INIT ===================== */
+renderCatNav();
+renderMenu();
+syncCart();
+requestAnimationFrame(()=>{
+  setActiveCat(activeCat);
+  initScrollSpy();
+});
+window.addEventListener("resize", ()=>{
+  const activeBtn = catNav.querySelector(".cat-btn.active");
+  if(activeBtn) movePill(activeBtn);
+});
+</script>
+</body>
+</html>

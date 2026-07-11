@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="bg" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#E6935F"/>
+      <stop offset="55%" stop-color="#D97C4A"/>
+      <stop offset="100%" stop-color="#B85E31"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="100" cy="100" r="98" fill="url(#bg)"/>
+  <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1" stroke-dasharray="0.5 7" stroke-linecap="round"/>
+
+  <!-- steam -->
+  <path d="M78,88 C72,77 84,71 78,58" stroke="#FBF6EF" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.95"/>
+  <path d="M100,84 C94,71 106,64 100,50" stroke="#FBF6EF" stroke-width="4.6" stroke-linecap="round" fill="none"/>
+  <path d="M122,88 C116,77 128,71 122,58" stroke="#FBF6EF" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.95"/>
+
+  <!-- bowl -->
+  <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#FBF6EF"/>
+  <ellipse cx="100" cy="108" rx="44" ry="10" fill="#FBF6EF"/>
+  <ellipse cx="100" cy="107" rx="44" ry="10" fill="none" stroke="#B85E31" stroke-width="1.4" opacity="0.35"/>
+
+  <!-- base -->
+  <rect x="88" y="150" width="24" height="6" rx="3" fill="#FBF6EF" opacity="0.9"/>
+</svg>
