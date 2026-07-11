@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Nunito+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* =========================================================
    DASTARKHAN CAFE — DEMO TEMPLATE
@@ -278,7 +279,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
 .cart-items{ flex:1; overflow-y:auto; padding:16px 18px; display:flex; flex-direction:column; gap:12px; }
 .cart-empty{ text-align:center; color:var(--ink-soft); padding:60px 20px; font-size:0.92rem; }
 .cart-item{ display:flex; gap:12px; background:var(--bg-card); border-radius:var(--radius-sm); padding:10px; border:1px solid var(--line); align-items:center; }
-.cart-item-thumb{ width:52px; height:52px; border-radius:12px; flex-shrink:0; overflow:hidden; }
+.cart-item-thumb{ width:52px; height:52px; border-radius:12px; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; }
 .cart-item-thumb img{ width:100%; height:100%; object-fit:cover; }
 .cart-item-info{ flex:1; min-width:0; }
 .cart-item-name{ font-weight:700; font-size:0.88rem; font-family:var(--font-display); }
@@ -395,46 +396,32 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
 const CAFE_WHATSAPP = "996700123456";
 const CAFE_NAME = "Дастархан";
 
-function pexels(id){ return `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=800`; }
+// Подключение к базе данных (Supabase) — меню теперь редактируется из админки,
+// а не хранится в коде. Если база недоступна, ниже есть аварийный запасной список.
+const SUPABASE_URL = "https://begqvotkmlbuwxmnoxcs.supabase.co";
+const SUPABASE_KEY = "sb_publishable_yr7Dx5SeqplvTdP8rShpow_79FY-PwT";
+const supabaseClient = (typeof window.supabase !== "undefined")
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
 
-const MENU = [
-  { id:1, cat:"soups", icon:"🍲", grad:"g1", photo:pexels(6249221), name:"Лагман-суп", desc:"Наваристый бульон с домашней лапшой, говядиной и овощами", price:220 },
-  { id:2, cat:"soups", icon:"🥣", grad:"g6", photo:pexels(1907227), name:"Шорпо", desc:"Классический бульон на баранине с картофелем и свежей зеленью", price:200 },
-  { id:3, cat:"soups", icon:"🍅", grad:"g5", photo:pexels(34636461), name:"Борщ", desc:"Свекольный суп со сметаной, зеленью и чесночными пампушками", price:180 },
+const GRAD_CLASSES = ["g1","g2","g3","g4","g5","g6"];
+function gradFor(id){
+  let hash = 0;
+  for(const ch of String(id)) hash = (hash*31 + ch.charCodeAt(0)) % 100000;
+  return GRAD_CLASSES[hash % GRAD_CLASSES.length];
+}
 
-  { id:4, cat:"hot", icon:"🍚", grad:"g1", photo:pexels(10522937), name:"Плов", desc:"Рассыпчатый рис с говядиной, морковью, чесноком и специями", price:250 },
-  { id:5, cat:"hot", icon:"🥟", grad:"g6", photo:pexels(15220879), name:"Манты (5 шт)", desc:"Паровые манты с тыквой и бараниной, подаются со сметаной", price:230 },
-  { id:6, cat:"hot", icon:"🍜", grad:"g3", photo:pexels(2347311), name:"Лагман жареный", desc:"Домашняя лапша, обжаренная с говядиной, перцем и овощами", price:240 },
-  { id:7, cat:"hot", icon:"🍗", grad:"g6", photo:pexels(32067295), name:"Куриные крылья BBQ", desc:"Крылья в остром соусе барбекю, картофель фри, соус", price:260, unavailable:true },
-  { id:8, cat:"hot", icon:"🍔", grad:"g1", photo:pexels(7816894), name:"Бургер «Дастархан»", desc:"Говяжья котлета, чеддер, соус шеф, свежие овощи, булка бриошь", price:280 },
-
-  { id:9, cat:"salads", icon:"🍅", grad:"g2", photo:pexels(27662746), name:"Ачичук", desc:"Свежие помидоры, лук и зелень с ароматным маслом", price:120 },
-  { id:10, cat:"salads", icon:"🥗", grad:"g2", photo:pexels(28618643), name:"Салат «Цезарь»", desc:"Куриное филе гриль, пармезан, гренки, соус цезарь", price:210 },
-  { id:11, cat:"salads", icon:"🥑", grad:"g2", photo:pexels(29233927), name:"Салат с авокадо", desc:"Авокадо, черри, микс салата, кунжутная заправка", price:190 },
-
-  { id:12, cat:"drinks", icon:"🍵", grad:"g5", photo:pexels(8330323), name:"Чай (чайник)", desc:"Чёрный или зелёный чай, подаётся в традиционном чайнике", price:80 },
-  { id:13, cat:"drinks", icon:"🧃", grad:"g4", photo:pexels(5946588), name:"Компот домашний", desc:"Компот из сезонных фруктов и ягод", price:70 },
-  { id:14, cat:"drinks", icon:"☕", grad:"g6", photo:pexels(8340102), name:"Кофе американо", desc:"Свежесваренный кофе из отборных зёрен", price:110 },
-  { id:15, cat:"drinks", icon:"🍋", grad:"g5", photo:pexels(6541793), name:"Лимонад домашний", desc:"Освежающий лимонад с мятой и лаймом", price:130 },
-
-  { id:16, cat:"desserts", icon:"🍯", grad:"g6", photo:pexels(17834547), name:"Чак-чак", desc:"Традиционная сладость из теста с мёдом и орехами", price:150 },
-  { id:17, cat:"desserts", icon:"🍰", grad:"g4", photo:pexels(1098592), name:"Чизкейк Нью-Йорк", desc:"Нежный чизкейк со свежими ягодами", price:190 },
-];
-
-const CATEGORIES = [
-  { id:"soups", label:"Супы", icon:"fa-bowl-food" },
-  { id:"hot", label:"Горячее", icon:"fa-fire" },
-  { id:"salads", label:"Салаты", icon:"fa-leaf" },
-  { id:"drinks", label:"Напитки", icon:"fa-mug-hot" },
-  { id:"desserts", label:"Десерты", icon:"fa-cookie" },
-];
+let MENU = [];
+let CATEGORIES = [];
 
 /* ===================== STATE ===================== */
-let activeCat = CATEGORIES[0].id;
+let activeCat = null;
 let cart = {}; // id -> qty
 let modalDish = null;
 let modalQty = 1;
 let suppressScrollSpy = false;
+let spyObserver = null;
+let realtimeChannel = null;
 
 /* ===================== RENDER: CATEGORY NAV ===================== */
 const catNav = document.getElementById("catNav");
@@ -499,16 +486,26 @@ function renderMenu(){
   }).join("");
 
   menuSection.querySelectorAll(".dish-card").forEach(card=>{
-    card.addEventListener("click", ()=> openModal(Number(card.dataset.id)));
+    card.addEventListener("click", ()=> openModal(card.dataset.id));
   });
   menuSection.querySelectorAll(".dish-add").forEach(btn=>{
     btn.addEventListener("click", (e)=>{
       e.stopPropagation();
-      const id = Number(btn.closest(".dish-card").dataset.id);
+      const id = btn.closest(".dish-card").dataset.id;
       addToCart(id, 1);
       pulse(btn);
     });
   });
+  menuSection.querySelectorAll(".dish-photo img").forEach(img=>{
+    img.addEventListener("error", function(){ showFallbackIcon(this, this.dataset.fallbackIcon); }, { once:true });
+  });
+}
+
+function showFallbackIcon(img, iconClass){
+  const i = document.createElement("i");
+  i.className = "fa-solid " + (iconClass || "fa-utensils");
+  i.style.cssText = "font-size:1.7rem;color:var(--primary-dark);opacity:0.55;";
+  img.replaceWith(i);
 }
 
 function dishCardHTML(d){
@@ -516,7 +513,7 @@ function dishCardHTML(d){
     <div class="dish-card" data-id="${d.id}">
       <div class="dish-photo ${d.grad}">
         ${d.unavailable ? '<div class="badge-unavail">Нет в наличии</div>' : ''}
-        <img src="${d.photo}" alt="${d.name}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${d.icon}'}))">
+        <img src="${d.photo||''}" alt="${d.name}" loading="lazy" data-fallback-icon="${d.catIcon||'fa-utensils'}">
       </div>
       <div class="dish-body">
         <div class="dish-name">${d.name}</div>
@@ -537,9 +534,11 @@ function pulse(el){
 
 /* ===================== SCROLLSPY ===================== */
 function initScrollSpy(){
+  if(spyObserver){ spyObserver.disconnect(); spyObserver = null; }
   const sections = CATEGORIES.map(c=> document.getElementById("section-"+c.id)).filter(Boolean);
+  if(!sections.length) return;
   const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'));
-  const observer = new IntersectionObserver((entries)=>{
+  spyObserver = new IntersectionObserver((entries)=>{
     if(suppressScrollSpy) return;
     entries.forEach(entry=>{
       if(entry.isIntersecting){
@@ -548,12 +547,11 @@ function initScrollSpy(){
       }
     });
   }, { rootMargin: `-${navH+8}px 0px -65% 0px`, threshold: 0 });
-  sections.forEach(s=> observer.observe(s));
+  sections.forEach(s=> spyObserver.observe(s));
 }
 
 /* ===================== DISH MODAL ===================== */
 const dishModal = document.getElementById("dishModal");
-const modalImg = document.getElementById("modalImg");
 const modalName = document.getElementById("modalName");
 const modalDesc = document.getElementById("modalDesc");
 const modalPrice = document.getElementById("modalPrice");
@@ -565,9 +563,20 @@ function openModal(id){
   if(!modalDish) return;
   modalQty = 1;
   qtyVal.textContent = modalQty;
-  modalImg.src = modalDish.photo;
-  modalImg.alt = modalDish.name;
-  modalImg.onerror = function(){ this.closest('.modal-photo').classList.add(modalDish.grad); this.replaceWith(Object.assign(document.createElement('span'),{textContent:modalDish.icon})); };
+  // сбрасываем модалку на случай, если предыдущий показ заменил img на иконку-заглушку
+  const modalPhotoEl = document.getElementById("modalPhoto");
+  modalPhotoEl.querySelectorAll("i.fa-solid").forEach(i=>i.remove());
+  modalPhotoEl.className = "modal-photo " + (modalDish.grad || "");
+  if(!document.getElementById("modalImg")){
+    const img = document.createElement("img");
+    img.id = "modalImg";
+    modalPhotoEl.appendChild(img);
+  }
+  const imgEl = document.getElementById("modalImg");
+  imgEl.src = modalDish.photo || "";
+  imgEl.alt = modalDish.name;
+  imgEl.dataset.fallbackIcon = modalDish.catIcon || "fa-utensils";
+  imgEl.addEventListener("error", function(){ showFallbackIcon(this, this.dataset.fallbackIcon); }, { once:true });
   modalName.textContent = modalDish.name;
   modalDesc.textContent = modalDish.desc;
   updateModalPrice();
@@ -614,7 +623,7 @@ function setQty(id, qty){
   syncCart();
 }
 function cartEntries(){
-  return Object.entries(cart).map(([id,qty])=>({dish: MENU.find(d=>d.id===Number(id)), qty})).filter(e=>e.dish);
+  return Object.entries(cart).map(([id,qty])=>({dish: MENU.find(d=>d.id===id), qty})).filter(e=>e.dish);
 }
 function cartTotal(){
   return cartEntries().reduce((sum,e)=> sum + e.dish.price*e.qty, 0);
@@ -637,7 +646,7 @@ function renderCartPanel(){
   } else {
     cartItemsEl.innerHTML = entries.map(e=>`
       <div class="cart-item" data-id="${e.dish.id}">
-        <div class="cart-item-thumb"><img src="${e.dish.photo}" alt="${e.dish.name}" onerror="this.parentElement.classList.add('${e.dish.grad}');this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${e.dish.icon}',style:'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:1.3rem;'}));"></div>
+        <div class="cart-item-thumb ${e.dish.grad}"><img src="${e.dish.photo||''}" alt="${e.dish.name}" data-fallback-icon="${e.dish.catIcon||'fa-utensils'}"></div>
         <div class="cart-item-info">
           <div class="cart-item-name">${e.dish.name}</div>
           <div class="cart-item-price">${e.dish.price} сом × ${e.qty}</div>
@@ -649,8 +658,16 @@ function renderCartPanel(){
         </div>
       </div>
     `).join("");
+    cartItemsEl.querySelectorAll(".cart-item-thumb img").forEach(img=>{
+      img.addEventListener("error", function(){
+        const i = document.createElement("i");
+        i.className = "fa-solid " + (this.dataset.fallbackIcon || "fa-utensils");
+        i.style.cssText = "font-size:1.1rem;color:var(--primary-dark);opacity:0.6;";
+        this.replaceWith(i);
+      }, { once:true });
+    });
     cartItemsEl.querySelectorAll(".cart-item").forEach(row=>{
-      const id = Number(row.dataset.id);
+      const id = row.dataset.id;
       row.querySelector(".cart-minus").addEventListener("click", ()=> setQty(id, (cart[id]||0)-1));
       row.querySelector(".cart-plus").addEventListener("click", ()=> setQty(id, (cart[id]||0)+1));
     });
@@ -675,18 +692,88 @@ checkoutBtn.addEventListener("click", ()=>{
   window.open(url, "_blank");
 });
 
-/* ===================== INIT ===================== */
-renderCatNav();
-renderMenu();
-syncCart();
-requestAnimationFrame(()=>{
-  setActiveCat(activeCat);
-  initScrollSpy();
-});
+/* ===================== ЗАГРУЗКА МЕНЮ ИЗ БАЗЫ ===================== */
+function showMenuMessage(html){
+  menuSection.innerHTML = `<div style="text-align:center;padding:70px 20px;color:var(--ink-soft);">${html}</div>`;
+}
+
+function renderAll(){
+  renderCatNav();
+  renderMenu();
+  syncCart();
+  requestAnimationFrame(()=>{
+    if(!activeCat && CATEGORIES.length) activeCat = CATEGORIES[0].id;
+    if(activeCat) setActiveCat(activeCat);
+    initScrollSpy();
+  });
+}
+
+async function loadMenu(showSpinner){
+  if(showSpinner){
+    catNav.innerHTML = "";
+    showMenuMessage('<i class="fa-solid fa-spinner fa-spin" style="font-size:1.6rem;"></i><br><br>Загружаем меню…');
+  }
+  if(!supabaseClient){
+    showMenuMessage('Не удалось подключиться к базе данных.<br>Проверьте интернет-соединение и обновите страницу.');
+    return;
+  }
+  const [{ data: cats, error: catErr }, { data: dishes, error: dishErr }] = await Promise.all([
+    supabaseClient.from("categories").select("*").order("sort_order"),
+    supabaseClient.from("dishes").select("*").eq("is_published", true).order("sort_order")
+  ]);
+
+  if(catErr || dishErr){
+    showMenuMessage(`Не удалось загрузить меню.<br><button id="retryLoadBtn" style="margin-top:14px;color:var(--primary-dark);font-weight:800;text-decoration:underline;">Попробовать снова</button>`);
+    const retryBtn = document.getElementById("retryLoadBtn");
+    if(retryBtn) retryBtn.addEventListener("click", ()=> loadMenu(true));
+    return;
+  }
+
+  const catIconById = {};
+  (cats||[]).forEach(c=> catIconById[c.id] = c.icon || "fa-utensils");
+
+  CATEGORIES = (cats||[]).map(c=>({ id:c.id, label:c.name, icon:c.icon||"fa-utensils" }));
+  MENU = (dishes||[]).map(d=>({
+    id:d.id,
+    cat:d.category_id,
+    catIcon: catIconById[d.category_id] || "fa-utensils",
+    grad: gradFor(d.id),
+    photo:d.photo_url,
+    name:d.name,
+    desc:d.description,
+    price:Number(d.price),
+    unavailable: !d.is_available
+  }));
+
+  if(!activeCat || !CATEGORIES.find(c=>c.id===activeCat)){
+    activeCat = CATEGORIES.length ? CATEGORIES[0].id : null;
+  }
+
+  if(!MENU.length){
+    catNav.innerHTML = "";
+    showMenuMessage('<i class="fa-solid fa-utensils" style="font-size:1.8rem;display:block;margin-bottom:12px;"></i>Меню скоро появится');
+    return;
+  }
+
+  renderAll();
+}
+
+function subscribeRealtime(){
+  if(!supabaseClient || realtimeChannel) return;
+  realtimeChannel = supabaseClient
+    .channel("menu-changes")
+    .on("postgres_changes", { event:"*", schema:"public", table:"dishes" }, ()=> loadMenu(false))
+    .on("postgres_changes", { event:"*", schema:"public", table:"categories" }, ()=> loadMenu(false))
+    .subscribe();
+}
+
 window.addEventListener("resize", ()=>{
   const activeBtn = catNav.querySelector(".cat-btn.active");
   if(activeBtn) movePill(activeBtn);
 });
+
+/* ===================== INIT ===================== */
+loadMenu(true).then(subscribeRealtime);
 </script>
 </body>
 </html>
