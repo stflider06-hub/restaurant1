@@ -260,6 +260,34 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
 }
 .cart-fab-total{ font-family:var(--font-display); }
 
+/* ============ ORDER TRACKER ============ */
+.order-tracker{
+  position:fixed; left:18px; right:18px; bottom:18px;
+  max-width:calc(var(--container) - 36px); margin:0 auto;
+  background:var(--bg-card); color:var(--ink);
+  border-radius:var(--radius-md); padding:16px 18px;
+  display:none; flex-direction:column; gap:10px;
+  box-shadow:var(--shadow-lg); z-index:60; border:1px solid var(--line);
+}
+.order-tracker.show{ display:flex; }
+.order-tracker-top{ display:flex; align-items:center; justify-content:space-between; }
+.order-tracker-title{ font-weight:800; font-size:0.9rem; display:flex; align-items:center; gap:8px; }
+.order-tracker-title i{ color:var(--primary); }
+.order-tracker-close{ width:28px; height:28px; border-radius:50%; background:var(--bg); display:flex; align-items:center; justify-content:center; color:var(--ink-soft); font-size:0.75rem; border:none; cursor:pointer; }
+.order-steps{ display:flex; align-items:center; }
+.order-step{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; position:relative; }
+.order-step-dot{ width:22px; height:22px; border-radius:50%; background:var(--line); display:flex; align-items:center; justify-content:center; color:transparent; font-size:0.65rem; transition:0.3s; z-index:1; }
+.order-step.done .order-step-dot{ background:var(--primary); color:#fff; }
+.order-step-label{ font-size:0.68rem; color:var(--ink-soft); font-weight:700; text-align:center; }
+.order-step.done .order-step-label{ color:var(--primary-dark); }
+.order-step::after{
+  content:""; position:absolute; top:11px; left:50%; width:100%; height:2px; background:var(--line); z-index:0;
+}
+.order-step:last-child::after{ display:none; }
+.order-step.done::after{ background:var(--primary); }
+.order-tracker.cancelled .order-step-dot{ background:var(--red-soft, #FBEAE4); }
+.order-tracker-cancelled-text{ color:var(--red, #B84A3A); font-weight:700; font-size:0.85rem; text-align:center; }
+
 /* ============ CART PANEL ============ */
 .cart-panel{
   position:fixed; inset:0; z-index:110;
@@ -346,6 +374,14 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
   </span>
   <span class="cart-fab-total" id="cartFabTotal">0 сом</span>
 </button>
+
+<div class="order-tracker" id="orderTracker">
+  <div class="order-tracker-top">
+    <div class="order-tracker-title"><i class="fa-solid fa-receipt"></i> Ваш заказ отправлен</div>
+    <button class="order-tracker-close" id="orderTrackerClose" aria-label="Скрыть"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div id="orderTrackerBody"></div>
+</div>
 
 <!-- Dish modal -->
 <div class="modal-overlay" id="dishModal">
@@ -680,17 +716,114 @@ cartFab.addEventListener("click", ()=> cartPanel.classList.add("open"));
 document.getElementById("cartClose").addEventListener("click", ()=> cartPanel.classList.remove("open"));
 cartPanel.addEventListener("click", (e)=>{ if(e.target===cartPanel) cartPanel.classList.remove("open"); });
 
-checkoutBtn.addEventListener("click", ()=>{
+checkoutBtn.addEventListener("click", async ()=>{
   const entries = cartEntries();
   if(!entries.length) return;
+  checkoutBtn.disabled = true;
+  const prevLabel = checkoutBtn.innerHTML;
+  checkoutBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Отправляем…';
+
+  const total = cartTotal();
+  let orderId;
+  try{ orderId = crypto.randomUUID(); }
+  catch(e){ orderId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c=>{ const r=Math.random()*16|0; return (c==="x"?r:(r&0x3|0x8)).toString(16); }); }
+
+  // сохраняем заказ в базу (для админки и отслеживания статуса).
+  // если это не получится — не страшно, WhatsApp всё равно сработает как запасной канал.
+  if(supabaseClient){
+    try{
+      await supabaseClient.from("orders").insert({ id: orderId, status:"new", total });
+      await supabaseClient.from("order_items").insert(entries.map(e=>({
+        order_id: orderId, dish_id: e.dish.id, dish_name: e.dish.name, price: e.dish.price, qty: e.qty
+      })));
+      startOrderTracking(orderId);
+    }catch(err){ /* тихо игнорируем — WhatsApp остаётся надёжным каналом */ }
+  }
+
   let msg = `Здравствуйте! Хочу сделать заказ в ${CAFE_NAME}:%0A%0A`;
   entries.forEach(e=>{
     msg += `• ${e.dish.name} × ${e.qty} — ${e.dish.price*e.qty} сом%0A`;
   });
-  msg += `%0AИтого: ${cartTotal()} сом`;
+  msg += `%0AИтого: ${total} сом`;
   const url = `https://wa.me/${CAFE_WHATSAPP}?text=${msg}`;
   window.open(url, "_blank");
+
+  cart = {};
+  syncCart();
+  cartPanel.classList.remove("open");
+  checkoutBtn.disabled = false;
+  checkoutBtn.innerHTML = prevLabel;
 });
+
+/* ===================== ОТСЛЕЖИВАНИЕ СТАТУСА ЗАКАЗА ===================== */
+const ORDER_STEPS = [
+  { key:"new", label:"Новый" },
+  { key:"accepted", label:"Принят" },
+  { key:"preparing", label:"Готовится" },
+  { key:"ready", label:"Готово" }
+];
+const ORDER_STORAGE_KEY = "dastarkhan_last_order";
+const ORDER_TRACK_MAX_AGE_MS = 3*60*60*1000; // не отслеживаем заказы старше 3 часов
+let orderPollTimer = null;
+
+function startOrderTracking(orderId){
+  localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify({ id: orderId, startedAt: Date.now() }));
+  document.getElementById("orderTracker").classList.add("show");
+  pollOrderStatus(orderId);
+  clearInterval(orderPollTimer);
+  orderPollTimer = setInterval(()=> pollOrderStatus(orderId), 5000);
+}
+
+function stopOrderTracking(){
+  clearInterval(orderPollTimer);
+  document.getElementById("orderTracker").classList.remove("show");
+  localStorage.removeItem(ORDER_STORAGE_KEY);
+}
+
+document.getElementById("orderTrackerClose").addEventListener("click", stopOrderTracking);
+
+async function pollOrderStatus(orderId){
+  if(!supabaseClient) return;
+  const { data, error } = await supabaseClient.rpc("get_order_status", { order_uuid: orderId });
+  const row = Array.isArray(data) ? data[0] : data;
+  if(error || !row){ return; } // временная ошибка сети — просто попробуем на следующем тике
+  renderOrderTracker(row.status);
+  if(row.status === "completed" || row.status === "cancelled"){
+    clearInterval(orderPollTimer);
+  }
+}
+
+function renderOrderTracker(status){
+  const tracker = document.getElementById("orderTracker");
+  const body = document.getElementById("orderTrackerBody");
+  tracker.classList.toggle("cancelled", status==="cancelled");
+
+  if(status === "cancelled"){
+    body.innerHTML = `<div class="order-tracker-cancelled-text"><i class="fa-solid fa-circle-exclamation"></i> Заказ отменён. Свяжитесь с заведением, если это не так.</div>`;
+    return;
+  }
+
+  const effectiveStatus = status === "completed" ? "ready" : status;
+  const activeIndex = ORDER_STEPS.findIndex(s=> s.key === effectiveStatus);
+  body.innerHTML = `<div class="order-steps">${ORDER_STEPS.map((s,i)=>`
+    <div class="order-step ${i<=activeIndex ? 'done' : ''}">
+      <div class="order-step-dot"><i class="fa-solid fa-check"></i></div>
+      <div class="order-step-label">${s.label}</div>
+    </div>
+  `).join("")}</div>`;
+}
+
+// если гость обновил страницу — продолжаем показывать статус его недавнего заказа
+(function resumeOrderTracking(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(ORDER_STORAGE_KEY) || "null");
+    if(saved && saved.id && (Date.now() - saved.startedAt) < ORDER_TRACK_MAX_AGE_MS){
+      startOrderTracking(saved.id);
+    } else if(saved){
+      localStorage.removeItem(ORDER_STORAGE_KEY);
+    }
+  }catch(e){ /* ignore */ }
+})();
 
 /* ===================== ЗАГРУЗКА МЕНЮ ИЗ БАЗЫ ===================== */
 function showMenuMessage(html){

@@ -40,6 +40,34 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:700; }
 .btn-primary{ background:#fff; color:var(--primary-dark); }
 .btn-primary:hover{ background:var(--primary-soft); }
 
+/* tabs */
+.tab-nav{ display:flex; gap:8px; margin-bottom:22px; }
+.tab-btn{ border:1px solid var(--line); background:var(--bg-card); color:var(--ink-soft); padding:10px 18px; border-radius:999px; font-weight:700; font-size:0.88rem; display:inline-flex; align-items:center; gap:8px; }
+.tab-btn.active{ background:var(--primary); color:#fff; border-color:var(--primary); }
+.tab-badge{ background:var(--red); color:#fff; font-size:0.68rem; font-weight:800; border-radius:999px; padding:2px 7px; }
+
+/* orders */
+.order-card{ background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-md); padding:16px 18px; margin-bottom:14px; box-shadow:var(--shadow-sm); }
+.order-card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.order-card-id{ font-size:0.72rem; color:var(--ink-soft); font-weight:700; }
+.order-card-time{ font-size:0.72rem; color:var(--ink-soft); }
+.order-status-badge{ font-size:0.72rem; font-weight:800; padding:4px 11px; border-radius:999px; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap; }
+.status-new{ background:#FDECC8; color:#8A6714; }
+.status-accepted{ background:#DCE9FB; color:#2B5FA8; }
+.status-preparing{ background:var(--primary-soft); color:var(--primary-dark); }
+.status-ready{ background:var(--green-soft); color:var(--green); }
+.status-completed{ background:var(--line); color:var(--ink-soft); }
+.status-cancelled{ background:var(--red-soft); color:var(--red); }
+.order-items-list{ font-size:0.86rem; color:var(--ink); margin-bottom:10px; }
+.order-items-list div{ display:flex; justify-content:space-between; padding:3px 0; }
+.order-total-row{ display:flex; justify-content:space-between; font-weight:800; font-family:var(--font-display); font-size:1rem; padding-top:8px; border-top:1px solid var(--line); margin-bottom:12px; }
+.order-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+.order-action-btn{ border:none; border-radius:999px; padding:9px 16px; font-weight:700; font-size:0.82rem; }
+.order-action-primary{ background:var(--primary); color:#fff; }
+.order-action-primary:hover{ background:var(--primary-dark); }
+.order-action-danger{ background:var(--red-soft); color:var(--red); }
+.order-action-danger:hover{ background:var(--red); color:#fff; }
+
 /* toolbar */
 .toolbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
 .toolbar h1{ font-size:1.4rem; }
@@ -140,15 +168,32 @@ input:checked + .slider::before{ transform:translateX(18px); }
 </div>
 
 <div class="container">
-  <div class="toolbar">
-    <div>
-      <h1>Блюда и напитки</h1>
-      <div class="count" id="dishCount"></div>
-    </div>
-    <button class="btn btn-add" id="addDishBtn"><i class="fa-solid fa-plus"></i> Добавить блюдо</button>
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="menu"><i class="fa-solid fa-utensils"></i> Меню</button>
+    <button class="tab-btn" data-tab="orders"><i class="fa-solid fa-receipt"></i> Заказы <span class="tab-badge" id="newOrdersBadge" style="display:none;"></span></button>
   </div>
 
-  <div id="dishList"><div class="empty-state">Загрузка…</div></div>
+  <div id="menuTab">
+    <div class="toolbar">
+      <div>
+        <h1>Блюда и напитки</h1>
+        <div class="count" id="dishCount"></div>
+      </div>
+      <button class="btn btn-add" id="addDishBtn"><i class="fa-solid fa-plus"></i> Добавить блюдо</button>
+    </div>
+
+    <div id="dishList"><div class="empty-state">Загрузка…</div></div>
+  </div>
+
+  <div id="ordersTab" style="display:none;">
+    <div class="toolbar">
+      <div>
+        <h1>Заказы</h1>
+        <div class="count" id="orderCount"></div>
+      </div>
+    </div>
+    <div id="orderList"><div class="empty-state">Загрузка…</div></div>
+  </div>
 </div>
 
 <!-- Форма добавления/редактирования -->
@@ -438,11 +483,119 @@ async function deleteDish(id){
   await loadData();
 }
 
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.dataset.tab;
+    document.getElementById("menuTab").style.display = tab==="menu" ? "" : "none";
+    document.getElementById("ordersTab").style.display = tab==="orders" ? "" : "none";
+    if(tab==="orders"){
+      newOrdersSinceView = 0;
+      document.getElementById("newOrdersBadge").style.display = "none";
+    }
+  });
+});
+
+/* ---------- orders ---------- */
+const ORDER_STATUS_LABELS = { new:"Новый", accepted:"Принят", preparing:"Готовится", ready:"Готово", completed:"Завершён", cancelled:"Отменён" };
+const ORDER_NEXT = {
+  new: [{to:"accepted", label:"Принять", cls:"order-action-primary"}, {to:"cancelled", label:"Отменить", cls:"order-action-danger"}],
+  accepted: [{to:"preparing", label:"Готовится", cls:"order-action-primary"}, {to:"cancelled", label:"Отменить", cls:"order-action-danger"}],
+  preparing: [{to:"ready", label:"Готово", cls:"order-action-primary"}],
+  ready: [{to:"completed", label:"Завершить", cls:"order-action-primary"}],
+  completed: [],
+  cancelled: []
+};
+let ORDERS = [];
+let ORDER_ITEMS_BY_ORDER = {};
+let newOrdersSinceView = 0;
+
+async function loadOrders(){
+  const [{ data: orders, error: ordErr }, { data: items }] = await Promise.all([
+    supabaseClient.from("orders").select("*").order("created_at", { ascending:false }).limit(100),
+    supabaseClient.from("order_items").select("*")
+  ]);
+  if(ordErr){
+    document.getElementById("orderList").innerHTML = `<div class="empty-state">Не удалось загрузить заказы: ${escapeHtml(ordErr.message)}</div>`;
+    return;
+  }
+  ORDERS = orders || [];
+  ORDER_ITEMS_BY_ORDER = {};
+  (items||[]).forEach(it=>{
+    if(!ORDER_ITEMS_BY_ORDER[it.order_id]) ORDER_ITEMS_BY_ORDER[it.order_id] = [];
+    ORDER_ITEMS_BY_ORDER[it.order_id].push(it);
+  });
+  renderOrders();
+}
+
+function renderOrders(){
+  const listEl = document.getElementById("orderList");
+  document.getElementById("orderCount").textContent = `Всего заказов: ${ORDERS.length}`;
+  if(!ORDERS.length){
+    listEl.innerHTML = `<div class="empty-state"><i class="fa-solid fa-receipt" style="font-size:1.8rem;display:block;margin-bottom:12px;"></i>Заказов пока нет</div>`;
+    return;
+  }
+  listEl.innerHTML = ORDERS.map(orderCardHTML).join("");
+  listEl.querySelectorAll("[data-status-to]").forEach(btn=>{
+    btn.addEventListener("click", ()=> updateOrderStatus(btn.dataset.orderId, btn.dataset.statusTo));
+  });
+}
+
+function orderCardHTML(o){
+  const items = ORDER_ITEMS_BY_ORDER[o.id] || [];
+  const time = o.created_at ? new Date(o.created_at).toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" }) : "";
+  const actions = ORDER_NEXT[o.status] || [];
+  return `
+    <div class="order-card">
+      <div class="order-card-top">
+        <div>
+          <div class="order-card-id">Заказ №${escapeHtml(String(o.id).slice(0,8))}</div>
+          <div class="order-card-time">${time}</div>
+        </div>
+        <span class="order-status-badge status-${o.status}">${ORDER_STATUS_LABELS[o.status] || o.status}</span>
+      </div>
+      <div class="order-items-list">
+        ${items.map(it=>`<div><span>${escapeHtml(it.dish_name)} × ${it.qty}</span><span>${Number(it.price)*it.qty} сом</span></div>`).join("") || '<div style="color:var(--ink-soft);">нет позиций</div>'}
+      </div>
+      <div class="order-total-row"><span>Итого</span><span>${Number(o.total)} сом</span></div>
+      ${actions.length ? `<div class="order-actions">${actions.map(a=>`<button class="order-action-btn ${a.cls}" data-order-id="${o.id}" data-status-to="${a.to}">${a.label}</button>`).join("")}</div>` : ""}
+    </div>
+  `;
+}
+
+async function updateOrderStatus(orderId, newStatus){
+  const { error } = await supabaseClient.from("orders").update({ status:newStatus }).eq("id", orderId);
+  if(error){ showToast("Ошибка: " + error.message); return; }
+  showToast("Статус обновлён");
+  await loadOrders();
+}
+
+function subscribeOrdersRealtime(){
+  supabaseClient.channel("admin-orders-changes")
+    .on("postgres_changes", { event:"INSERT", schema:"public", table:"orders" }, () => {
+      if(document.getElementById("ordersTab").style.display === "none"){
+        newOrdersSinceView++;
+        const badge = document.getElementById("newOrdersBadge");
+        badge.textContent = newOrdersSinceView;
+        badge.style.display = "inline-block";
+      }
+      showToast("Новый заказ!");
+      loadOrders();
+    })
+    .on("postgres_changes", { event:"UPDATE", schema:"public", table:"orders" }, () => loadOrders())
+    .on("postgres_changes", { event:"*", schema:"public", table:"order_items" }, () => loadOrders())
+    .subscribe();
+}
+
 /* ---------- init ---------- */
 (async () => {
   const staff = await guardAuth();
   if(!staff) return;
   await loadData();
+  await loadOrders();
+  subscribeOrdersRealtime();
 })();
 </script>
 </body>
