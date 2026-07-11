@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дастархан — вход для персонала</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,500&family=Nunito+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#FBF6EF; --bg-card:#FFFFFF; --ink:#2E2A24; --ink-soft:#8A7F70; --line:rgba(46,42,36,0.09);
+  --primary:#D97C4A; --primary-dark:#B85E31; --primary-soft:#F6E4D6;
+  --shadow-md: 0 10px 30px rgba(46,42,36,0.10);
+  --font-display:'Fraunces',serif; --font-body:'Nunito Sans',sans-serif;
+}
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+body{ font-family:var(--font-body); background:linear-gradient(150deg,#E08F5C 0%,var(--primary) 45%,var(--primary-dark) 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; color:var(--ink); }
+.card{ background:var(--bg-card); border-radius:24px; box-shadow:var(--shadow-md); padding:36px 32px; width:100%; max-width:380px; }
+.mark{ width:56px; height:56px; border-radius:50%; margin:0 auto 18px; display:flex; align-items:center; justify-content:center; background:var(--primary-soft); }
+.mark svg{ width:70%; height:70%; }
+h1{ font-family:var(--font-display); font-size:1.35rem; text-align:center; margin-bottom:4px; }
+.sub{ text-align:center; color:var(--ink-soft); font-size:0.85rem; margin-bottom:26px; }
+label{ font-size:0.8rem; font-weight:700; color:var(--ink-soft); display:block; margin-bottom:6px; }
+.field{ margin-bottom:16px; }
+input{ width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--bg); font-family:inherit; font-size:0.95rem; color:var(--ink); }
+input:focus{ outline:2px solid var(--primary); outline-offset:1px; }
+button.submit{ width:100%; margin-top:8px; padding:14px; border:none; border-radius:12px; background:var(--primary); color:#fff; font-weight:800; font-size:0.95rem; cursor:pointer; font-family:inherit; }
+button.submit:hover{ background:var(--primary-dark); }
+button.submit:disabled{ background:#D8CFC2; cursor:not-allowed; }
+.error{ background:#FBEAE4; color:#A6432A; border-radius:10px; padding:10px 12px; font-size:0.82rem; margin-bottom:16px; display:none; }
+.error.show{ display:block; }
+.back{ display:block; text-align:center; margin-top:20px; font-size:0.82rem; color:var(--ink-soft); text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="mark">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M78,88 C72,77 84,71 78,58" stroke="#D97C4A" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.85"/>
+      <path d="M100,84 C94,71 106,64 100,50" stroke="#D97C4A" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+      <path d="M122,88 C116,77 128,71 122,58" stroke="#D97C4A" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.85"/>
+      <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#D97C4A"/>
+      <ellipse cx="100" cy="108" rx="44" ry="10" fill="#D97C4A"/>
+    </svg>
+  </div>
+  <h1>Дастархан — админка</h1>
+  <p class="sub">Вход только для персонала</p>
+  <div class="error" id="errBox"></div>
+  <form id="loginForm">
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="password">Пароль</label>
+      <input type="password" id="password" autocomplete="current-password" required>
+    </div>
+    <button type="submit" class="submit" id="submitBtn">Войти</button>
+  </form>
+  <a href="index.html" class="back"><i class="fa-solid fa-arrow-left"></i> Вернуться на сайт</a>
+</div>
+
+<script>
+const SUPABASE_URL = "https://begqvotkmlbuwxmnoxcs.supabase.co";
+const SUPABASE_KEY = "sb_publishable_yr7Dx5SeqplvTdP8rShpow_79FY-PwT";
+const supabaseClient = (typeof window.supabase !== "undefined")
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
+
+const errBox = document.getElementById("errBox");
+const submitBtn = document.getElementById("submitBtn");
+
+function showError(msg){
+  errBox.textContent = msg;
+  errBox.classList.add("show");
+}
+
+if(!supabaseClient){
+  showError("Не удалось загрузить библиотеку подключения к базе. Проверьте интернет-соединение и обновите страницу.");
+  submitBtn.disabled = true;
+}
+
+// если уже вошли и мы точно сотрудник — сразу в админку
+(async () => {
+  if(!supabaseClient) return;
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(session){
+    const { data: staffRow } = await supabaseClient.from("staff").select("id").eq("id", session.user.id).maybeSingle();
+    if(staffRow) window.location.href = "admin.html";
+  }
+})();
+
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  errBox.classList.remove("show");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Входим…";
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+  if(error){
+    showError("Не удалось войти: " + error.message);
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Войти";
+    return;
+  }
+
+  const { data: staffRow, error: staffErr } = await supabaseClient
+    .from("staff").select("id").eq("id", data.user.id).maybeSingle();
+
+  if(staffErr || !staffRow){
+    showError("Этот аккаунт есть в системе входа, но не добавлен в список персонала (таблица staff). Обратитесь к администратору.");
+    await supabaseClient.auth.signOut();
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Войти";
+    return;
+  }
+
+  window.location.href = "admin.html";
+});
+</script>
+</body>
+</html>

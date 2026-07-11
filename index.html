@@ -697,6 +697,12 @@ function showMenuMessage(html){
   menuSection.innerHTML = `<div style="text-align:center;padding:70px 20px;color:var(--ink-soft);">${html}</div>`;
 }
 
+function escapeHtml(str){
+  const div = document.createElement("div");
+  div.textContent = String(str);
+  return div.innerHTML;
+}
+
 function renderAll(){
   renderCatNav();
   renderMenu();
@@ -723,7 +729,15 @@ async function loadMenu(showSpinner){
   ]);
 
   if(catErr || dishErr){
-    showMenuMessage(`Не удалось загрузить меню.<br><button id="retryLoadBtn" style="margin-top:14px;color:var(--primary-dark);font-weight:800;text-decoration:underline;">Попробовать снова</button>`);
+    const err = catErr || dishErr;
+    const details = [err.message, err.details, err.hint, err.code ? ("code: "+err.code) : ""].filter(Boolean).join(" — ");
+    showMenuMessage(`
+      Не удалось загрузить меню.
+      <div style="margin-top:14px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:12px;font-size:0.82rem;color:var(--ink);text-align:left;word-break:break-word;max-width:480px;margin-left:auto;margin-right:auto;">
+        <b>Текст ошибки (пришлите скриншот этого блока):</b><br>${escapeHtml(details || "неизвестная ошибка, объект error пуст")}
+      </div>
+      <button id="retryLoadBtn" style="margin-top:16px;color:var(--primary-dark);font-weight:800;text-decoration:underline;">Попробовать снова</button>
+    `);
     const retryBtn = document.getElementById("retryLoadBtn");
     if(retryBtn) retryBtn.addEventListener("click", ()=> loadMenu(true));
     return;
