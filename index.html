@@ -77,7 +77,16 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
   pointer-events:none;
 }
 .site-header .container{ position:relative; z-index:1; }
-.brand{ display:flex; align-items:center; gap:14px; margin-bottom:22px; }
+.brand{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
+.brand-left{ display:flex; align-items:center; gap:14px; }
+.whatsapp-contact-btn{
+  display:flex; align-items:center; gap:9px;
+  background:rgba(255,255,255,0.18); color:#fff;
+  padding:11px 18px; border-radius:999px; font-weight:700; font-size:0.85rem;
+  transition:var(--transition); white-space:nowrap;
+}
+.whatsapp-contact-btn:hover{ background:rgba(255,255,255,0.3); }
+.whatsapp-contact-btn i{ font-size:1.1rem; color:#25D366; background:#fff; border-radius:50%; padding:3px; width:20px; height:20px; box-sizing:content-box; }
 .brand-mark{
   width:50px; height:50px; border-radius:50%;
   background:rgba(255,255,255,0.16);
@@ -241,6 +250,12 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
 }
 .modal-add-btn:hover{ background:var(--primary-dark); }
 .modal-add-btn:disabled{ background:#D8CFC2; cursor:not-allowed; }
+.modal-note-label{ display:flex; align-items:center; gap:7px; margin-top:18px; font-size:0.82rem; font-weight:700; color:var(--ink-soft); }
+.modal-note-input{
+  margin-top:8px; width:100%; resize:none; font-family:inherit; font-size:0.9rem; color:var(--ink);
+  background:var(--bg); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 14px;
+}
+.modal-note-input:focus{ outline:none; border-color:var(--primary); }
 
 /* ============ FLOATING CART BUTTON ============ */
 .cart-fab{
@@ -312,14 +327,23 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
 .cart-item-info{ flex:1; min-width:0; }
 .cart-item-name{ font-weight:700; font-size:0.88rem; font-family:var(--font-display); }
 .cart-item-price{ font-size:0.78rem; color:var(--ink-soft); }
+.cart-item-note{ font-size:0.75rem; color:var(--primary-dark); margin-top:3px; font-style:italic; }
 .cart-item-qty{ display:flex; align-items:center; gap:9px; }
 .cart-item-qty button{ width:27px; height:27px; border-radius:50%; background:var(--bg); border:1px solid var(--line); font-size:0.75rem; display:flex; align-items:center; justify-content:center; }
 .cart-foot{ padding:18px 22px 24px; background:var(--bg-card); border-top:1px solid var(--line); }
+.cart-customer-fields{ display:flex; flex-direction:column; gap:9px; margin-bottom:16px; }
+.cart-input{
+  width:100%; padding:12px 14px; font-family:inherit; font-size:0.9rem; color:var(--ink);
+  background:var(--bg); border:1px solid var(--line); border-radius:var(--radius-sm);
+}
+.cart-input:focus{ outline:none; border-color:var(--primary); }
+.cart-input.field-error{ border-color:#D64545; }
 .cart-total-row{ display:flex; justify-content:space-between; font-weight:800; font-size:1.15rem; margin-bottom:16px; font-family:var(--font-display); }
 .checkout-btn{
-  width:100%; padding:16px; background:#25D366; color:#fff; border-radius:var(--radius-sm);
+  width:100%; padding:16px; background:var(--primary); color:#fff; border-radius:var(--radius-sm);
   font-weight:800; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:10px;
 }
+.checkout-btn:hover{ background:var(--primary-dark); }
 .checkout-btn:disabled{ background:#D8CFC2; }
 .checkout-note{ text-align:center; font-size:0.75rem; color:var(--ink-soft); margin-top:11px; }
 
@@ -333,27 +357,32 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
 <header class="site-header">
   <div class="container">
     <div class="brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <defs><radialGradient id="bgm" cx="35%" cy="30%" r="75%">
-            <stop offset="0%" stop-color="#F3AE82"/><stop offset="55%" stop-color="#EDA679"/><stop offset="100%" stop-color="#E08F5C"/>
-          </radialGradient></defs>
-          <circle cx="100" cy="100" r="98" fill="url(#bgm)"/>
-          <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="0.5 7" stroke-linecap="round"/>
-          <path d="M78,88 C72,77 84,71 78,58" stroke="#FBF6EF" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.95"/>
-          <path d="M100,84 C94,71 106,64 100,50" stroke="#FBF6EF" stroke-width="4.6" stroke-linecap="round" fill="none"/>
-          <path d="M122,88 C116,77 128,71 122,58" stroke="#FBF6EF" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.95"/>
-          <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#FBF6EF"/>
-          <ellipse cx="100" cy="108" rx="44" ry="10" fill="#FBF6EF"/>
-        </svg>
+      <div class="brand-left">
+        <div class="brand-mark">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="bgm" cx="35%" cy="30%" r="75%">
+              <stop offset="0%" stop-color="#F3AE82"/><stop offset="55%" stop-color="#EDA679"/><stop offset="100%" stop-color="#E08F5C"/>
+            </radialGradient></defs>
+            <circle cx="100" cy="100" r="98" fill="url(#bgm)"/>
+            <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="0.5 7" stroke-linecap="round"/>
+            <path d="M78,88 C72,77 84,71 78,58" stroke="#FBF6EF" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.95"/>
+            <path d="M100,84 C94,71 106,64 100,50" stroke="#FBF6EF" stroke-width="4.6" stroke-linecap="round" fill="none"/>
+            <path d="M122,88 C116,77 128,71 122,58" stroke="#FBF6EF" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.95"/>
+            <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#FBF6EF"/>
+            <ellipse cx="100" cy="108" rx="44" ry="10" fill="#FBF6EF"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name">Дастархан</div>
+          <div class="brand-sub">кафе &amp; чайхана</div>
+        </div>
       </div>
-      <div>
-        <div class="brand-name">Дастархан</div>
-        <div class="brand-sub">кафе &amp; чайхана</div>
-      </div>
+      <a class="whatsapp-contact-btn" id="whatsappContactBtn" href="#" target="_blank" rel="noopener">
+        <i class="fa-brands fa-whatsapp"></i> Написать в WhatsApp
+      </a>
     </div>
     <h1 class="header-title">Меню — выбирайте и заказывайте прямо здесь</h1>
-    <p class="header-desc">Нажмите на блюдо, чтобы увидеть состав и фото, добавьте в корзину и отправьте заказ официанту в один клик.</p>
+    <p class="header-desc">Нажмите на блюдо, чтобы увидеть состав и фото, добавьте в корзину и оформите заказ в один клик.</p>
     <div class="header-meta">
       <span><i class="fa-solid fa-location-dot"></i> ул. Чуй 123, Бишкек</span>
       <span><i class="fa-solid fa-clock"></i> 09:00–23:00</span>
@@ -401,6 +430,8 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
         </div>
         <div class="modal-price" id="modalPrice"></div>
       </div>
+      <label class="modal-note-label" for="modalNoteInput"><i class="fa-solid fa-pen"></i> Комментарий к блюду (по желанию)</label>
+      <textarea class="modal-note-input" id="modalNoteInput" placeholder="Например: без перца, без соуса…" rows="2" maxlength="200"></textarea>
       <button class="modal-add-btn" id="modalAddBtn"><i class="fa-solid fa-cart-plus"></i> Добавить в корзину</button>
     </div>
   </div>
@@ -415,8 +446,12 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
     </div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-foot">
+      <div class="cart-customer-fields">
+        <input type="text" id="customerNameInput" class="cart-input" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
+        <input type="tel" id="customerPhoneInput" class="cart-input" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
+      </div>
       <div class="cart-total-row"><span>Итого</span><span id="cartTotal">0 сом</span></div>
-      <button class="checkout-btn" id="checkoutBtn"><i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i> Отправить заказ в WhatsApp</button>
+      <button class="checkout-btn" id="checkoutBtn"><i class="fa-solid fa-paper-plane"></i> Оформить заказ</button>
       <p class="checkout-note">Заказ придёт официанту, который подтвердит его и назовёт время готовности</p>
     </div>
   </div>
@@ -429,8 +464,23 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.18;
 <script>
 /* ===================== DATA ===================== */
 // Замените CAFE_WHATSAPP на реальный номер заведения (в международном формате, без +)
+// Используется только для кнопки «Написать в WhatsApp» в шапке сайта (связь с заведением),
+// оформление заказа теперь никак не зависит от WhatsApp.
 const CAFE_WHATSAPP = "996700123456";
 const CAFE_NAME = "Дастархан";
+
+// Telegram-бот для уведомлений о новых заказах.
+// TELEGRAM_BOT_TOKEN — токен, который выдаёт @BotFather.
+// TELEGRAM_CHAT_ID — id чата/канала, куда бот пришлёт уведомление.
+// Пока сюда не вставлен реальный токен, уведомления просто не отправляются (заказ всё равно сохраняется в базу).
+const TELEGRAM_BOT_TOKEN = "8473233279:AAH09IFBSrNDRpuatv2Q1JyGnH4qLqFRVJg";
+const TELEGRAM_CHAT_ID = "1376320251";
+
+// Ссылка «Написать в WhatsApp» в шапке сайта — просто открывает чат с заведением
+const whatsappContactBtn = document.getElementById("whatsappContactBtn");
+if(whatsappContactBtn){
+  whatsappContactBtn.href = `https://wa.me/${CAFE_WHATSAPP}?text=${encodeURIComponent("Здравствуйте! У меня вопрос по заказу в "+CAFE_NAME)}`;
+}
 
 // Подключение к базе данных (Supabase) — меню теперь редактируется из админки,
 // а не хранится в коде. Если база недоступна, ниже есть аварийный запасной список.
@@ -452,7 +502,7 @@ let CATEGORIES = [];
 
 /* ===================== STATE ===================== */
 let activeCat = null;
-let cart = {}; // id -> qty
+let cart = {}; // id -> { qty, note }
 let modalDish = null;
 let modalQty = 1;
 let suppressScrollSpy = false;
@@ -593,12 +643,14 @@ const modalDesc = document.getElementById("modalDesc");
 const modalPrice = document.getElementById("modalPrice");
 const qtyVal = document.getElementById("qtyVal");
 const modalAddBtn = document.getElementById("modalAddBtn");
+const modalNoteInput = document.getElementById("modalNoteInput");
 
 function openModal(id){
   modalDish = MENU.find(d=>d.id===id);
   if(!modalDish) return;
   modalQty = 1;
   qtyVal.textContent = modalQty;
+  modalNoteInput.value = "";
   // сбрасываем модалку на случай, если предыдущий показ заменил img на иконку-заглушку
   const modalPhotoEl = document.getElementById("modalPhoto");
   modalPhotoEl.querySelectorAll("i.fa-solid").forEach(i=>i.remove());
@@ -637,7 +689,7 @@ document.getElementById("qtyPlus").addEventListener("click", ()=>{
 });
 modalAddBtn.addEventListener("click", ()=>{
   if(modalDish.unavailable) return;
-  addToCart(modalDish.id, modalQty);
+  addToCart(modalDish.id, modalQty, modalNoteInput.value.trim());
   closeModal();
 });
 
@@ -650,22 +702,25 @@ const cartItemsEl = document.getElementById("cartItems");
 const cartTotalEl = document.getElementById("cartTotal");
 const checkoutBtn = document.getElementById("checkoutBtn");
 
-function addToCart(id, qty){
-  cart[id] = (cart[id]||0) + qty;
+function addToCart(id, qty, note){
+  const existing = cart[id];
+  const qtyNow = (existing ? existing.qty : 0) + qty;
+  const noteNow = note ? note : (existing ? existing.note : "");
+  cart[id] = { qty: qtyNow, note: noteNow || "" };
   syncCart();
 }
 function setQty(id, qty){
-  if(qty<=0){ delete cart[id]; } else { cart[id]=qty; }
+  if(qty<=0){ delete cart[id]; } else { cart[id] = { qty, note: (cart[id] && cart[id].note) || "" }; }
   syncCart();
 }
 function cartEntries(){
-  return Object.entries(cart).map(([id,qty])=>({dish: MENU.find(d=>d.id===id), qty})).filter(e=>e.dish);
+  return Object.entries(cart).map(([id,entry])=>({dish: MENU.find(d=>d.id===id), qty:entry.qty, note:entry.note||""})).filter(e=>e.dish);
 }
 function cartTotal(){
   return cartEntries().reduce((sum,e)=> sum + e.dish.price*e.qty, 0);
 }
 function cartItemCount(){
-  return Object.values(cart).reduce((a,b)=>a+b,0);
+  return cartEntries().reduce((sum,e)=> sum+e.qty, 0);
 }
 function syncCart(){
   const count = cartItemCount();
@@ -686,6 +741,7 @@ function renderCartPanel(){
         <div class="cart-item-info">
           <div class="cart-item-name">${e.dish.name}</div>
           <div class="cart-item-price">${e.dish.price} сом × ${e.qty}</div>
+          ${e.note ? `<div class="cart-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(e.note)}</div>` : ""}
         </div>
         <div class="cart-item-qty">
           <button class="cart-minus"><i class="fa-solid fa-minus"></i></button>
@@ -704,8 +760,8 @@ function renderCartPanel(){
     });
     cartItemsEl.querySelectorAll(".cart-item").forEach(row=>{
       const id = row.dataset.id;
-      row.querySelector(".cart-minus").addEventListener("click", ()=> setQty(id, (cart[id]||0)-1));
-      row.querySelector(".cart-plus").addEventListener("click", ()=> setQty(id, (cart[id]||0)+1));
+      row.querySelector(".cart-minus").addEventListener("click", ()=> setQty(id, (cart[id]?cart[id].qty:0)-1));
+      row.querySelector(".cart-plus").addEventListener("click", ()=> setQty(id, (cart[id]?cart[id].qty:0)+1));
     });
   }
   cartTotalEl.textContent = cartTotal() + " сом";
@@ -716,44 +772,84 @@ cartFab.addEventListener("click", ()=> cartPanel.classList.add("open"));
 document.getElementById("cartClose").addEventListener("click", ()=> cartPanel.classList.remove("open"));
 cartPanel.addEventListener("click", (e)=>{ if(e.target===cartPanel) cartPanel.classList.remove("open"); });
 
+const customerNameInput = document.getElementById("customerNameInput");
+const customerPhoneInput = document.getElementById("customerPhoneInput");
+
 checkoutBtn.addEventListener("click", async ()=>{
   const entries = cartEntries();
   if(!entries.length) return;
+
+  const customerName = customerNameInput.value.trim();
+  const customerPhone = customerPhoneInput.value.trim();
+  if(!customerPhone){
+    customerPhoneInput.classList.add("field-error");
+    customerPhoneInput.focus();
+    return;
+  }
+  customerPhoneInput.classList.remove("field-error");
+
+  if(!supabaseClient){
+    alert("Не удалось подключиться к базе данных. Проверьте интернет-соединение и попробуйте снова.");
+    return;
+  }
+
   checkoutBtn.disabled = true;
   const prevLabel = checkoutBtn.innerHTML;
-  checkoutBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Отправляем…';
+  checkoutBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Оформляем…';
 
   const total = cartTotal();
   let orderId;
   try{ orderId = crypto.randomUUID(); }
   catch(e){ orderId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c=>{ const r=Math.random()*16|0; return (c==="x"?r:(r&0x3|0x8)).toString(16); }); }
 
-  // сохраняем заказ в базу (для админки и отслеживания статуса).
-  // если это не получится — не страшно, WhatsApp всё равно сработает как запасной канал.
-  if(supabaseClient){
-    try{
-      await supabaseClient.from("orders").insert({ id: orderId, status:"new", total });
-      await supabaseClient.from("order_items").insert(entries.map(e=>({
-        order_id: orderId, dish_id: e.dish.id, dish_name: e.dish.name, price: e.dish.price, qty: e.qty
-      })));
-      startOrderTracking(orderId);
-    }catch(err){ /* тихо игнорируем — WhatsApp остаётся надёжным каналом */ }
+  try{
+    const { error: orderErr } = await supabaseClient.from("orders").insert({
+      id: orderId, status:"new", total, customer_name: customerName || null, customer_contact: customerPhone
+    });
+    if(orderErr) throw orderErr;
+    const { error: itemsErr } = await supabaseClient.from("order_items").insert(entries.map(e=>({
+      order_id: orderId, dish_id: e.dish.id, dish_name: e.dish.name, price: e.dish.price, qty: e.qty, note: e.note || null
+    })));
+    if(itemsErr) throw itemsErr;
+
+    sendTelegramNotification({ orderId, entries, total, customerName, customerPhone });
+    startOrderTracking(orderId);
+
+    cart = {};
+    customerNameInput.value = "";
+    customerPhoneInput.value = "";
+    syncCart();
+    cartPanel.classList.remove("open");
+  }catch(err){
+    alert("Не удалось оформить заказ. Проверьте интернет-соединение и попробуйте ещё раз.\n\n" + (err && err.message ? err.message : ""));
+  }finally{
+    checkoutBtn.disabled = false;
+    checkoutBtn.innerHTML = prevLabel;
   }
-
-  let msg = `Здравствуйте! Хочу сделать заказ в ${CAFE_NAME}:%0A%0A`;
-  entries.forEach(e=>{
-    msg += `• ${e.dish.name} × ${e.qty} — ${e.dish.price*e.qty} сом%0A`;
-  });
-  msg += `%0AИтого: ${total} сом`;
-  const url = `https://wa.me/${CAFE_WHATSAPP}?text=${msg}`;
-  window.open(url, "_blank");
-
-  cart = {};
-  syncCart();
-  cartPanel.classList.remove("open");
-  checkoutBtn.disabled = false;
-  checkoutBtn.innerHTML = prevLabel;
 });
+
+// Отправляет уведомление о новом заказе в Telegram-бота (лучше-чем-ничего: если не получится,
+// заказ всё равно уже сохранён в базе и виден в админке).
+async function sendTelegramNotification({ orderId, entries, total, customerName, customerPhone }){
+  if(!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+  let text = `🆕 Новый заказ №${String(orderId).slice(0,8)} — ${CAFE_NAME}\n\n`;
+  entries.forEach(e=>{
+    text += `• ${e.dish.name} × ${e.qty} — ${e.dish.price*e.qty} сом`;
+    if(e.note) text += ` (${e.note})`;
+    text += `\n`;
+  });
+  text += `\nИтого: ${total} сом\n`;
+  text += `Клиент: ${customerName || "не указано"}\n`;
+  text += `Телефон: ${customerPhone}`;
+
+  try{
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text })
+    });
+  }catch(err){ /* тихо игнорируем — заказ уже сохранён в базе и виден в админке */ }
+}
 
 /* ===================== ОТСЛЕЖИВАНИЕ СТАТУСА ЗАКАЗА ===================== */
 const ORDER_STEPS = [

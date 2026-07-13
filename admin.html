@@ -58,8 +58,11 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:700; }
 .status-ready{ background:var(--green-soft); color:var(--green); }
 .status-completed{ background:var(--line); color:var(--ink-soft); }
 .status-cancelled{ background:var(--red-soft); color:var(--red); }
+.order-customer{ display:flex; gap:16px; flex-wrap:wrap; font-size:0.82rem; color:var(--ink-soft); font-weight:700; margin-bottom:10px; }
+.order-customer i{ color:var(--primary-dark); margin-right:5px; }
 .order-items-list{ font-size:0.86rem; color:var(--ink); margin-bottom:10px; }
 .order-items-list div{ display:flex; justify-content:space-between; padding:3px 0; }
+.order-item-note{ font-size:0.76rem; color:var(--primary-dark); font-style:italic; font-weight:500; margin-top:1px; }
 .order-total-row{ display:flex; justify-content:space-between; font-weight:800; font-family:var(--font-display); font-size:1rem; padding-top:8px; border-top:1px solid var(--line); margin-bottom:12px; }
 .order-actions{ display:flex; gap:8px; flex-wrap:wrap; }
 .order-action-btn{ border:none; border-radius:999px; padding:9px 16px; font-weight:700; font-size:0.82rem; }
@@ -556,8 +559,12 @@ function orderCardHTML(o){
         </div>
         <span class="order-status-badge status-${o.status}">${ORDER_STATUS_LABELS[o.status] || o.status}</span>
       </div>
+      ${(o.customer_name || o.customer_contact) ? `<div class="order-customer">
+        ${o.customer_name ? `<span><i class="fa-solid fa-user"></i> ${escapeHtml(o.customer_name)}</span>` : ""}
+        ${o.customer_contact ? `<span><i class="fa-solid fa-phone"></i> ${escapeHtml(o.customer_contact)}</span>` : ""}
+      </div>` : ""}
       <div class="order-items-list">
-        ${items.map(it=>`<div><span>${escapeHtml(it.dish_name)} × ${it.qty}</span><span>${Number(it.price)*it.qty} сом</span></div>`).join("") || '<div style="color:var(--ink-soft);">нет позиций</div>'}
+        ${items.map(it=>`<div><span>${escapeHtml(it.dish_name)} × ${it.qty}${it.note ? `<div class="order-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(it.note)}</div>` : ""}</span><span>${Number(it.price)*it.qty} сом</span></div>`).join("") || '<div style="color:var(--ink-soft);">нет позиций</div>'}
       </div>
       <div class="order-total-row"><span>Итого</span><span>${Number(o.total)} сом</span></div>
       ${actions.length ? `<div class="order-actions">${actions.map(a=>`<button class="order-action-btn ${a.cls}" data-order-id="${o.id}" data-status-to="${a.to}">${a.label}</button>`).join("")}</div>` : ""}
