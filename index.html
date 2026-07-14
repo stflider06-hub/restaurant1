@@ -95,6 +95,19 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:800; line-height:1.18;
 }
 .whatsapp-contact-btn:hover{ border-color:var(--primary); box-shadow:var(--shadow-md); transform:translateY(-1px); }
 .whatsapp-contact-btn i{ font-size:1rem; color:#fff; background:#25D366; border-radius:50%; padding:7px; width:14px; height:14px; box-sizing:content-box; display:flex; align-items:center; justify-content:center; }
+.header-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.history-btn{
+  display:flex; align-items:center; gap:8px;
+  background:var(--bg-card); color:var(--ink);
+  padding:11px 16px; border-radius:999px; font-weight:700; font-size:0.85rem;
+  border:1px solid var(--line); box-shadow:var(--shadow-sm);
+  transition:var(--transition); white-space:nowrap;
+}
+.history-btn:hover{ border-color:var(--primary); box-shadow:var(--shadow-md); transform:translateY(-1px); }
+.history-btn i{ color:var(--primary); }
+.lang-switch{ display:flex; gap:4px; background:var(--bg-alt); border:1px solid var(--line); border-radius:999px; padding:3px; }
+.lang-switch button{ padding:6px 11px; border-radius:999px; font-size:0.72rem; font-weight:800; color:var(--ink-soft); letter-spacing:0.02em; }
+.lang-switch button.active{ background:var(--primary); color:#fff; }
 .brand-mark{
   width:50px; height:50px; border-radius:50%;
   background:var(--primary-soft);
@@ -363,6 +376,55 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:800; line-height:1.18;
 .checkout-btn:disabled{ background:#D8D8D8; box-shadow:none; }
 .checkout-note{ text-align:center; font-size:0.75rem; color:var(--ink-soft); margin-top:11px; }
 
+/* ============ CONFIRM / PAYMENT / HISTORY OVERLAYS ============ */
+.full-overlay{
+  position:fixed; inset:0; z-index:120;
+  background:var(--bg); display:flex; flex-direction:column;
+  opacity:0; pointer-events:none; transform:translateY(16px);
+  transition:opacity var(--transition), transform var(--transition);
+}
+.full-overlay.open{ opacity:1; pointer-events:auto; transform:none; }
+.full-overlay-head{ padding:18px 20px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); background:var(--bg-card); gap:12px; flex-wrap:wrap; }
+.full-overlay-head h2{ font-size:1.15rem; color:var(--ink); }
+.full-overlay-body{ flex:1; overflow-y:auto; padding:20px; max-width:520px; margin:0 auto; width:100%; }
+.full-overlay-sub{ color:var(--ink-soft); font-size:0.88rem; margin-bottom:18px; }
+.confirm-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+.confirm-item{ display:flex; justify-content:space-between; gap:12px; background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 14px; }
+.confirm-item-name{ font-weight:700; color:var(--ink); font-size:0.92rem; }
+.confirm-item-note{ font-size:0.76rem; color:var(--primary); font-style:italic; margin-top:2px; }
+.confirm-actions{ display:flex; flex-direction:column; gap:10px; }
+.btn-black{ height:50px; border-radius:16px; background:var(--ink); color:#fff; font-weight:700; font-size:1rem; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
+.btn-black:hover{ background:#000; }
+.btn-outline-gray{ height:50px; border-radius:16px; background:var(--bg-alt); color:var(--ink); border:1px solid var(--line); font-weight:700; font-size:1rem; display:flex; align-items:center; justify-content:center; }
+.payment-waiting-banner{ background:#FFF4CC; color:#8A6714; font-weight:700; font-size:0.88rem; text-align:center; padding:12px 16px; border-radius:var(--radius-sm); margin-bottom:18px; }
+.payment-summary-row{ display:flex; justify-content:space-between; font-size:0.9rem; padding:6px 0; color:var(--ink); }
+.payment-total-row{ display:flex; justify-content:space-between; font-weight:800; font-size:1.2rem; font-family:var(--font-display); color:var(--ink); padding:12px 0; border-top:1px solid var(--line); margin-top:6px; }
+.payment-section{ margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
+.payment-section-label{ font-size:0.78rem; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.03em; margin-bottom:10px; }
+.payment-method-row{ display:flex; align-items:center; justify-content:space-between; background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; }
+.payment-method-row-left{ display:flex; align-items:center; gap:10px; font-weight:700; color:var(--ink); }
+.payment-method-row-left i{ color:var(--primary); }
+.payment-check{ width:22px; height:22px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.7rem; }
+.payment-meta-row{ display:flex; justify-content:space-between; font-size:0.84rem; color:var(--ink-soft); padding:6px 0; }
+.payment-meta-row b{ color:var(--ink); font-weight:700; }
+.help-btn{ display:flex; align-items:center; gap:8px; background:var(--bg-alt); border:1px solid var(--line); border-radius:999px; padding:9px 16px; font-weight:700; font-size:0.82rem; color:var(--ink); }
+.help-btn i{ color:var(--primary); }
+.full-overlay-foot{ padding:16px 20px 22px; background:var(--bg-card); border-top:1px solid var(--line); }
+.full-overlay-foot-inner{ max-width:520px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.pay-btn{
+  height:50px; padding:0 28px; background:var(--primary); color:#fff; border-radius:16px;
+  font-weight:700; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:9px;
+  transition:var(--transition);
+}
+.pay-btn:hover{ background:var(--primary-dark); }
+.pay-btn:disabled{ background:#D8D8D8; }
+.history-list{ display:flex; flex-direction:column; gap:10px; }
+.history-item{ background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; cursor:pointer; transition:var(--transition); }
+.history-item:hover{ border-color:var(--primary); box-shadow:var(--shadow-sm); }
+.history-item-top{ display:flex; justify-content:space-between; font-weight:700; color:var(--ink); font-size:0.9rem; }
+.history-item-sub{ font-size:0.78rem; color:var(--ink-soft); margin-top:3px; }
+.icon-btn-plain{ width:38px; height:38px; border-radius:50%; background:var(--bg-alt); display:flex; align-items:center; justify-content:center; color:var(--ink-soft); }
+
 /* ============ FOOTER ============ */
 .site-footer{ text-align:center; padding:38px 20px 22px; color:var(--ink-soft); font-size:0.82rem; background:var(--bg-alt); border-top:1px solid var(--line); }
 .site-footer strong{ color:var(--ink); font-family:var(--font-display); }
@@ -402,18 +464,26 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:800; line-height:1.18;
         </div>
         <div>
           <div class="brand-name">Дастархан</div>
-          <div class="brand-sub">кафе &amp; чайхана</div>
+          <div class="brand-sub" data-i18n="brandSub">кафе и чайхана</div>
         </div>
       </div>
-      <a class="whatsapp-contact-btn" id="whatsappContactBtn" href="#" target="_blank" rel="noopener">
-        <i class="fa-brands fa-whatsapp"></i> <span class="wa-label">Написать в WhatsApp</span>
-      </a>
+      <div class="header-actions">
+        <div class="lang-switch" id="headerLangSwitch">
+          <button type="button" data-lang="ru">RU</button>
+          <button type="button" data-lang="ky">KY</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+        <button type="button" class="history-btn" id="historyBtn"><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="historyBtn">История заказов</span></button>
+        <a class="whatsapp-contact-btn" id="whatsappContactBtn" href="#" target="_blank" rel="noopener">
+          <i class="fa-brands fa-whatsapp"></i> <span class="wa-label" data-i18n="whatsappBtn">Написать в WhatsApp</span>
+        </a>
+      </div>
     </div>
-    <h1 class="header-title">Меню — выбирайте и заказывайте прямо здесь</h1>
-    <p class="header-desc">Нажмите на блюдо, чтобы увидеть состав и фото, добавьте в корзину и оформите заказ в один клик.</p>
+    <h1 class="header-title" data-i18n="headerTitle">Меню — выбирайте и заказывайте прямо здесь</h1>
+    <p class="header-desc" data-i18n="headerDesc">Нажмите на блюдо, чтобы увидеть состав и фото, добавьте в корзину и оформите заказ в один клик.</p>
     <div class="header-meta">
-      <span><i class="fa-solid fa-location-dot"></i> ул. Чуй 123, Бишкек</span>
-      <span><i class="fa-solid fa-clock"></i> 09:00–23:00</span>
+      <span><i class="fa-solid fa-location-dot"></i> <span id="cafeAddressLabel"></span></span>
+      <span><i class="fa-solid fa-clock"></i> <span data-i18n="hours">09:00–23:00</span></span>
     </div>
   </div>
 </header>
@@ -434,7 +504,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:800; line-height:1.18;
 
 <div class="order-tracker" id="orderTracker">
   <div class="order-tracker-top">
-    <div class="order-tracker-title"><i class="fa-solid fa-receipt"></i> Ваш заказ отправлен</div>
+    <div class="order-tracker-title"><i class="fa-solid fa-receipt"></i> <span data-i18n="orderSentTitle">Ваш заказ отправлен</span></div>
     <button class="order-tracker-close" id="orderTrackerClose" aria-label="Скрыть"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div id="orderTrackerBody"></div>
@@ -458,9 +528,9 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:800; line-height:1.18;
         </div>
         <div class="modal-price" id="modalPrice"></div>
       </div>
-      <label class="modal-note-label" for="modalNoteInput"><i class="fa-solid fa-pen"></i> Комментарий к блюду (по желанию)</label>
-      <textarea class="modal-note-input" id="modalNoteInput" placeholder="Например: без перца, без соуса…" rows="2" maxlength="200"></textarea>
-      <button class="modal-add-btn" id="modalAddBtn"><i class="fa-solid fa-cart-plus"></i> Добавить в корзину</button>
+      <label class="modal-note-label" for="modalNoteInput"><i class="fa-solid fa-pen"></i> <span data-i18n="modalNoteLabel">Комментарий к блюду (по желанию)</span></label>
+      <textarea class="modal-note-input" id="modalNoteInput" data-i18n-placeholder="modalNotePlaceholder" placeholder="Например: без перца, без соуса…" rows="2" maxlength="200"></textarea>
+      <button class="modal-add-btn" id="modalAddBtn"><i class="fa-solid fa-cart-plus"></i> <span data-i18n="modalAddBtn">Добавить в корзину</span></button>
     </div>
   </div>
 </div>
@@ -469,33 +539,103 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:800; line-height:1.18;
 <div class="cart-panel" id="cartPanel">
   <div class="cart-sheet">
     <div class="cart-head">
-      <h3>Ваш заказ</h3>
+      <h3 data-i18n="cartTitle">Ваш заказ</h3>
       <button class="modal-close" id="cartClose" style="position:static;"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-foot">
       <div class="cart-customer-fields">
-        <input type="text" id="customerNameInput" class="cart-input" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
-        <input type="tel" id="customerPhoneInput" class="cart-input" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
+        <input type="text" id="customerNameInput" class="cart-input" data-i18n-placeholder="namePlaceholder" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
+        <input type="tel" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
       </div>
-      <div class="cart-total-row"><span>Итого</span><span id="cartTotal">0 сом</span></div>
-      <button class="checkout-btn" id="checkoutBtn"><i class="fa-solid fa-paper-plane"></i> Оформить заказ</button>
-      <p class="checkout-note">Заказ придёт официанту, который подтвердит его и назовёт время готовности</p>
+      <div class="cart-total-row"><span data-i18n="totalLabel">Итого</span><span id="cartTotal">0 сом</span></div>
+      <button class="checkout-btn" id="checkoutBtn"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="submitOrderBtn">Отправить заказ</span></button>
+      <p class="checkout-note" data-i18n="checkoutNote">На следующем экране проверьте заказ и подтвердите оплату</p>
     </div>
   </div>
 </div>
 
+<!-- Экран подтверждения заказа -->
+<div class="full-overlay" id="confirmOverlay">
+  <div class="full-overlay-head">
+    <h2 data-i18n="confirmTitle">Создаём заказ…</h2>
+    <button class="icon-btn-plain" id="confirmCloseBtn"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="full-overlay-body">
+    <p class="full-overlay-sub" data-i18n="confirmSub">Проверьте, что всё верно. После создания изменить его уже не получится.</p>
+    <div class="confirm-list" id="confirmList"></div>
+    <div class="confirm-actions">
+      <button class="btn-black" id="confirmProceedBtn" data-i18n="confirmBtn">Подтвердить</button>
+      <button class="btn-outline-gray" id="confirmChangeBtn" data-i18n="changeBtn">Изменить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Экран оплаты -->
+<div class="full-overlay" id="paymentOverlay">
+  <div class="full-overlay-head">
+    <h2 data-i18n="paymentTitle">Оплата</h2>
+    <div class="lang-switch"><button type="button" data-lang="ru">RU</button><button type="button" data-lang="ky">KY</button><button type="button" data-lang="en">EN</button></div>
+  </div>
+  <div class="full-overlay-body">
+    <div class="payment-waiting-banner" id="paymentWaitingBanner" style="display:none;" data-i18n="waitingBanner">Ожидаем оплату, чтобы начать готовить</div>
+    <div id="paymentItemsList"></div>
+    <div class="payment-total-row"><span data-i18n="totalLabel">Итого</span><span id="paymentTotal">0 сом</span></div>
+
+    <div class="payment-section">
+      <div class="payment-section-label" data-i18n="paymentMethodLabel">Способ оплаты</div>
+      <div class="payment-method-row">
+        <div class="payment-method-row-left"><i class="fa-solid fa-right-left"></i> <span data-i18n="paymentMethodValue">Перевод</span></div>
+        <div class="payment-check"><i class="fa-solid fa-check"></i></div>
+      </div>
+    </div>
+
+    <div class="payment-section">
+      <div class="payment-meta-row"><span data-i18n="orderIdLabel">ID заказа</span><b id="paymentOrderId"></b></div>
+      <div class="payment-meta-row"><span data-i18n="dateLabel">Дата</span><b id="paymentDate"></b></div>
+      <div class="payment-meta-row"><span data-i18n="statusLabel">Статус</span><b id="paymentStatus" data-i18n="statusNew">Новый</b></div>
+      <div class="payment-meta-row"><span data-i18n="addressLabel">Адрес</span><b id="paymentAddress"></b></div>
+    </div>
+
+    <div class="payment-section">
+      <button type="button" class="help-btn" id="paymentHelpBtn"><i class="fa-brands fa-whatsapp"></i> <span data-i18n="helpBtn">Помощь</span></button>
+    </div>
+  </div>
+  <div class="full-overlay-foot">
+    <div class="full-overlay-foot-inner">
+      <div class="payment-total-row" style="border:none;padding:0;font-size:1.1rem;"><span id="paymentFootTotal">0 сом</span></div>
+      <button class="pay-btn" id="payNowBtn"><i class="fa-solid fa-check"></i> <span data-i18n="payBtn">Оплатить</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- История заказов -->
+<div class="full-overlay" id="historyOverlay">
+  <div class="full-overlay-head">
+    <h2 data-i18n="historyTitle">История заказов</h2>
+    <button class="icon-btn-plain" id="historyCloseBtn"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="full-overlay-body">
+    <div class="history-list" id="historyList"></div>
+  </div>
+</div>
+
 <footer class="site-footer">
-  Демо-шаблон меню для кафе и ресторанов · <strong>Дастархан</strong> · сделано для показа клиентам
+  <span data-i18n="footerText">Демо-шаблон меню для кафе и ресторанов</span> · <strong>Дастархан</strong> · <span data-i18n="footerMade">сделано для показа клиентам</span>
 </footer>
 
 <script>
 /* ===================== DATA ===================== */
-// Замените CAFE_WHATSAPP на реальный номер заведения (в международном формате, без +)
-// Используется только для кнопки «Написать в WhatsApp» в шапке сайта (связь с заведением),
-// оформление заказа теперь никак не зависит от WhatsApp.
-const CAFE_WHATSAPP = "996700123456";
+// Номер WhatsApp заведения (в международном формате, без +).
+// Используется для кнопки «Написать в WhatsApp» в шапке и для раздела «Помощь» на экране оплаты.
+const CAFE_WHATSAPP = "996559751050";
 const CAFE_NAME = "Дастархан";
+const CAFE_ADDRESS = "ул. Чуй 123, Бишкек"; // замените на реальный адрес заведения
+
+// Реквизиты для перевода оплаты (пока нет подключённого онлайн-эквайринга — оплата переводом
+// по номеру телефона, подтверждается вручную администратором в админке после получения чека).
+const PAYMENT_PHONE = "+996 559 751 050";
+const PAYMENT_RECIPIENT_NAME = "Байдоолот";
 
 // Telegram-бот для уведомлений о новых заказах.
 // TELEGRAM_BOT_TOKEN — токен, который выдаёт @BotFather.
@@ -504,11 +644,200 @@ const CAFE_NAME = "Дастархан";
 const TELEGRAM_BOT_TOKEN = "8473233279:AAH09IFBSrNDRpuatv2Q1JyGnH4qLqFRVJg";
 const TELEGRAM_CHAT_ID = "1376320251";
 
+/* ===================== ЯЗЫКИ (RU / KY / EN) ===================== */
+const LANG_STORAGE_KEY = "dastarkhan_lang";
+const TRANSLATIONS = {
+  ru: {
+    brandSub: "кафе и чайхана",
+    whatsappBtn: "Написать в WhatsApp",
+    historyBtn: "История заказов",
+    hours: "09:00–23:00",
+    headerTitle: "Меню — выбирайте и заказывайте прямо здесь",
+    headerDesc: "Нажмите на блюдо, чтобы увидеть состав и фото, добавьте в корзину и оформите заказ в один клик.",
+    cartTitle: "Ваш заказ",
+    cartEmptyTitle: "Корзина пуста",
+    cartEmptySub: "Выберите блюда из меню",
+    namePlaceholder: "Ваше имя (по желанию)",
+    phonePlaceholder: "Номер телефона *",
+    totalLabel: "Итого",
+    submitOrderBtn: "Отправить заказ",
+    checkoutNote: "На следующем экране проверьте заказ и подтвердите оплату",
+    modalNoteLabel: "Комментарий к блюду (по желанию)",
+    modalNotePlaceholder: "Например: без перца, без соуса…",
+    modalAddBtn: "Добавить в корзину",
+    modalUnavailable: "Сейчас нет в наличии",
+    confirmTitle: "Создаём заказ…",
+    confirmSub: "Проверьте, что всё верно. После создания изменить его уже не получится.",
+    confirmBtn: "Подтвердить",
+    changeBtn: "Изменить",
+    paymentTitle: "Оплата",
+    paymentMethodLabel: "Способ оплаты",
+    paymentMethodValue: "Перевод",
+    helpBtn: "Помощь",
+    orderIdLabel: "ID заказа",
+    dateLabel: "Дата",
+    statusLabel: "Статус",
+    addressLabel: "Адрес",
+    statusNew: "Новый",
+    payBtn: "Оплатить",
+    payingBtn: "Отправляем…",
+    waitingBanner: "Ожидаем оплату, чтобы начать готовить",
+    orderSentTitle: "Ваш заказ отправлен",
+    stepNew: "Новый",
+    stepPaid: "Оплачен",
+    stepPreparing: "Готовится",
+    stepReady: "Готово",
+    cancelledText: "Заказ отменён. Свяжитесь с заведением, если это не так.",
+    footerText: "Демо-шаблон меню для кафе и ресторанов",
+    footerMade: "сделано для показа клиентам",
+    historyTitle: "История заказов",
+    historyEmpty: "Вы ещё не делали заказов",
+    phoneRequired: "Укажите номер телефона"
+  },
+  ky: {
+    brandSub: "кафе жана чайкана",
+    whatsappBtn: "WhatsApp жазуу",
+    historyBtn: "Буйрутмалар тарыхы",
+    hours: "09:00–23:00",
+    headerTitle: "Меню — тандап, буйрутма бериңиз",
+    headerDesc: "Тамакты басып, курамын жана сүрөтүн көрүңүз, себетке кошуп, бир баскычта буйрутма бериңиз.",
+    cartTitle: "Сиздин буйрутма",
+    cartEmptyTitle: "Себет бош",
+    cartEmptySub: "Менюдан тамак тандаңыз",
+    namePlaceholder: "Атыңыз (каалосуз боюнча)",
+    phonePlaceholder: "Телефон номери *",
+    totalLabel: "Жалпы суммасы",
+    submitOrderBtn: "Буйрутманы жөнөтүү",
+    checkoutNote: "Кийинки экранда буйрутманы текшерип, төлөмдү ырастаңыз",
+    modalNoteLabel: "Тамакка комментарий (каалосуз боюнча)",
+    modalNotePlaceholder: "Мисалы: калемпирсиз, соуссуз…",
+    modalAddBtn: "Себетке кошуу",
+    modalUnavailable: "Учурда жок",
+    confirmTitle: "Буйрутма түзүлүүдө…",
+    confirmSub: "Баары туура экенин текшериңиз. Түзгөндөн кийин өзгөртүү мүмкүн эмес.",
+    confirmBtn: "Ырастоо",
+    changeBtn: "Өзгөртүү",
+    paymentTitle: "Төлөм",
+    paymentMethodLabel: "Төлөм ыкмасы",
+    paymentMethodValue: "Которуу",
+    helpBtn: "Жардам",
+    orderIdLabel: "Буйрутма ID",
+    dateLabel: "Күнү",
+    statusLabel: "Статус",
+    addressLabel: "Дареги",
+    statusNew: "Жаңы",
+    payBtn: "Төлөө",
+    payingBtn: "Жөнөтүлүүдө…",
+    waitingBanner: "Даярдоону баштоо үчүн төлөмдү күтүүдөбүз",
+    orderSentTitle: "Буйрутмаңыз жөнөтүлдү",
+    stepNew: "Жаңы",
+    stepPaid: "Төлөндү",
+    stepPreparing: "Даярдалууда",
+    stepReady: "Даяр",
+    cancelledText: "Буйрутма жокко чыгарылды. Эгер бул андай эмес болсо, менеджер менен байланышыңыз.",
+    footerText: "Кафе жана ресторандар үчүн демо-меню шаблону",
+    footerMade: "кардарларга көрсөтүү үчүн жасалган",
+    historyTitle: "Буйрутмалар тарыхы",
+    historyEmpty: "Сиз азырынча буйрутма берген жоксуз",
+    phoneRequired: "Телефон номерин көрсөтүңүз"
+  },
+  en: {
+    brandSub: "cafe & tea house",
+    whatsappBtn: "Message on WhatsApp",
+    historyBtn: "Order history",
+    hours: "09:00–23:00",
+    headerTitle: "Menu — browse and order right here",
+    headerDesc: "Tap a dish to see the details and photo, add it to your cart, and order in one click.",
+    cartTitle: "Your order",
+    cartEmptyTitle: "Your cart is empty",
+    cartEmptySub: "Pick some dishes from the menu",
+    namePlaceholder: "Your name (optional)",
+    phonePlaceholder: "Phone number *",
+    totalLabel: "Total",
+    submitOrderBtn: "Send order",
+    checkoutNote: "On the next screen, review your order and confirm payment",
+    modalNoteLabel: "Note for the kitchen (optional)",
+    modalNotePlaceholder: "E.g.: no pepper, no sauce…",
+    modalAddBtn: "Add to cart",
+    modalUnavailable: "Currently unavailable",
+    confirmTitle: "Creating your order…",
+    confirmSub: "Please check everything is correct. It can't be changed after this.",
+    confirmBtn: "Confirm",
+    changeBtn: "Change",
+    paymentTitle: "Payment",
+    paymentMethodLabel: "Payment method",
+    paymentMethodValue: "Bank transfer",
+    helpBtn: "Help",
+    orderIdLabel: "Order ID",
+    dateLabel: "Date",
+    statusLabel: "Status",
+    addressLabel: "Address",
+    statusNew: "New",
+    payBtn: "Pay",
+    payingBtn: "Sending…",
+    waitingBanner: "Waiting for payment to start cooking",
+    orderSentTitle: "Your order has been sent",
+    stepNew: "New",
+    stepPaid: "Paid",
+    stepPreparing: "Cooking",
+    stepReady: "Ready",
+    cancelledText: "This order was cancelled. Please contact the cafe if that's not right.",
+    footerText: "Demo menu template for cafes and restaurants",
+    footerMade: "made to show clients",
+    historyTitle: "Order history",
+    historyEmpty: "You haven't placed any orders yet",
+    phoneRequired: "Please enter your phone number"
+  }
+};
+let currentLang = (function(){
+  try{ return localStorage.getItem(LANG_STORAGE_KEY) || "ru"; }catch(e){ return "ru"; }
+})();
+function t(key){
+  return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS.ru[key] || key;
+}
+function applyTranslations(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+  document.querySelectorAll(".lang-switch").forEach(wrap=>{
+    wrap.querySelectorAll("button").forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.lang === currentLang);
+    });
+  });
+  // динамические куски, которые не завязаны на data-i18n напрямую
+  if(typeof renderCartPanel === "function") renderCartPanel();
+  if(typeof syncCart === "function") syncCart();
+}
+function setLang(lang){
+  if(!TRANSLATIONS[lang]) return;
+  currentLang = lang;
+  try{ localStorage.setItem(LANG_STORAGE_KEY, lang); }catch(e){ /* ignore */ }
+  applyTranslations();
+}
+function langSwitchHTML(){
+  return `<div class="lang-switch">
+    <button type="button" data-lang="ru">RU</button>
+    <button type="button" data-lang="ky">KY</button>
+    <button type="button" data-lang="en">EN</button>
+  </div>`;
+}
+// делегирование клика — работает и для шапки, и для любых блоков со .lang-switch,
+// добавленных позже (экран оплаты и т.п.)
+document.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".lang-switch button");
+  if(btn) setLang(btn.dataset.lang);
+});
+
 // Ссылка «Написать в WhatsApp» в шапке сайта — просто открывает чат с заведением
 const whatsappContactBtn = document.getElementById("whatsappContactBtn");
 if(whatsappContactBtn){
   whatsappContactBtn.href = `https://wa.me/${CAFE_WHATSAPP}?text=${encodeURIComponent("Здравствуйте! У меня вопрос по заказу в "+CAFE_NAME)}`;
 }
+const cafeAddressLabel = document.getElementById("cafeAddressLabel");
+if(cafeAddressLabel) cafeAddressLabel.textContent = CAFE_ADDRESS;
 
 // Подключение к базе данных (Supabase) — меню теперь редактируется из админки,
 // а не хранится в коде. Если база недоступна, ниже есть аварийный запасной список.
@@ -715,8 +1044,8 @@ function openModal(id){
   updateModalPrice();
   modalAddBtn.disabled = !!modalDish.unavailable;
   modalAddBtn.innerHTML = modalDish.unavailable
-    ? '<i class="fa-solid fa-ban"></i> Сейчас нет в наличии'
-    : '<i class="fa-solid fa-cart-plus"></i> Добавить в корзину';
+    ? `<i class="fa-solid fa-ban"></i> ${t("modalUnavailable")}`
+    : `<i class="fa-solid fa-cart-plus"></i> ${t("modalAddBtn")}`;
   dishModal.classList.add("open");
 }
 function closeModal(){ dishModal.classList.remove("open"); }
@@ -778,7 +1107,7 @@ function syncCart(){
 function renderCartPanel(){
   const entries = cartEntries();
   if(!entries.length){
-    cartItemsEl.innerHTML = `<div class="cart-empty"><i class="fa-solid fa-basket-shopping" style="font-size:1.8rem;display:block;margin-bottom:10px;"></i>Корзина пуста<br>Выберите блюда из меню</div>`;
+    cartItemsEl.innerHTML = `<div class="cart-empty"><i class="fa-solid fa-basket-shopping" style="font-size:1.8rem;display:block;margin-bottom:10px;"></i>${t("cartEmptyTitle")}<br>${t("cartEmptySub")}</div>`;
   } else {
     cartItemsEl.innerHTML = entries.map(e=>`
       <div class="cart-item" data-id="${e.dish.id}">
@@ -820,7 +1149,16 @@ cartPanel.addEventListener("click", (e)=>{ if(e.target===cartPanel) cartPanel.cl
 const customerNameInput = document.getElementById("customerNameInput");
 const customerPhoneInput = document.getElementById("customerPhoneInput");
 
-checkoutBtn.addEventListener("click", async ()=>{
+/* ===================== ПОДТВЕРЖДЕНИЕ ЗАКАЗА → ОПЛАТА =====================
+   Новая цепочка экранов (по образцу Pai.kg):
+   Корзина → «Создаём заказ…» (проверка, нельзя изменить) → «Оплата» (реквизиты + кнопка «Оплатить»)
+   Запись в базу и уведомление в Telegram происходят только на шаге «Оплатить». */
+const confirmOverlay = document.getElementById("confirmOverlay");
+const paymentOverlay = document.getElementById("paymentOverlay");
+const historyOverlay = document.getElementById("historyOverlay");
+let pendingOrder = null; // { id, entries, total, customerName, customerPhone }
+
+checkoutBtn.addEventListener("click", ()=>{
   const entries = cartEntries();
   if(!entries.length) return;
 
@@ -829,24 +1167,84 @@ checkoutBtn.addEventListener("click", async ()=>{
   if(!customerPhone){
     customerPhoneInput.classList.add("field-error");
     customerPhoneInput.focus();
+    alert(t("phoneRequired"));
     return;
   }
   customerPhoneInput.classList.remove("field-error");
 
-  if(!supabaseClient){
-    alert("Не удалось подключиться к базе данных. Проверьте интернет-соединение и попробуйте снова.");
-    return;
-  }
-
-  checkoutBtn.disabled = true;
-  const prevLabel = checkoutBtn.innerHTML;
-  checkoutBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Оформляем…';
-
-  const total = cartTotal();
   let orderId;
   try{ orderId = crypto.randomUUID(); }
   catch(e){ orderId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c=>{ const r=Math.random()*16|0; return (c==="x"?r:(r&0x3|0x8)).toString(16); }); }
 
+  pendingOrder = { id: orderId, entries, total: cartTotal(), customerName, customerPhone };
+  cartPanel.classList.remove("open");
+  openConfirmOverlay();
+});
+
+function openConfirmOverlay(){
+  const list = document.getElementById("confirmList");
+  list.innerHTML = pendingOrder.entries.map(e=>`
+    <div class="confirm-item">
+      <div>
+        <div class="confirm-item-name">${e.qty} × ${escapeHtml(e.dish.name)}</div>
+        ${e.note ? `<div class="confirm-item-note">${escapeHtml(e.note)}</div>` : ""}
+      </div>
+      <div>${e.dish.price*e.qty} сом</div>
+    </div>
+  `).join("");
+  confirmOverlay.classList.add("open");
+}
+document.getElementById("confirmCloseBtn").addEventListener("click", ()=>{
+  confirmOverlay.classList.remove("open");
+  cartPanel.classList.add("open");
+});
+document.getElementById("confirmChangeBtn").addEventListener("click", ()=>{
+  confirmOverlay.classList.remove("open");
+  cartPanel.classList.add("open");
+});
+document.getElementById("confirmProceedBtn").addEventListener("click", ()=>{
+  confirmOverlay.classList.remove("open");
+  openPaymentOverlay();
+});
+
+function openPaymentOverlay(){
+  document.getElementById("paymentWaitingBanner").style.display = "none";
+  const listEl = document.getElementById("paymentItemsList");
+  listEl.innerHTML = pendingOrder.entries.map(e=>`
+    <div class="payment-summary-row">
+      <span>${e.qty} × ${escapeHtml(e.dish.name)}${e.note ? ` <em style="color:var(--primary);font-style:italic;">(${escapeHtml(e.note)})</em>` : ""}</span>
+      <span>${e.dish.price*e.qty} сом</span>
+    </div>
+  `).join("");
+  document.getElementById("paymentTotal").textContent = pendingOrder.total + " сом";
+  document.getElementById("paymentFootTotal").textContent = pendingOrder.total + " сом";
+  document.getElementById("paymentOrderId").textContent = String(pendingOrder.id).slice(0,8);
+  document.getElementById("paymentDate").textContent = new Date().toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
+  document.getElementById("paymentStatus").textContent = t("statusNew");
+  document.getElementById("paymentStatus").dataset.i18n = "statusNew";
+  document.getElementById("paymentAddress").textContent = CAFE_NAME + ", " + CAFE_ADDRESS;
+  const payBtn = document.getElementById("payNowBtn");
+  payBtn.disabled = false;
+  payBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span data-i18n="payBtn">${t("payBtn")}</span>`;
+  paymentOverlay.classList.add("open");
+}
+
+document.getElementById("paymentHelpBtn").addEventListener("click", ()=>{
+  const url = `https://wa.me/${CAFE_WHATSAPP}?text=${encodeURIComponent("Здравствуйте! У меня вопрос по заказу №"+String(pendingOrder ? pendingOrder.id : "").slice(0,8)+" в "+CAFE_NAME)}`;
+  window.open(url, "_blank");
+});
+
+document.getElementById("payNowBtn").addEventListener("click", async ()=>{
+  if(!pendingOrder) return;
+  if(!supabaseClient){
+    alert("Не удалось подключиться к базе данных. Проверьте интернет-соединение и попробуйте снова.");
+    return;
+  }
+  const payBtn = document.getElementById("payNowBtn");
+  payBtn.disabled = true;
+  payBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${t("payingBtn")}`;
+
+  const { id: orderId, entries, total, customerName, customerPhone } = pendingOrder;
   try{
     const { error: orderErr } = await supabaseClient.from("orders").insert({
       id: orderId, status:"new", total, customer_name: customerName || null, customer_contact: customerPhone
@@ -858,18 +1256,25 @@ checkoutBtn.addEventListener("click", async ()=>{
     if(itemsErr) throw itemsErr;
 
     sendTelegramNotification({ orderId, entries, total, customerName, customerPhone });
+    saveOrderToHistory(orderId, total);
     startOrderTracking(orderId);
+
+    document.getElementById("paymentWaitingBanner").style.display = "block";
+    payBtn.style.display = "none";
 
     cart = {};
     customerNameInput.value = "";
     customerPhoneInput.value = "";
     syncCart();
-    cartPanel.classList.remove("open");
+
+    setTimeout(()=>{
+      paymentOverlay.classList.remove("open");
+      payBtn.style.display = "flex";
+    }, 1400);
   }catch(err){
     alert("Не удалось оформить заказ. Проверьте интернет-соединение и попробуйте ещё раз.\n\n" + (err && err.message ? err.message : ""));
-  }finally{
-    checkoutBtn.disabled = false;
-    checkoutBtn.innerHTML = prevLabel;
+    payBtn.disabled = false;
+    payBtn.innerHTML = `<i class="fa-solid fa-check"></i> ${t("payBtn")}`;
   }
 });
 
@@ -896,14 +1301,57 @@ async function sendTelegramNotification({ orderId, entries, total, customerName,
   }catch(err){ /* тихо игнорируем — заказ уже сохранён в базе и виден в админке */ }
 }
 
-/* ===================== ОТСЛЕЖИВАНИЕ СТАТУСА ЗАКАЗА ===================== */
-const ORDER_STEPS = [
-  { key:"new", label:"Новый" },
-  { key:"accepted", label:"Принят" },
-  { key:"preparing", label:"Готовится" },
-  { key:"ready", label:"Готово" }
-];
+/* ===================== ИСТОРИЯ ЗАКАЗОВ (localStorage) ===================== */
+function saveOrderToHistory(orderId, total){
+  try{
+    const list = JSON.parse(localStorage.getItem(ORDER_HISTORY_KEY) || "[]");
+    list.unshift({ id: orderId, total, createdAt: Date.now() });
+    localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(list.slice(0, 20)));
+  }catch(e){ /* ignore */ }
+}
+
+document.getElementById("historyBtn").addEventListener("click", openHistoryOverlay);
+document.getElementById("historyCloseBtn").addEventListener("click", ()=> historyOverlay.classList.remove("open"));
+
+async function openHistoryOverlay(){
+  historyOverlay.classList.add("open");
+  const listEl = document.getElementById("historyList");
+  let history = [];
+  try{ history = JSON.parse(localStorage.getItem(ORDER_HISTORY_KEY) || "[]"); }catch(e){ /* ignore */ }
+  if(!history.length){
+    listEl.innerHTML = `<div class="cart-empty">${t("historyEmpty")}</div>`;
+    return;
+  }
+  listEl.innerHTML = history.map(h=>`
+    <div class="history-item" data-id="${h.id}">
+      <div class="history-item-top"><span>№${String(h.id).slice(0,8)}</span><span>${h.total} сом</span></div>
+      <div class="history-item-sub">${new Date(h.createdAt).toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" })}</div>
+    </div>
+  `).join("");
+  listEl.querySelectorAll(".history-item").forEach(row=>{
+    row.addEventListener("click", ()=>{
+      historyOverlay.classList.remove("open");
+      startOrderTracking(row.dataset.id);
+    });
+  });
+}
+
+/* ===================== ОТСЛЕЖИВАНИЕ СТАТУСА ЗАКАЗА =====================
+   Статусы в базе: new -> payment_requested -> paid -> accepted -> preparing -> ready/completed (или cancelled)
+   Клиенту показываем упрощённо, в 4 шага: Новый / Оплачен / Готовится / Готово. */
+const ORDER_STEP_KEYS = ["new", "paid", "preparing", "ready"];
+function orderStepLabel(key){
+  return { new:t("stepNew"), paid:t("stepPaid"), preparing:t("stepPreparing"), ready:t("stepReady") }[key];
+}
+function mapStatusToStep(status){
+  if(status==="new" || status==="payment_requested") return "new";
+  if(status==="paid" || status==="accepted") return "paid";
+  if(status==="preparing") return "preparing";
+  if(status==="ready" || status==="completed") return "ready";
+  return "new";
+}
 const ORDER_STORAGE_KEY = "dastarkhan_last_order";
+const ORDER_HISTORY_KEY = "dastarkhan_order_history";
 const ORDER_TRACK_MAX_AGE_MS = 3*60*60*1000; // не отслеживаем заказы старше 3 часов
 let orderPollTimer = null;
 
@@ -940,16 +1388,16 @@ function renderOrderTracker(status){
   tracker.classList.toggle("cancelled", status==="cancelled");
 
   if(status === "cancelled"){
-    body.innerHTML = `<div class="order-tracker-cancelled-text"><i class="fa-solid fa-circle-exclamation"></i> Заказ отменён. Свяжитесь с заведением, если это не так.</div>`;
+    body.innerHTML = `<div class="order-tracker-cancelled-text"><i class="fa-solid fa-circle-exclamation"></i> ${t("cancelledText")}</div>`;
     return;
   }
 
-  const effectiveStatus = status === "completed" ? "ready" : status;
-  const activeIndex = ORDER_STEPS.findIndex(s=> s.key === effectiveStatus);
-  body.innerHTML = `<div class="order-steps">${ORDER_STEPS.map((s,i)=>`
+  const effectiveStep = mapStatusToStep(status);
+  const activeIndex = ORDER_STEP_KEYS.indexOf(effectiveStep);
+  body.innerHTML = `<div class="order-steps">${ORDER_STEP_KEYS.map((key,i)=>`
     <div class="order-step ${i<=activeIndex ? 'done' : ''}">
       <div class="order-step-dot"><i class="fa-solid fa-check"></i></div>
-      <div class="order-step-label">${s.label}</div>
+      <div class="order-step-label">${orderStepLabel(key)}</div>
     </div>
   `).join("")}</div>`;
 }
@@ -1062,6 +1510,7 @@ window.addEventListener("resize", ()=>{
 });
 
 /* ===================== INIT ===================== */
+applyTranslations();
 loadMenu(true).then(subscribeRealtime);
 </script>
 </body>
