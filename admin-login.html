@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Дастархан — вход для персонала</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%B2%3C/text%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
-  --bg:#FFFFFF; --bg-alt:#F8F8F8; --bg-card:#FFFFFF; --ink:#1C1C1C; --ink-soft:#6B6B6B; --line:#E5E7EB;
-  --primary:#8B0000; --primary-dark:#A30000; --primary-soft:#F5E6E6;
-  --shadow-md: 0 8px 24px rgba(28,28,28,0.10);
-  --font-display:'Outfit',sans-serif; --font-body:'Manrope',sans-serif;
+  --bg:#FBF7F1; --bg-alt:#F3EBDE; --bg-card:#FFFFFF; --ink:#2A211C; --ink-soft:#8B7A6B; --line:#E8DECF;
+  --primary:#B5502D; --primary-dark:#8F3D21; --primary-soft:#F3E1D3;
+  --shadow-md: 0 8px 24px rgba(42,33,28,0.12);
+  --font-display:'Fraunces',serif; --font-body:'Manrope',sans-serif;
 }
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
 body{ font-family:var(--font-body); background:var(--bg-alt); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; color:var(--ink); }
@@ -29,7 +29,7 @@ input:focus{ outline:2px solid var(--primary); outline-offset:1px; }
 button.submit{ width:100%; margin-top:8px; padding:14px; border:none; border-radius:16px; background:var(--primary); color:#fff; font-weight:700; font-size:0.95rem; cursor:pointer; font-family:inherit; transition:0.2s; }
 button.submit:hover{ background:var(--primary-dark); }
 button.submit:disabled{ background:#D8D8D8; cursor:not-allowed; }
-.error{ background:#FBEAEA; color:#A30000; border-radius:10px; padding:10px 12px; font-size:0.82rem; margin-bottom:16px; display:none; }
+.error{ background:#FBEAEA; color:#C1121F; border-radius:10px; padding:10px 12px; font-size:0.82rem; margin-bottom:16px; display:none; }
 .error.show{ display:block; }
 .back{ display:block; text-align:center; margin-top:20px; font-size:0.82rem; color:var(--ink-soft); text-decoration:none; }
 </style>
@@ -38,11 +38,11 @@ button.submit:disabled{ background:#D8D8D8; cursor:not-allowed; }
 <div class="card">
   <div class="mark">
     <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <path d="M78,88 C72,77 84,71 78,58" stroke="#8B0000" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.85"/>
-      <path d="M100,84 C94,71 106,64 100,50" stroke="#8B0000" stroke-width="6.5" stroke-linecap="round" fill="none"/>
-      <path d="M122,88 C116,77 128,71 122,58" stroke="#8B0000" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.85"/>
-      <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#8B0000"/>
-      <ellipse cx="100" cy="108" rx="44" ry="10" fill="#8B0000"/>
+      <path d="M78,88 C72,77 84,71 78,58" stroke="#B5502D" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.85"/>
+      <path d="M100,84 C94,71 106,64 100,50" stroke="#B5502D" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+      <path d="M122,88 C116,77 128,71 122,58" stroke="#B5502D" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.85"/>
+      <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#B5502D"/>
+      <ellipse cx="100" cy="108" rx="44" ry="10" fill="#B5502D"/>
     </svg>
   </div>
   <h1>Дастархан — админка</h1>
