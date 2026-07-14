@@ -972,6 +972,7 @@ function renderMenu(){
   menuSection.querySelectorAll(".dish-row-thumb img").forEach(img=>{
     img.addEventListener("error", function(){ showFallbackIcon(this, this.dataset.fallbackIcon); }, { once:true });
   });
+   if(typeof initFadeUp === "function") initFadeUp();
 }
 
 // делегирование кликов один раз — работает и после refreshAllRowActions(), который меняет только .dish-row-actions
