@@ -39,6 +39,9 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .btn-ghost:hover{ background:var(--line); }
 .btn-primary{ background:var(--primary); color:#fff; }
 .btn-primary:hover{ background:var(--primary-dark); }
+.lang-switch{ display:flex; gap:4px; background:var(--bg-alt); border:1px solid var(--line); border-radius:999px; padding:3px; }
+.lang-switch button{ padding:6px 11px; border-radius:999px; font-size:0.72rem; font-weight:800; color:var(--ink-soft); border:none; background:none; cursor:pointer; letter-spacing:0.02em; }
+.lang-switch button.active{ background:var(--primary); color:#fff; }
 
 /* tabs */
 .tab-nav{ display:flex; gap:8px; margin-bottom:22px; }
@@ -53,6 +56,8 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .order-card-time{ font-size:0.72rem; color:var(--ink-soft); }
 .order-status-badge{ font-size:0.72rem; font-weight:800; padding:4px 11px; border-radius:999px; text-transform:uppercase; letter-spacing:0.03em; white-space:nowrap; }
 .status-new{ background:#FDECC8; color:#8A6714; }
+.status-payment_requested{ background:#FFE4B8; color:#8A5A00; }
+.status-paid{ background:var(--green-soft); color:var(--green); }
 .status-accepted{ background:#DCE9FB; color:#2B5FA8; }
 .status-preparing{ background:var(--primary-soft); color:var(--primary-dark); }
 .status-ready{ background:var(--green-soft); color:var(--green); }
@@ -164,16 +169,21 @@ input:checked + .slider::before{ transform:translateX(18px); }
       </div>
     </div>
     <div class="topbar-actions">
-      <a href="index.html" class="btn btn-ghost"><i class="fa-solid fa-arrow-up-right-from-square"></i> Открыть сайт</a>
-      <button class="btn btn-ghost" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Выйти</button>
+      <div class="lang-switch" id="adminLangSwitch">
+        <button type="button" data-lang="ru">RU</button>
+        <button type="button" data-lang="ky">KY</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <a href="index.html" class="btn btn-ghost"><i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="openSite">Открыть сайт</span></a>
+      <button class="btn btn-ghost" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="logout">Выйти</span></button>
     </div>
   </div>
 </div>
 
 <div class="container">
   <div class="tab-nav">
-    <button class="tab-btn active" data-tab="menu"><i class="fa-solid fa-utensils"></i> Меню</button>
-    <button class="tab-btn" data-tab="orders"><i class="fa-solid fa-receipt"></i> Заказы <span class="tab-badge" id="newOrdersBadge" style="display:none;"></span></button>
+    <button class="tab-btn active" data-tab="menu"><i class="fa-solid fa-utensils"></i> <span data-i18n="tabMenu">Меню</span></button>
+    <button class="tab-btn" data-tab="orders"><i class="fa-solid fa-receipt"></i> <span data-i18n="tabOrders">Заказы</span> <span class="tab-badge" id="newOrdersBadge" style="display:none;"></span></button>
   </div>
 
   <div id="menuTab">
@@ -191,7 +201,7 @@ input:checked + .slider::before{ transform:translateX(18px); }
   <div id="ordersTab" style="display:none;">
     <div class="toolbar">
       <div>
-        <h1>Заказы</h1>
+        <h1 data-i18n="tabOrders">Заказы</h1>
         <div class="count" id="orderCount"></div>
       </div>
     </div>
@@ -265,6 +275,68 @@ const supabaseClient = (typeof window.supabase !== "undefined")
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
 const PHOTO_BUCKET = "dish-photos";
+
+const CAFE_NAME = "Дастархан";
+const CAFE_ADDRESS = "ул. Чуй 123, Бишкек";
+// Номер, на который клиент переводит оплату (WhatsApp и номер для перевода — один и тот же).
+const PAYMENT_PHONE = "+996 559 751 050";
+const PAYMENT_RECIPIENT_NAME = "Байдоолот";
+
+/* ===================== ЯЗЫКИ (RU / KY / EN) ===================== */
+const ADMIN_LANG_KEY = "dastarkhan_admin_lang";
+const ADMIN_TRANSLATIONS = {
+  ru: {
+    openSite:"Открыть сайт", logout:"Выйти", tabMenu:"Меню", tabOrders:"Заказы",
+    totalLabel:"Итого", noItems:"нет позиций", noOrders:"Заказов пока нет", ordersCount:"Всего заказов",
+    status_new:"Новый", status_payment_requested:"Ждём оплату", status_paid:"Оплачен",
+    status_accepted:"Принят", status_preparing:"Готовится", status_ready:"Готово",
+    status_completed:"Завершён", status_cancelled:"Отменён",
+    action_request_payment:"Запросить оплату", action_confirm_payment:"Подтвердить оплату",
+    action_accept:"Принять", action_preparing:"Готовится", action_ready:"Готово — уведомить клиента",
+    action_complete:"Завершить", action_cancel:"Отменить"
+  },
+  ky: {
+    openSite:"Сайтты ачуу", logout:"Чыгуу", tabMenu:"Меню", tabOrders:"Буйрутмалар",
+    totalLabel:"Жалпы суммасы", noItems:"позициялар жок", noOrders:"Азырынча буйрутма жок", ordersCount:"Бардыгы буйрутма",
+    status_new:"Жаңы", status_payment_requested:"Төлөм күтүлүүдө", status_paid:"Төлөндү",
+    status_accepted:"Кабыл алынды", status_preparing:"Даярдалууда", status_ready:"Даяр",
+    status_completed:"Аякталды", status_cancelled:"Жокко чыгарылды",
+    action_request_payment:"Төлөм суроо", action_confirm_payment:"Төлөмдү ырастоо",
+    action_accept:"Кабыл алуу", action_preparing:"Даярдалууда", action_ready:"Даяр — кардарга кабарлоо",
+    action_complete:"Аяктоо", action_cancel:"Жокко чыгаруу"
+  },
+  en: {
+    openSite:"Open site", logout:"Log out", tabMenu:"Menu", tabOrders:"Orders",
+    totalLabel:"Total", noItems:"no items", noOrders:"No orders yet", ordersCount:"Total orders",
+    status_new:"New", status_payment_requested:"Awaiting payment", status_paid:"Paid",
+    status_accepted:"Accepted", status_preparing:"Cooking", status_ready:"Ready",
+    status_completed:"Completed", status_cancelled:"Cancelled",
+    action_request_payment:"Request payment", action_confirm_payment:"Confirm payment",
+    action_accept:"Accept", action_preparing:"Start cooking", action_ready:"Ready — notify customer",
+    action_complete:"Complete", action_cancel:"Cancel"
+  }
+};
+let adminLang = (function(){
+  try{ return localStorage.getItem(ADMIN_LANG_KEY) || "ru"; }catch(e){ return "ru"; }
+})();
+function at(key){
+  return (ADMIN_TRANSLATIONS[adminLang] && ADMIN_TRANSLATIONS[adminLang][key]) || ADMIN_TRANSLATIONS.ru[key] || key;
+}
+function applyAdminTranslations(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = at(el.dataset.i18n); });
+  document.querySelectorAll(".lang-switch button").forEach(btn=>{
+    btn.classList.toggle("active", btn.dataset.lang === adminLang);
+  });
+  if(typeof renderOrders === "function" && ORDERS.length) renderOrders();
+  if(typeof renderList === "function") renderList();
+}
+document.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".lang-switch button");
+  if(!btn) return;
+  adminLang = btn.dataset.lang;
+  try{ localStorage.setItem(ADMIN_LANG_KEY, adminLang); }catch(e){ /* ignore */ }
+  applyAdminTranslations();
+});
 
 let CATEGORIES = [];
 let DISHES = [];
@@ -501,16 +573,23 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
   });
 });
 
-/* ---------- orders ---------- */
-const ORDER_STATUS_LABELS = { new:"Новый", accepted:"Принят", preparing:"Готовится", ready:"Готово", completed:"Завершён", cancelled:"Отменён" };
-const ORDER_NEXT = {
-  new: [{to:"accepted", label:"Принять", cls:"order-action-primary"}, {to:"cancelled", label:"Отменить", cls:"order-action-danger"}],
-  accepted: [{to:"preparing", label:"Готовится", cls:"order-action-primary"}, {to:"cancelled", label:"Отменить", cls:"order-action-danger"}],
-  preparing: [{to:"ready", label:"Готово", cls:"order-action-primary"}],
-  ready: [{to:"completed", label:"Завершить", cls:"order-action-primary"}],
-  completed: [],
-  cancelled: []
-};
+/* ---------- orders ----------
+   Статусы: new -> payment_requested -> paid -> accepted -> preparing -> ready -> completed (или cancelled)
+   «Запросить оплату» и «Готово» не просто меняют статус — они ещё открывают WhatsApp
+   с готовым текстом (клиенту), администратору остаётся нажать «отправить» в самом WhatsApp. */
+function orderStatusLabel(status){ return at("status_"+status) || status; }
+function getOrderNext(status){
+  const map = {
+    new: [{action:"request_payment", label:at("action_request_payment"), cls:"order-action-primary"}, {to:"cancelled", label:at("action_cancel"), cls:"order-action-danger"}],
+    payment_requested: [{action:"confirm_payment", label:at("action_confirm_payment"), cls:"order-action-primary"}, {to:"cancelled", label:at("action_cancel"), cls:"order-action-danger"}],
+    paid: [{to:"accepted", label:at("action_accept"), cls:"order-action-primary"}, {to:"cancelled", label:at("action_cancel"), cls:"order-action-danger"}],
+    accepted: [{to:"preparing", label:at("action_preparing"), cls:"order-action-primary"}, {to:"cancelled", label:at("action_cancel"), cls:"order-action-danger"}],
+    preparing: [{action:"mark_ready", label:at("action_ready"), cls:"order-action-primary"}],
+    ready: [{to:"completed", label:at("action_complete"), cls:"order-action-primary"}],
+    completed: [], cancelled: []
+  };
+  return map[status] || [];
+}
 let ORDERS = [];
 let ORDER_ITEMS_BY_ORDER = {};
 let newOrdersSinceView = 0;
@@ -535,39 +614,46 @@ async function loadOrders(){
 
 function renderOrders(){
   const listEl = document.getElementById("orderList");
-  document.getElementById("orderCount").textContent = `Всего заказов: ${ORDERS.length}`;
+  document.getElementById("orderCount").textContent = `${at("ordersCount")}: ${ORDERS.length}`;
   if(!ORDERS.length){
-    listEl.innerHTML = `<div class="empty-state"><i class="fa-solid fa-receipt" style="font-size:1.8rem;display:block;margin-bottom:12px;"></i>Заказов пока нет</div>`;
+    listEl.innerHTML = `<div class="empty-state"><i class="fa-solid fa-receipt" style="font-size:1.8rem;display:block;margin-bottom:12px;"></i>${at("noOrders")}</div>`;
     return;
   }
   listEl.innerHTML = ORDERS.map(orderCardHTML).join("");
   listEl.querySelectorAll("[data-status-to]").forEach(btn=>{
     btn.addEventListener("click", ()=> updateOrderStatus(btn.dataset.orderId, btn.dataset.statusTo));
   });
+  listEl.querySelectorAll("[data-action]").forEach(btn=>{
+    btn.addEventListener("click", ()=> runOrderAction(btn.dataset.action, btn.dataset.orderId));
+  });
 }
 
 function orderCardHTML(o){
   const items = ORDER_ITEMS_BY_ORDER[o.id] || [];
   const time = o.created_at ? new Date(o.created_at).toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" }) : "";
-  const actions = ORDER_NEXT[o.status] || [];
+  const actions = getOrderNext(o.status);
   return `
     <div class="order-card">
       <div class="order-card-top">
         <div>
-          <div class="order-card-id">Заказ №${escapeHtml(String(o.id).slice(0,8))}</div>
+          <div class="order-card-id">№${escapeHtml(String(o.id).slice(0,8))}</div>
           <div class="order-card-time">${time}</div>
         </div>
-        <span class="order-status-badge status-${o.status}">${ORDER_STATUS_LABELS[o.status] || o.status}</span>
+        <span class="order-status-badge status-${o.status}">${orderStatusLabel(o.status)}</span>
       </div>
       ${(o.customer_name || o.customer_contact) ? `<div class="order-customer">
         ${o.customer_name ? `<span><i class="fa-solid fa-user"></i> ${escapeHtml(o.customer_name)}</span>` : ""}
         ${o.customer_contact ? `<span><i class="fa-solid fa-phone"></i> ${escapeHtml(o.customer_contact)}</span>` : ""}
       </div>` : ""}
       <div class="order-items-list">
-        ${items.map(it=>`<div><span>${escapeHtml(it.dish_name)} × ${it.qty}${it.note ? `<div class="order-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(it.note)}</div>` : ""}</span><span>${Number(it.price)*it.qty} сом</span></div>`).join("") || '<div style="color:var(--ink-soft);">нет позиций</div>'}
+        ${items.map(it=>`<div><span>${escapeHtml(it.dish_name)} × ${it.qty}${it.note ? `<div class="order-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(it.note)}</div>` : ""}</span><span>${Number(it.price)*it.qty} сом</span></div>`).join("") || `<div style="color:var(--ink-soft);">${at("noItems")}</div>`}
       </div>
-      <div class="order-total-row"><span>Итого</span><span>${Number(o.total)} сом</span></div>
-      ${actions.length ? `<div class="order-actions">${actions.map(a=>`<button class="order-action-btn ${a.cls}" data-order-id="${o.id}" data-status-to="${a.to}">${a.label}</button>`).join("")}</div>` : ""}
+      <div class="order-total-row"><span>${at("totalLabel")}</span><span>${Number(o.total)} сом</span></div>
+      ${actions.length ? `<div class="order-actions">${actions.map(a=>
+        a.action
+          ? `<button class="order-action-btn ${a.cls}" data-order-id="${o.id}" data-action="${a.action}">${a.label}</button>`
+          : `<button class="order-action-btn ${a.cls}" data-order-id="${o.id}" data-status-to="${a.to}">${a.label}</button>`
+      ).join("")}</div>` : ""}
     </div>
   `;
 }
@@ -577,6 +663,53 @@ async function updateOrderStatus(orderId, newStatus){
   if(error){ showToast("Ошибка: " + error.message); return; }
   showToast("Статус обновлён");
   await loadOrders();
+}
+
+/* ---------- действия «Запросить оплату» / «Подтвердить оплату» / «Готово» ----------
+   Открывают WhatsApp клиента с готовым текстом — администратору остаётся нажать «отправить». */
+function buildPaymentRequestMessage(order, items){
+  const shortId = String(order.id).slice(0,8);
+  let text = `Здравствуйте! Это ${CAFE_NAME}.\nВаш заказ №${shortId} принят, вот что вы заказали:\n\n`;
+  items.forEach(it=>{
+    text += `• ${it.dish_name} × ${it.qty} — ${Number(it.price)*it.qty} сом\n`;
+  });
+  text += `\nИтого к оплате: ${Number(order.total)} сом.\n`;
+  text += `Переводом на номер ${PAYMENT_PHONE} (получатель: ${PAYMENT_RECIPIENT_NAME}).\n`;
+  text += `Пожалуйста, отправьте чек после оплаты — как только получим, сразу начнём готовить.`;
+  return text;
+}
+
+function buildOrderReadyMessage(order){
+  const shortId = String(order.id).slice(0,8);
+  return `Ваш заказ №${shortId} в ${CAFE_NAME} готов! Можете забирать по адресу: ${CAFE_ADDRESS}. Ждём вас 🙂`;
+}
+
+function openWhatsAppWithText(phone, text){
+  const digits = String(phone||"").replace(/[^\d]/g, "");
+  const url = `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank");
+}
+
+async function runOrderAction(action, orderId){
+  const order = ORDERS.find(o=> String(o.id)===String(orderId));
+  if(!order) return;
+  const items = ORDER_ITEMS_BY_ORDER[order.id] || [];
+
+  if(action === "request_payment"){
+    if(!order.customer_contact){ showToast("У заказа нет номера телефона клиента"); return; }
+    openWhatsAppWithText(order.customer_contact, buildPaymentRequestMessage(order, items));
+    await updateOrderStatus(order.id, "payment_requested");
+    return;
+  }
+  if(action === "confirm_payment"){
+    await updateOrderStatus(order.id, "paid");
+    return;
+  }
+  if(action === "mark_ready"){
+    if(order.customer_contact) openWhatsAppWithText(order.customer_contact, buildOrderReadyMessage(order));
+    await updateOrderStatus(order.id, "ready");
+    return;
+  }
 }
 
 function subscribeOrdersRealtime(){
@@ -597,6 +730,7 @@ function subscribeOrdersRealtime(){
 }
 
 /* ---------- init ---------- */
+applyAdminTranslations();
 (async () => {
   const staff = await guardAuth();
   if(!staff) return;
