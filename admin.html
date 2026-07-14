@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Дастархан — админка меню</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%B2%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -82,6 +83,23 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .toolbar .count{ color:var(--ink-soft); font-size:0.85rem; font-weight:600; }
 .btn-add{ background:var(--primary); color:#fff; padding:12px 20px; border-radius:999px; font-weight:800; }
 .btn-add:hover{ background:var(--primary-dark); }
+
+/* stats */
+.stats-period{ display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+.stats-period button{ border:1px solid var(--line); background:var(--bg-card); color:var(--ink-soft); padding:8px 16px; border-radius:999px; font-weight:700; font-size:0.82rem; }
+.stats-period button.active{ background:var(--primary); color:#fff; border-color:var(--primary); }
+.stats-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-bottom:24px; }
+.stat-card{ background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-md); padding:18px; box-shadow:var(--shadow-sm); }
+.stat-card-label{ font-size:0.78rem; color:var(--ink-soft); font-weight:700; margin-bottom:6px; }
+.stat-card-value{ font-family:var(--font-display); font-weight:800; font-size:1.5rem; color:var(--ink); }
+.top-dish-row{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.top-dish-row:last-child{ margin-bottom:0; }
+.top-dish-rank{ width:26px; height:26px; border-radius:50%; background:var(--primary-soft); color:var(--primary-dark); font-weight:800; font-size:0.8rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.top-dish-info{ flex:1; min-width:0; }
+.top-dish-name{ font-weight:700; font-size:0.9rem; margin-bottom:5px; display:flex; justify-content:space-between; gap:8px; }
+.top-dish-bar-track{ background:var(--bg-alt); border-radius:999px; height:8px; overflow:hidden; }
+.top-dish-bar-fill{ background:var(--primary); height:100%; border-radius:999px; }
+.top-dish-qty{ font-size:0.76rem; color:var(--ink-soft); white-space:nowrap; }
 
 /* dish list */
 .cat-group{ margin-bottom:30px; }
@@ -184,6 +202,7 @@ input:checked + .slider::before{ transform:translateX(18px); }
   <div class="tab-nav">
     <button class="tab-btn active" data-tab="menu"><i class="fa-solid fa-utensils"></i> <span data-i18n="tabMenu">Меню</span></button>
     <button class="tab-btn" data-tab="orders"><i class="fa-solid fa-receipt"></i> <span data-i18n="tabOrders">Заказы</span> <span class="tab-badge" id="newOrdersBadge" style="display:none;"></span></button>
+    <button class="tab-btn" data-tab="stats"><i class="fa-solid fa-chart-column"></i> <span data-i18n="tabStats">Статистика</span></button>
   </div>
 
   <div id="menuTab">
@@ -206,6 +225,38 @@ input:checked + .slider::before{ transform:translateX(18px); }
       </div>
     </div>
     <div id="orderList"><div class="empty-state">Загрузка…</div></div>
+  </div>
+
+  <div id="statsTab" style="display:none;">
+    <div class="toolbar">
+      <div>
+        <h1 data-i18n="tabStats">Статистика</h1>
+      </div>
+    </div>
+    <div class="stats-period">
+      <button class="active" data-period="today" data-i18n="periodToday">Сегодня</button>
+      <button data-period="week" data-i18n="periodWeek">7 дней</button>
+      <button data-period="month" data-i18n="periodMonth">30 дней</button>
+      <button data-period="all" data-i18n="periodAll">Всё время</button>
+    </div>
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="statRevenueLabel">Выручка</div>
+        <div class="stat-card-value" id="statRevenue">0 сом</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="statOrdersLabel">Заказов</div>
+        <div class="stat-card-value" id="statOrders">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label" data-i18n="statAvgLabel">Средний чек</div>
+        <div class="stat-card-value" id="statAvg">0 сом</div>
+      </div>
+    </div>
+    <div class="order-card">
+      <h3 style="margin-bottom:16px;font-size:1.05rem;" data-i18n="topDishesTitle">Топ продаж</h3>
+      <div id="topDishList"></div>
+    </div>
   </div>
 </div>
 
@@ -293,7 +344,10 @@ const ADMIN_TRANSLATIONS = {
     status_completed:"Завершён", status_cancelled:"Отменён",
     action_request_payment:"Запросить оплату", action_confirm_payment:"Подтвердить оплату",
     action_accept:"Принять", action_preparing:"Готовится", action_ready:"Готово — уведомить клиента",
-    action_complete:"Завершить", action_cancel:"Отменить"
+    action_complete:"Завершить", action_cancel:"Отменить",
+    tabStats:"Статистика", statRevenueLabel:"Выручка", statOrdersLabel:"Заказов", statAvgLabel:"Средний чек",
+    topDishesTitle:"Топ продаж", noSalesYet:"Пока нет продаж за этот период", pcsLabel:"шт.",
+    periodToday:"Сегодня", periodWeek:"7 дней", periodMonth:"30 дней", periodAll:"Всё время"
   },
   ky: {
     openSite:"Сайтты ачуу", logout:"Чыгуу", tabMenu:"Меню", tabOrders:"Буйрутмалар",
@@ -303,7 +357,10 @@ const ADMIN_TRANSLATIONS = {
     status_completed:"Аякталды", status_cancelled:"Жокко чыгарылды",
     action_request_payment:"Төлөм суроо", action_confirm_payment:"Төлөмдү ырастоо",
     action_accept:"Кабыл алуу", action_preparing:"Даярдалууда", action_ready:"Даяр — кардарга кабарлоо",
-    action_complete:"Аяктоо", action_cancel:"Жокко чыгаруу"
+    action_complete:"Аяктоо", action_cancel:"Жокко чыгаруу",
+    tabStats:"Статистика", statRevenueLabel:"Түшүм", statOrdersLabel:"Буйрутмалар", statAvgLabel:"Орточо чек",
+    topDishesTitle:"Эң көп сатылгандар", noSalesYet:"Бул мезгилде сатуулар жок", pcsLabel:"даана",
+    periodToday:"Бүгүн", periodWeek:"7 күн", periodMonth:"30 күн", periodAll:"Бардык убакыт"
   },
   en: {
     openSite:"Open site", logout:"Log out", tabMenu:"Menu", tabOrders:"Orders",
@@ -313,7 +370,10 @@ const ADMIN_TRANSLATIONS = {
     status_completed:"Completed", status_cancelled:"Cancelled",
     action_request_payment:"Request payment", action_confirm_payment:"Confirm payment",
     action_accept:"Accept", action_preparing:"Start cooking", action_ready:"Ready — notify customer",
-    action_complete:"Complete", action_cancel:"Cancel"
+    action_complete:"Complete", action_cancel:"Cancel",
+    tabStats:"Stats", statRevenueLabel:"Revenue", statOrdersLabel:"Orders", statAvgLabel:"Avg. order",
+    topDishesTitle:"Best sellers", noSalesYet:"No sales yet for this period", pcsLabel:"pcs",
+    periodToday:"Today", periodWeek:"7 days", periodMonth:"30 days", periodAll:"All time"
   }
 };
 let adminLang = (function(){
@@ -329,6 +389,7 @@ function applyAdminTranslations(){
   });
   if(typeof renderOrders === "function" && ORDERS.length) renderOrders();
   if(typeof renderList === "function") renderList();
+  if(typeof renderStats === "function") renderStats();
 }
 document.addEventListener("click", (e)=>{
   const btn = e.target.closest(".lang-switch button");
@@ -566,10 +627,21 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     const tab = btn.dataset.tab;
     document.getElementById("menuTab").style.display = tab==="menu" ? "" : "none";
     document.getElementById("ordersTab").style.display = tab==="orders" ? "" : "none";
+    document.getElementById("statsTab").style.display = tab==="stats" ? "" : "none";
     if(tab==="orders"){
       newOrdersSinceView = 0;
       document.getElementById("newOrdersBadge").style.display = "none";
     }
+    if(tab==="stats") renderStats();
+  });
+});
+
+document.querySelectorAll(".stats-period button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".stats-period button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    statsPeriod = btn.dataset.period;
+    renderStats();
   });
 });
 
@@ -610,6 +682,53 @@ async function loadOrders(){
     ORDER_ITEMS_BY_ORDER[it.order_id].push(it);
   });
   renderOrders();
+  renderStats();
+}
+
+/* ---------- статистика (топ продаж, выручка за период) ---------- */
+let statsPeriod = "today";
+function ordersInPeriod(period){
+  const now = new Date();
+  return ORDERS.filter(o=>{
+    if(o.status === "cancelled") return false;
+    if(!o.created_at) return false;
+    const d = new Date(o.created_at);
+    if(period === "today") return d.toDateString() === now.toDateString();
+    if(period === "week"){ const from = new Date(now); from.setDate(from.getDate()-7); return d >= from; }
+    if(period === "month"){ const from = new Date(now); from.setDate(from.getDate()-30); return d >= from; }
+    return true;
+  });
+}
+function renderStats(){
+  const revenueEl = document.getElementById("statRevenue");
+  if(!revenueEl) return;
+  const orders = ordersInPeriod(statsPeriod);
+  const revenue = orders.reduce((s,o)=> s + Number(o.total||0), 0);
+  const count = orders.length;
+  const avg = count ? Math.round(revenue/count) : 0;
+  revenueEl.textContent = revenue.toLocaleString("ru-RU") + " сом";
+  document.getElementById("statOrders").textContent = String(count);
+  document.getElementById("statAvg").textContent = avg.toLocaleString("ru-RU") + " сом";
+
+  const dishTotals = {};
+  orders.forEach(o=>{
+    (ORDER_ITEMS_BY_ORDER[o.id]||[]).forEach(it=>{
+      if(!dishTotals[it.dish_name]) dishTotals[it.dish_name] = { qty:0 };
+      dishTotals[it.dish_name].qty += Number(it.qty||0);
+    });
+  });
+  const top = Object.entries(dishTotals).sort((a,b)=> b[1].qty - a[1].qty).slice(0,5);
+  const maxQty = top.length ? top[0][1].qty : 1;
+  const topListEl = document.getElementById("topDishList");
+  topListEl.innerHTML = top.length ? top.map(([name, d], i)=> `
+    <div class="top-dish-row">
+      <div class="top-dish-rank">${i+1}</div>
+      <div class="top-dish-info">
+        <div class="top-dish-name"><span>${escapeHtml(name)}</span><span class="top-dish-qty">${d.qty} ${at("pcsLabel")}</span></div>
+        <div class="top-dish-bar-track"><div class="top-dish-bar-fill" style="width:${Math.round((d.qty/maxQty)*100)}%"></div></div>
+      </div>
+    </div>
+  `).join("") : `<div class="empty-state">${at("noSalesYet")}</div>`;
 }
 
 function renderOrders(){
