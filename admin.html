@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Дастархан — админка меню</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%B2%3C/text%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800;9..144,900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
-  --bg:#FFFFFF; --bg-alt:#F8F8F8; --bg-card:#FFFFFF; --ink:#1C1C1C; --ink-soft:#6B6B6B; --line:#E5E7EB;
-  --primary:#8B0000; --primary-dark:#A30000; --accent:#C1121F; --primary-soft:#F5E6E6;
-  --green:#1E7A3D; --green-soft:#E3F3E8; --red:#C1121F; --red-soft:#FBEAEA;
-  --shadow-sm: 0 1px 3px rgba(28,28,28,0.06), 0 1px 2px rgba(28,28,28,0.04);
-  --shadow-md: 0 8px 24px rgba(28,28,28,0.08);
-  --shadow-lg: 0 16px 40px rgba(28,28,28,0.14);
+  --bg:#FBF7F1; --bg-alt:#F3EBDE; --bg-card:#FFFFFF; --ink:#2A211C; --ink-soft:#8B7A6B; --line:#E8DECF;
+  --primary:#B5502D; --primary-dark:#8F3D21; --accent:#C9973D; --primary-soft:#F3E1D3;
+  --green:#3F7D52; --green-soft:#E7F0E9; --red:#C1121F; --red-soft:#FBEAEA;
+  --shadow-sm: 0 1px 3px rgba(42,33,28,0.07), 0 1px 2px rgba(42,33,28,0.05);
+  --shadow-md: 0 8px 24px rgba(42,33,28,0.10);
+  --shadow-lg: 0 16px 40px rgba(42,33,28,0.16);
   --radius-sm:16px; --radius-md:20px; --radius-lg:24px;
-  --font-display:'Outfit',sans-serif; --font-body:'Manrope',sans-serif;
+  --font-display:'Fraunces',serif; --font-body:'Manrope',sans-serif;
 }
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
 body{ font-family:var(--font-body); background:var(--bg-alt); color:var(--ink); min-height:100vh; padding-bottom:60px; }
@@ -174,11 +174,11 @@ input:checked + .slider::before{ transform:translateX(18px); }
     <div class="topbar-brand">
       <div class="topbar-mark">
         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <path d="M78,88 C72,77 84,71 78,58" stroke="#8B0000" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
-          <path d="M100,84 C94,71 106,64 100,50" stroke="#8B0000" stroke-width="6.5" stroke-linecap="round" fill="none"/>
-          <path d="M122,88 C116,77 128,71 122,58" stroke="#8B0000" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
-          <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#8B0000"/>
-          <ellipse cx="100" cy="108" rx="44" ry="10" fill="#8B0000"/>
+          <path d="M78,88 C72,77 84,71 78,58" stroke="#B5502D" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
+          <path d="M100,84 C94,71 106,64 100,50" stroke="#B5502D" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+          <path d="M122,88 C116,77 128,71 122,58" stroke="#B5502D" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
+          <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#B5502D"/>
+          <ellipse cx="100" cy="108" rx="44" ry="10" fill="#B5502D"/>
         </svg>
       </div>
       <div>
