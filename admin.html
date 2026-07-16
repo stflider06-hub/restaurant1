@@ -201,8 +201,8 @@ input:checked + .slider::before{ transform:translateX(18px); }
         </svg>
       </div>
       <div>
-        <div class="topbar-title">Дастархан — админка</div>
-        <div class="topbar-sub" id="staffLabel">меню</div>
+        <div class="topbar-title" data-i18n="topbarTitle">Дастархан — админка</div>
+        <div class="topbar-sub" id="staffLabel" data-i18n="staffLabelDefault">меню</div>
       </div>
     </div>
     <div class="topbar-actions">
@@ -228,13 +228,13 @@ input:checked + .slider::before{ transform:translateX(18px); }
   <div id="menuTab">
     <div class="toolbar">
       <div>
-        <h1>Блюда и напитки</h1>
+        <h1 data-i18n="dishesTitle">Блюда и напитки</h1>
         <div class="count" id="dishCount"></div>
       </div>
-      <button class="btn btn-add" id="addDishBtn"><i class="fa-solid fa-plus"></i> Добавить блюдо</button>
+      <button class="btn btn-add" id="addDishBtn"><i class="fa-solid fa-plus"></i> <span data-i18n="addDishBtn">Добавить блюдо</span></button>
     </div>
 
-    <div id="dishList"><div class="empty-state">Загрузка…</div></div>
+    <div id="dishList"><div class="empty-state" data-i18n="loadingText">Загрузка…</div></div>
   </div>
 
   <div id="ordersTab" style="display:none;">
@@ -244,7 +244,7 @@ input:checked + .slider::before{ transform:translateX(18px); }
         <div class="count" id="orderCount"></div>
       </div>
     </div>
-    <div id="orderList"><div class="empty-state">Загрузка…</div></div>
+    <div id="orderList"><div class="empty-state" data-i18n="loadingText">Загрузка…</div></div>
   </div>
 
   <div id="expensesTab" style="display:none;">
@@ -255,20 +255,20 @@ input:checked + .slider::before{ transform:translateX(18px); }
     </div>
     <form class="expense-form" id="expenseForm">
       <div class="expense-form-row">
-        <input type="text" id="expDesc" placeholder="Например: аренда за июль" required>
-        <input type="number" id="expAmount" min="1" placeholder="Сумма, сом" required>
+        <input type="text" id="expDesc" data-i18n-ph="expDescPh" placeholder="Например: аренда за июль" required>
+        <input type="number" id="expAmount" min="1" data-i18n-ph="expAmountPh" placeholder="Сумма, сом" required>
         <select id="expCategory">
-          <option value="Аренда">Аренда</option>
-          <option value="Продукты">Продукты</option>
-          <option value="Зарплата">Зарплата</option>
-          <option value="Реклама">Реклама</option>
-          <option value="Другое">Другое</option>
+          <option value="Аренда" data-i18n="expCatRent">Аренда</option>
+          <option value="Продукты" data-i18n="expCatProducts">Продукты</option>
+          <option value="Зарплата" data-i18n="expCatSalary">Зарплата</option>
+          <option value="Реклама" data-i18n="expCatAds">Реклама</option>
+          <option value="Другое" data-i18n="expCatOther">Другое</option>
         </select>
         <input type="date" id="expDate" required>
-        <button type="submit" class="btn btn-add"><i class="fa-solid fa-plus"></i> Добавить</button>
+        <button type="submit" class="btn btn-add"><i class="fa-solid fa-plus"></i> <span data-i18n="addExpenseBtn">Добавить</span></button>
       </div>
     </form>
-    <div id="expenseList"><div class="empty-state">Загрузка…</div></div>
+    <div id="expenseList"><div class="empty-state" data-i18n="loadingText">Загрузка…</div></div>
   </div>
 
   <div id="statsTab" style="display:none;">
@@ -281,16 +281,16 @@ input:checked + .slider::before{ transform:translateX(18px); }
       <button class="active" data-period="today" data-i18n="periodToday">Сегодня</button>
       <button data-period="week" data-i18n="periodWeek">7 дней</button>
       <button data-period="month" data-i18n="periodMonth">30 дней</button>
-      <button data-period="quarter">Квартал</button>
-      <button data-period="halfyear">Полгода</button>
-      <button data-period="year">Год</button>
+      <button data-period="quarter" data-i18n="periodQuarter">Квартал</button>
+      <button data-period="halfyear" data-i18n="periodHalfyear">Полгода</button>
+      <button data-period="year" data-i18n="periodYear">Год</button>
       <button data-period="all" data-i18n="periodAll">Всё время</button>
-      <button data-period="custom">Свой период</button>
+      <button data-period="custom" data-i18n="periodCustom">Свой период</button>
     </div>
     <div class="expense-form-row" id="customPeriodRow" style="display:none;margin-bottom:16px;">
       <input type="date" id="periodStart">
       <input type="date" id="periodEnd">
-      <button type="button" class="btn btn-add" id="periodApplyBtn">Показать</button>
+      <button type="button" class="btn btn-add" id="periodApplyBtn" data-i18n="periodApplyBtn">Показать</button>
     </div>
     <div class="stats-cards">
       <div class="stat-card">
@@ -298,11 +298,11 @@ input:checked + .slider::before{ transform:translateX(18px); }
         <div class="stat-card-value" id="statRevenue">0 сом</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label">Расход</div>
+        <div class="stat-card-label" data-i18n="statExpenseLabel">Расход</div>
         <div class="stat-card-value" id="statExpense" style="color:var(--red);">0 сом</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label">Прибыль</div>
+        <div class="stat-card-label" data-i18n="statProfitLabel">Прибыль</div>
         <div class="stat-card-value" id="statProfit" style="color:var(--green);">0 сом</div>
       </div>
       <div class="stat-card">
@@ -315,7 +315,7 @@ input:checked + .slider::before{ transform:translateX(18px); }
       </div>
     </div>
     <div class="order-card" style="margin-bottom:20px;">
-      <h3 style="margin-bottom:6px;font-size:1.05rem;">Выручка по дням</h3>
+      <h3 style="margin-bottom:6px;font-size:1.05rem;" data-i18n="revenueByDayTitle">Выручка по дням</h3>
       <div id="statsChartRange" style="font-size:.78rem;color:var(--ink-soft);margin-bottom:14px;"></div>
       <canvas id="revenueChart" height="180"></canvas>
     </div>
@@ -337,46 +337,46 @@ input:checked + .slider::before{ transform:translateX(18px); }
       <div class="form-error" id="formError"></div>
       <form id="dishForm">
         <div class="field">
-          <label>Фото блюда</label>
+          <label data-i18n="dishPhotoLabel">Фото блюда</label>
           <label class="photo-upload">
             <div class="photo-preview" id="photoPreview"><i class="fa-solid fa-image" style="font-size:1.4rem;"></i></div>
-            <div class="photo-upload-text">Нажмите, чтобы выбрать фото<br>(JPG/PNG, до 5 МБ)</div>
+            <div class="photo-upload-text" data-i18n="dishPhotoHint">Нажмите, чтобы выбрать фото<br>(JPG/PNG, до 5 МБ)</div>
             <input type="file" accept="image/*" id="photoInput" style="display:none;">
           </label>
         </div>
         <div class="field">
-          <label for="dishCategory">Категория</label>
+          <label for="dishCategory" data-i18n="dishCategoryLabel">Категория</label>
           <select id="dishCategory" required></select>
         </div>
         <div class="field">
-          <label for="dishName">Название</label>
-          <input type="text" id="dishName" required placeholder="Например: Плов">
+          <label for="dishName" data-i18n="dishNameLabel">Название</label>
+          <input type="text" id="dishName" required data-i18n-ph="dishNamePh" placeholder="Например: Плов">
         </div>
         <div class="field">
-          <label for="dishDesc">Описание / состав</label>
-          <textarea id="dishDesc" placeholder="Из чего состоит блюдо"></textarea>
+          <label for="dishDesc" data-i18n="dishDescLabel">Описание / состав</label>
+          <textarea id="dishDesc" data-i18n-ph="dishDescPh" placeholder="Из чего состоит блюдо"></textarea>
         </div>
         <div class="field">
-          <label for="dishPrice">Цена (сом)</label>
+          <label for="dishPrice" data-i18n="dishPriceLabel">Цена (сом)</label>
           <input type="number" id="dishPrice" min="0" step="1" required placeholder="250">
         </div>
         <div class="toggle-row">
           <div>
-            <div class="toggle-row-label">В наличии</div>
-            <div class="toggle-row-sub">Если выключено — гости увидят «нет в наличии»</div>
+            <div class="toggle-row-label" data-i18n="dishAvailableLabel">В наличии</div>
+            <div class="toggle-row-sub" data-i18n="dishAvailableSub">Если выключено — гости увидят «нет в наличии»</div>
           </div>
           <label class="switch"><input type="checkbox" id="dishAvailable" checked><span class="slider"></span></label>
         </div>
         <div class="toggle-row">
           <div>
-            <div class="toggle-row-label">Опубликовано</div>
-            <div class="toggle-row-sub">Показывать это блюдо на сайте прямо сейчас</div>
+            <div class="toggle-row-label" data-i18n="dishPublishedLabel">Опубликовано</div>
+            <div class="toggle-row-sub" data-i18n="dishPublishedSub">Показывать это блюдо на сайте прямо сейчас</div>
           </div>
           <label class="switch"><input type="checkbox" id="dishPublished" checked><span class="slider"></span></label>
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn-cancel" id="formCancel">Отмена</button>
-          <button type="submit" class="btn-save" id="formSave">Сохранить</button>
+          <button type="button" class="btn-cancel" id="formCancel" data-i18n="formCancelBtn">Отмена</button>
+          <button type="submit" class="btn-save" id="formSave" data-i18n="formSaveBtn">Сохранить</button>
         </div>
       </form>
     </div>
@@ -413,7 +413,40 @@ const ADMIN_TRANSLATIONS = {
     action_complete:"Завершить", action_cancel:"Отменить",
     tabStats:"Статистика", statRevenueLabel:"Выручка", statOrdersLabel:"Заказов", statAvgLabel:"Средний чек",
     topDishesTitle:"Топ продаж", noSalesYet:"Пока нет продаж за этот период", pcsLabel:"шт.",
-    periodToday:"Сегодня", periodWeek:"7 дней", periodMonth:"30 дней", periodAll:"Всё время"
+    periodToday:"Сегодня", periodWeek:"7 дней", periodMonth:"30 дней", periodAll:"Всё время",
+    topbarTitle:"Дастархан — админка", staffLabelDefault:"меню", dishesTitle:"Блюда и напитки", addDishBtn:"Добавить блюдо",
+    loadingText:"Загрузка…", tabExpenses:"Расходы",
+    expDescPh:"Например: аренда за июль", expAmountPh:"Сумма, сом",
+    expCatRent:"Аренда", expCatProducts:"Продукты", expCatSalary:"Зарплата", expCatAds:"Реклама", expCatOther:"Другое",
+    addExpenseBtn:"Добавить", periodQuarter:"Квартал", periodHalfyear:"Полгода", periodYear:"Год", periodCustom:"Свой период",
+    periodApplyBtn:"Показать", statExpenseLabel:"Расход", statProfitLabel:"Прибыль", revenueByDayTitle:"Выручка по дням",
+    curLabel:"сом",
+    dishPhotoLabel:"Фото блюда", dishPhotoHint:"Нажмите, чтобы выбрать фото<br>(JPG/PNG, до 5 МБ)",
+    dishCategoryLabel:"Категория", dishNameLabel:"Название", dishNamePh:"Например: Плов",
+    dishDescLabel:"Описание / состав", dishDescPh:"Из чего состоит блюдо", dishPriceLabel:"Цена (сом)",
+    dishAvailableLabel:"В наличии", dishAvailableSub:"Если выключено — гости увидят «нет в наличии»",
+    dishPublishedLabel:"Опубликовано", dishPublishedSub:"Показывать это блюдо на сайте прямо сейчас",
+    formCancelBtn:"Отмена", formSaveBtn:"Сохранить",
+    dbLoadError:"Не удалось загрузить библиотеку подключения к базе. Проверьте интернет-соединение и обновите страницу.",
+    dishLoadErrorPrefix:"Не удалось загрузить блюда: ", noDishesYet:"Пока нет ни одного блюда — добавьте первое",
+    badgePublished:"Опубликовано", badgeDraft:"Черновик", badgeUnavailable:"Нет в наличии",
+    orderLoadErrorPrefix:"Не удалось загрузить заказы: ", expenseLoadErrorPrefix:"Не удалось загрузить: ",
+    noExpensesYet:"Расходов пока нет", confirmDeleteExpense:"Удалить этот расход?",
+    editLabel:"Редактировать", deleteLabel:"Удалить",
+    fileTooLarge:"Файл больше 5 МБ — выберите фото поменьше.", savingText:"Сохраняем…",
+    photoUploadErrorPrefix:"Не удалось загрузить фото: ",
+    dishUpdatedToast:"Блюдо обновлено", dishAddedToast:"Блюдо добавлено", dishSaveError:"Не удалось сохранить блюдо",
+    deleteErrorPrefix:"Ошибка удаления: ", dishDeletedToast:"Блюдо удалено",
+    expenseDeleteError:"Не удалось удалить: ", expenseAddError:"Не удалось добавить: ",
+    genericErrorPrefix:"Ошибка: ", statusUpdatedToast:"Статус обновлён",
+    noPhoneToast:"У заказа нет номера телефона клиента", newOrderToast:"Новый заказ!",
+    confirmDeleteDish:"Удалить блюдо «{name}»? Это действие нельзя отменить.",
+    dishFormEditTitle:"Редактировать блюдо", dishFormNewTitle:"Новое блюдо", dishCountLabel:"Всего блюд",
+    waGreeting:"Здравствуйте! Это {cafe}.\nВаш заказ №{id} принят, вот что вы заказали:\n\n",
+    waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\nИтого к оплате: {total} сом.\n",
+    waPaymentLine:"Переводом на номер {phone} (получатель: {name}).\n",
+    waReceiptLine:"Пожалуйста, отправьте чек после оплаты — как только получим, сразу начнём готовить.",
+    waReadyMessage:"Ваш заказ №{id} в {cafe} готов! Можете забирать по адресу: {address}. Ждём вас 🙂"
   },
   ky: {
     openSite:"Сайтты ачуу", logout:"Чыгуу", tabMenu:"Меню", tabOrders:"Буйрутмалар",
@@ -426,7 +459,40 @@ const ADMIN_TRANSLATIONS = {
     action_complete:"Аяктоо", action_cancel:"Жокко чыгаруу",
     tabStats:"Статистика", statRevenueLabel:"Түшүм", statOrdersLabel:"Буйрутмалар", statAvgLabel:"Орточо чек",
     topDishesTitle:"Эң көп сатылгандар", noSalesYet:"Бул мезгилде сатуулар жок", pcsLabel:"даана",
-    periodToday:"Бүгүн", periodWeek:"7 күн", periodMonth:"30 күн", periodAll:"Бардык убакыт"
+    periodToday:"Бүгүн", periodWeek:"7 күн", periodMonth:"30 күн", periodAll:"Бардык убакыт",
+    topbarTitle:"Дастархан — башкаруу панели", staffLabelDefault:"меню", dishesTitle:"Тамактар жана суусундуктар", addDishBtn:"Тамак кошуу",
+    loadingText:"Жүктөлүүдө…", tabExpenses:"Чыгашалар",
+    expDescPh:"Мисалы: июль үчүн ижара", expAmountPh:"Сумма, сом",
+    expCatRent:"Ижара", expCatProducts:"Азык-түлүк", expCatSalary:"Эмгек акы", expCatAds:"Жарнама", expCatOther:"Башка",
+    addExpenseBtn:"Кошуу", periodQuarter:"Чейрек", periodHalfyear:"Жарым жыл", periodYear:"Жыл", periodCustom:"Өз мезгили",
+    periodApplyBtn:"Көрсөтүү", statExpenseLabel:"Чыгаша", statProfitLabel:"Пайда", revenueByDayTitle:"Күн сайынкы түшүм",
+    curLabel:"сом",
+    dishPhotoLabel:"Тамактын сүрөтү", dishPhotoHint:"Сүрөт тандоо үчүн басыңыз<br>(JPG/PNG, 5 МБга чейин)",
+    dishCategoryLabel:"Категория", dishNameLabel:"Аталышы", dishNamePh:"Мисалы: Плов",
+    dishDescLabel:"Сүрөттөмө / курамы", dishDescPh:"Тамак эмнеден турат", dishPriceLabel:"Баасы (сом)",
+    dishAvailableLabel:"Бар", dishAvailableSub:"Өчүрүлсө — коноктор «жок» деп көрөт",
+    dishPublishedLabel:"Жарыяланды", dishPublishedSub:"Бул тамакты сайтта азыр эле көрсөтүү",
+    formCancelBtn:"Жокко чыгаруу", formSaveBtn:"Сактоо",
+    dbLoadError:"Базага туташуу китепканасы жүктөлгөн жок. Интернет байланышын текшерип, баракты жаңыртыңыз.",
+    dishLoadErrorPrefix:"Тамактар жүктөлгөн жок: ", noDishesYet:"Азырынча бир да тамак жок — биринчисин кошуңуз",
+    badgePublished:"Жарыяланды", badgeDraft:"Долбоор", badgeUnavailable:"Жок",
+    orderLoadErrorPrefix:"Буйрутмалар жүктөлгөн жок: ", expenseLoadErrorPrefix:"Жүктөлгөн жок: ",
+    noExpensesYet:"Азырынча чыгаша жок", confirmDeleteExpense:"Бул чыгашаны өчүрөсүзбү?",
+    editLabel:"Түзөтүү", deleteLabel:"Өчүрүү",
+    fileTooLarge:"Файл 5 МБдан чоң — кичине сүрөт тандаңыз.", savingText:"Сакталууда…",
+    photoUploadErrorPrefix:"Сүрөт жүктөлгөн жок: ",
+    dishUpdatedToast:"Тамак жаңыртылды", dishAddedToast:"Тамак кошулду", dishSaveError:"Тамак сакталган жок",
+    deleteErrorPrefix:"Өчүрүү катасы: ", dishDeletedToast:"Тамак өчүрүлдү",
+    expenseDeleteError:"Өчүрүлгөн жок: ", expenseAddError:"Кошулган жок: ",
+    genericErrorPrefix:"Ката: ", statusUpdatedToast:"Абал жаңыртылды",
+    noPhoneToast:"Буйрутмада кардардын телефон номери жок", newOrderToast:"Жаңы буйрутма!",
+    confirmDeleteDish:"«{name}» тамагын өчүрөсүзбү? Бул аракетти артка кайтарууга болбойт.",
+    dishFormEditTitle:"Тамакты түзөтүү", dishFormNewTitle:"Жаңы тамак", dishCountLabel:"Бардыгы тамак",
+    waGreeting:"Саламатсызбы! Бул {cafe}.\n№{id} буйрутмаңыз кабыл алынды, сиз тандагандар:\n\n",
+    waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\nТөлөнүүчү сумма: {total} сом.\n",
+    waPaymentLine:"{phone} номерине которуу (алуучу: {name}).\n",
+    waReceiptLine:"Төлөгөндөн кийин чекти жөнөтүңүз — алганыбыз менен даярдоону баштайбыз.",
+    waReadyMessage:"№{id} буйрутмаңыз {cafe} жеринде даяр! {address} дареги боюнча алып кетсеңиз болот. Күтөбүз 🙂"
   },
   en: {
     openSite:"Open site", logout:"Log out", tabMenu:"Menu", tabOrders:"Orders",
@@ -439,7 +505,40 @@ const ADMIN_TRANSLATIONS = {
     action_complete:"Complete", action_cancel:"Cancel",
     tabStats:"Stats", statRevenueLabel:"Revenue", statOrdersLabel:"Orders", statAvgLabel:"Avg. order",
     topDishesTitle:"Best sellers", noSalesYet:"No sales yet for this period", pcsLabel:"pcs",
-    periodToday:"Today", periodWeek:"7 days", periodMonth:"30 days", periodAll:"All time"
+    periodToday:"Today", periodWeek:"7 days", periodMonth:"30 days", periodAll:"All time",
+    topbarTitle:"Dastarkhan — admin panel", staffLabelDefault:"menu", dishesTitle:"Dishes & drinks", addDishBtn:"Add dish",
+    loadingText:"Loading…", tabExpenses:"Expenses",
+    expDescPh:"E.g.: July rent", expAmountPh:"Amount, som",
+    expCatRent:"Rent", expCatProducts:"Groceries", expCatSalary:"Payroll", expCatAds:"Advertising", expCatOther:"Other",
+    addExpenseBtn:"Add", periodQuarter:"Quarter", periodHalfyear:"Half year", periodYear:"Year", periodCustom:"Custom range",
+    periodApplyBtn:"Show", statExpenseLabel:"Expenses", statProfitLabel:"Profit", revenueByDayTitle:"Revenue by day",
+    curLabel:"som",
+    dishPhotoLabel:"Dish photo", dishPhotoHint:"Click to choose a photo<br>(JPG/PNG, up to 5 MB)",
+    dishCategoryLabel:"Category", dishNameLabel:"Name", dishNamePh:"E.g.: Plov",
+    dishDescLabel:"Description / ingredients", dishDescPh:"What the dish contains", dishPriceLabel:"Price (som)",
+    dishAvailableLabel:"In stock", dishAvailableSub:"When off, guests will see \u201cout of stock\u201d",
+    dishPublishedLabel:"Published", dishPublishedSub:"Show this dish on the site right now",
+    formCancelBtn:"Cancel", formSaveBtn:"Save",
+    dbLoadError:"Could not load the database connection library. Check your internet connection and refresh the page.",
+    dishLoadErrorPrefix:"Could not load dishes: ", noDishesYet:"No dishes yet — add your first one",
+    badgePublished:"Published", badgeDraft:"Draft", badgeUnavailable:"Out of stock",
+    orderLoadErrorPrefix:"Could not load orders: ", expenseLoadErrorPrefix:"Could not load: ",
+    noExpensesYet:"No expenses yet", confirmDeleteExpense:"Delete this expense?",
+    editLabel:"Edit", deleteLabel:"Delete",
+    fileTooLarge:"File is larger than 5 MB — choose a smaller photo.", savingText:"Saving…",
+    photoUploadErrorPrefix:"Could not upload photo: ",
+    dishUpdatedToast:"Dish updated", dishAddedToast:"Dish added", dishSaveError:"Could not save the dish",
+    deleteErrorPrefix:"Delete error: ", dishDeletedToast:"Dish deleted",
+    expenseDeleteError:"Could not delete: ", expenseAddError:"Could not add: ",
+    genericErrorPrefix:"Error: ", statusUpdatedToast:"Status updated",
+    noPhoneToast:"This order has no customer phone number", newOrderToast:"New order!",
+    confirmDeleteDish:"Delete dish \u201c{name}\u201d? This action cannot be undone.",
+    dishFormEditTitle:"Edit dish", dishFormNewTitle:"New dish", dishCountLabel:"Total dishes",
+    waGreeting:"Hello! This is {cafe}.\nYour order #{id} has been received, here's what you ordered:\n\n",
+    waItemLine:"• {name} × {qty} — {sum} som\n", waTotalLine:"\nTotal due: {total} som.\n",
+    waPaymentLine:"By transfer to {phone} (recipient: {name}).\n",
+    waReceiptLine:"Please send the receipt after payment — we'll start cooking as soon as we get it.",
+    waReadyMessage:"Your order #{id} at {cafe} is ready! You can pick it up at: {address}. See you soon 🙂"
   }
 };
 let adminLang = (function(){
@@ -450,12 +549,14 @@ function at(key){
 }
 function applyAdminTranslations(){
   document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = at(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{ el.setAttribute("placeholder", at(el.dataset.i18nPh)); });
   document.querySelectorAll(".lang-switch button").forEach(btn=>{
     btn.classList.toggle("active", btn.dataset.lang === adminLang);
   });
   if(typeof renderOrders === "function" && ORDERS.length) renderOrders();
   if(typeof renderList === "function") renderList();
   if(typeof renderStats === "function") renderStats();
+  if(typeof renderExpenseList === "function") renderExpenseList();
 }
 document.addEventListener("click", (e)=>{
   const btn = e.target.closest(".lang-switch button");
@@ -473,14 +574,14 @@ let selectedFile = null;
 /* ---------- auth guard ---------- */
 async function guardAuth(){
   if(!supabaseClient){
-    document.getElementById("dishList").innerHTML = '<div class="empty-state">Не удалось загрузить библиотеку подключения к базе. Проверьте интернет-соединение и обновите страницу.</div>';
+    document.getElementById("dishList").innerHTML = '<div class="empty-state">' + escapeHtml(at("dbLoadError")) + '</div>';
     return null;
   }
   const { data: { session } } = await supabaseClient.auth.getSession();
   if(!session){ window.location.href = "admin-login.html"; return null; }
   const { data: staffRow } = await supabaseClient.from("staff").select("*").eq("id", session.user.id).maybeSingle();
   if(!staffRow){ window.location.href = "admin-login.html"; return null; }
-  document.getElementById("staffLabel").textContent = staffRow.full_name ? `меню · ${staffRow.full_name}` : "меню";
+  document.getElementById("staffLabel").textContent = staffRow.full_name ? `${at("staffLabelDefault")} · ${staffRow.full_name}` : at("staffLabelDefault");
   return staffRow;
 }
 
@@ -508,7 +609,7 @@ async function loadData(){
   CATEGORIES = cats || [];
   DISHES = dishes || [];
   if(error){
-    document.getElementById("dishList").innerHTML = `<div class="empty-state">Не удалось загрузить блюда: ${escapeHtml(error.message)}</div>`;
+    document.getElementById("dishList").innerHTML = `<div class="empty-state">${escapeHtml(at("dishLoadErrorPrefix"))}${escapeHtml(error.message)}</div>`;
     return;
   }
   renderCategorySelect();
@@ -529,10 +630,10 @@ function renderCategorySelect(){
 /* ---------- render dish list ---------- */
 function renderList(){
   const listEl = document.getElementById("dishList");
-  document.getElementById("dishCount").textContent = `Всего блюд: ${DISHES.length}`;
+  document.getElementById("dishCount").textContent = `${at("dishCountLabel")}: ${DISHES.length}`;
 
   if(!DISHES.length){
-    listEl.innerHTML = `<div class="empty-state"><i class="fa-solid fa-utensils" style="font-size:1.8rem;display:block;margin-bottom:12px;"></i>Пока нет ни одного блюда — добавьте первое</div>`;
+    listEl.innerHTML = `<div class="empty-state"><i class="fa-solid fa-utensils" style="font-size:1.8rem;display:block;margin-bottom:12px;"></i>${escapeHtml(at("noDishesYet"))}</div>`;
     return;
   }
 
@@ -564,15 +665,15 @@ function dishRowHTML(d){
       <div class="dish-thumb">${d.photo_url ? `<img src="${d.photo_url}" alt="">` : '<i class="fa-solid fa-image"></i>'}</div>
       <div class="dish-row-info">
         <div class="dish-row-name">${escapeHtml(d.name)}</div>
-        <div class="dish-row-price">${Number(d.price)} сом</div>
+        <div class="dish-row-price">${Number(d.price)} ${at("curLabel")}</div>
         <div class="badges">
-          ${d.is_published ? '<span class="badge badge-pub">Опубликовано</span>' : '<span class="badge badge-draft">Черновик</span>'}
-          ${d.is_available ? '' : '<span class="badge badge-unavail">Нет в наличии</span>'}
+          ${d.is_published ? '<span class="badge badge-pub">'+escapeHtml(at("badgePublished"))+'</span>' : '<span class="badge badge-draft">'+escapeHtml(at("badgeDraft"))+'</span>'}
+          ${d.is_available ? '' : '<span class="badge badge-unavail">'+escapeHtml(at("badgeUnavailable"))+'</span>'}
         </div>
       </div>
       <div class="dish-row-actions">
-        <button class="icon-btn" data-edit="${d.id}" aria-label="Редактировать"><i class="fa-solid fa-pen"></i></button>
-        <button class="icon-btn danger" data-delete="${d.id}" aria-label="Удалить"><i class="fa-solid fa-trash"></i></button>
+        <button class="icon-btn" data-edit="${d.id}" aria-label="${escapeHtml(at("editLabel"))}"><i class="fa-solid fa-pen"></i></button>
+        <button class="icon-btn danger" data-delete="${d.id}" aria-label="${escapeHtml(at("deleteLabel"))}"><i class="fa-solid fa-trash"></i></button>
       </div>
     </div>
   `;
@@ -599,7 +700,7 @@ function openForm(id){
 
   if(id){
     const d = DISHES.find(x=>x.id===id);
-    document.getElementById("formTitle").textContent = "Редактировать блюдо";
+    document.getElementById("formTitle").textContent = at("dishFormEditTitle");
     document.getElementById("dishCategory").value = d.category_id;
     document.getElementById("dishName").value = d.name;
     document.getElementById("dishDesc").value = d.description || "";
@@ -608,7 +709,7 @@ function openForm(id){
     document.getElementById("dishPublished").checked = d.is_published;
     if(d.photo_url) photoPreview.innerHTML = `<img src="${d.photo_url}" alt="">`;
   } else {
-    document.getElementById("formTitle").textContent = "Новое блюдо";
+    document.getElementById("formTitle").textContent = at("dishFormNewTitle");
     document.getElementById("dishAvailable").checked = true;
     document.getElementById("dishPublished").checked = true;
     if(CATEGORIES.length) document.getElementById("dishCategory").value = CATEGORIES[0].id;
@@ -620,7 +721,7 @@ function closeForm(){ formModal.classList.remove("open"); }
 photoInput.addEventListener("change", ()=>{
   const file = photoInput.files[0];
   if(!file) return;
-  if(file.size > 5*1024*1024){ formError.textContent = "Файл больше 5 МБ — выберите фото поменьше."; formError.classList.add("show"); return; }
+  if(file.size > 5*1024*1024){ formError.textContent = at("fileTooLarge"); formError.classList.add("show"); return; }
   selectedFile = file;
   const reader = new FileReader();
   reader.onload = (e) => { photoPreview.innerHTML = `<img src="${e.target.result}" alt="">`; };
@@ -631,7 +732,7 @@ dishForm.addEventListener("submit", async (e) => {
   formError.classList.remove("show");
   const saveBtn = document.getElementById("formSave");
   saveBtn.disabled = true;
-  saveBtn.textContent = "Сохраняем…";
+  saveBtn.textContent = at("savingText");
 
   try{
     let photoUrl = editingId ? (DISHES.find(x=>x.id===editingId)||{}).photo_url : null;
@@ -640,7 +741,7 @@ dishForm.addEventListener("submit", async (e) => {
       const ext = (selectedFile.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g,"") || "jpg";
       const path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
       const { error: upErr } = await supabaseClient.storage.from(PHOTO_BUCKET).upload(path, selectedFile, { upsert:false });
-      if(upErr) throw new Error("Не удалось загрузить фото: " + upErr.message);
+      if(upErr) throw new Error(at("photoUploadErrorPrefix") + upErr.message);
       const { data: pub } = supabaseClient.storage.from(PHOTO_BUCKET).getPublicUrl(path);
       photoUrl = pub.publicUrl;
     }
@@ -664,24 +765,24 @@ dishForm.addEventListener("submit", async (e) => {
     if(saveErr) throw new Error(saveErr.message);
 
     closeForm();
-    showToast(editingId ? "Блюдо обновлено" : "Блюдо добавлено");
+    showToast(editingId ? at("dishUpdatedToast") : at("dishAddedToast"));
     await loadData();
   } catch(err){
-    formError.textContent = err.message || "Не удалось сохранить блюдо";
+    formError.textContent = err.message || at("dishSaveError");
     formError.classList.add("show");
   } finally {
     saveBtn.disabled = false;
-    saveBtn.textContent = "Сохранить";
+    saveBtn.textContent = at("formSaveBtn");
   }
 });
 
 async function deleteDish(id){
   const d = DISHES.find(x=>x.id===id);
   if(!d) return;
-  if(!confirm(`Удалить блюдо «${d.name}»? Это действие нельзя отменить.`)) return;
+  if(!confirm(at("confirmDeleteDish").replace("{name}", d.name))) return;
   const { error } = await supabaseClient.from("dishes").delete().eq("id", id);
-  if(error){ showToast("Ошибка удаления: " + error.message); return; }
-  showToast("Блюдо удалено");
+  if(error){ showToast(at("deleteErrorPrefix") + error.message); return; }
+  showToast(at("dishDeletedToast"));
   await loadData();
 }
 
@@ -748,7 +849,7 @@ async function loadOrders(){
     supabaseClient.from("order_items").select("*")
   ]);
   if(ordErr){
-    document.getElementById("orderList").innerHTML = `<div class="empty-state">Не удалось загрузить заказы: ${escapeHtml(ordErr.message)}</div>`;
+    document.getElementById("orderList").innerHTML = `<div class="empty-state">${escapeHtml(at("orderLoadErrorPrefix"))}${escapeHtml(ordErr.message)}</div>`;
     return;
   }
   ORDERS = orders || [];
@@ -860,7 +961,7 @@ function renderRevenueChart(orders, start, end){
     type: "bar",
     data: { labels: buckets.map(b=>b.label), datasets: [{ data: buckets.map(b=>b.value), backgroundColor: "#B5502D", borderRadius:4 }] },
     options: {
-      plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.parsed.y.toLocaleString("ru-RU")+" сом" } } },
+      plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.parsed.y.toLocaleString("ru-RU")+" "+at("curLabel") } } },
       scales: { y: { beginAtZero:true, ticks:{ callback: v => v.toLocaleString("ru-RU") } } }
     }
   });
@@ -879,11 +980,11 @@ function renderStats(){
   const count = orders.length;
   const avg = count ? Math.round(revenue/count) : 0;
 
-  revenueEl.textContent = revenue.toLocaleString("ru-RU") + " сом";
-  document.getElementById("statExpense").textContent = expenseSum.toLocaleString("ru-RU") + " сом";
-  document.getElementById("statProfit").textContent = profit.toLocaleString("ru-RU") + " сом";
+  revenueEl.textContent = revenue.toLocaleString("ru-RU") + " " + at("curLabel");
+  document.getElementById("statExpense").textContent = expenseSum.toLocaleString("ru-RU") + " " + at("curLabel");
+  document.getElementById("statProfit").textContent = profit.toLocaleString("ru-RU") + " " + at("curLabel");
   document.getElementById("statOrders").textContent = String(count);
-  document.getElementById("statAvg").textContent = avg.toLocaleString("ru-RU") + " сом";
+  document.getElementById("statAvg").textContent = avg.toLocaleString("ru-RU") + " " + at("curLabel");
   document.getElementById("statsChartRange").textContent =
     start.toLocaleDateString("ru-RU") + " — " + end.toLocaleDateString("ru-RU");
 
@@ -914,7 +1015,7 @@ function renderStats(){
 async function loadExpenses(){
   const { data, error } = await supabaseClient.from("expenses").select("*").order("expense_date",{ascending:false});
   if(error){
-    document.getElementById("expenseList").innerHTML = `<div class="empty-state">Не удалось загрузить: ${escapeHtml(error.message)}</div>`;
+    document.getElementById("expenseList").innerHTML = `<div class="empty-state">${escapeHtml(at("expenseLoadErrorPrefix"))}${escapeHtml(error.message)}</div>`;
     return;
   }
   EXPENSES = data || [];
@@ -923,7 +1024,7 @@ async function loadExpenses(){
 }
 function renderExpenseList(){
   const el = document.getElementById("expenseList");
-  if(!EXPENSES.length){ el.innerHTML = `<div class="empty-state">Расходов пока нет</div>`; return; }
+  if(!EXPENSES.length){ el.innerHTML = `<div class="empty-state">${escapeHtml(at("noExpensesYet"))}</div>`; return; }
   el.innerHTML = EXPENSES.map(ex=>{
     const dateDisplay = ex.expense_date ? new Date(ex.expense_date).toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"}) : "—";
     return `
@@ -933,16 +1034,16 @@ function renderExpenseList(){
         <div class="expense-row-meta">${escapeHtml(ex.category||"")} · ${dateDisplay}</div>
       </div>
       <div style="display:flex;align-items:center;gap:14px;">
-        <div class="expense-row-amount">−${Number(ex.amount).toLocaleString("ru-RU")} сом</div>
+        <div class="expense-row-amount">−${Number(ex.amount).toLocaleString("ru-RU")} ${at("curLabel")}</div>
         <button class="expense-row-delete" onclick="deleteExpense('${ex.id}')"><i class="fa-solid fa-xmark"></i></button>
       </div>
     </div>`;
   }).join("");
 }
 async function deleteExpense(id){
-  if(!confirm("Удалить этот расход?")) return;
+  if(!confirm(at("confirmDeleteExpense"))) return;
   const { error } = await supabaseClient.from("expenses").delete().eq("id", id);
-  if(error){ alert("Не удалось удалить: "+error.message); return; }
+  if(error){ alert(at("expenseDeleteError")+error.message); return; }
   await loadExpenses();
 }
 
@@ -955,7 +1056,7 @@ document.getElementById("expenseForm").addEventListener("submit", async (e)=>{
   const expense_date = document.getElementById("expDate").value;
   if(!description || !amount) return;
   const { error } = await supabaseClient.from("expenses").insert({ description, amount, category, expense_date });
-  if(error){ alert("Не удалось добавить: "+error.message); return; }
+  if(error){ alert(at("expenseAddError")+error.message); return; }
   e.target.reset();
   document.getElementById("expDate").value = new Date().toISOString().split("T")[0];
   await loadExpenses();
@@ -995,9 +1096,9 @@ function orderCardHTML(o){
         ${o.customer_contact ? `<span><i class="fa-solid fa-phone"></i> ${escapeHtml(o.customer_contact)}</span>` : ""}
       </div>` : ""}
       <div class="order-items-list">
-        ${items.map(it=>`<div><span>${escapeHtml(it.dish_name)} × ${it.qty}${it.note ? `<div class="order-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(it.note)}</div>` : ""}</span><span>${Number(it.price)*it.qty} сом</span></div>`).join("") || `<div style="color:var(--ink-soft);">${at("noItems")}</div>`}
+        ${items.map(it=>`<div><span>${escapeHtml(it.dish_name)} × ${it.qty}${it.note ? `<div class="order-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(it.note)}</div>` : ""}</span><span>${Number(it.price)*it.qty} ${at("curLabel")}</span></div>`).join("") || `<div style="color:var(--ink-soft);">${at("noItems")}</div>`}
       </div>
-      <div class="order-total-row"><span>${at("totalLabel")}</span><span>${Number(o.total)} сом</span></div>
+      <div class="order-total-row"><span>${at("totalLabel")}</span><span>${Number(o.total)} ${at("curLabel")}</span></div>
       ${actions.length ? `<div class="order-actions">${actions.map(a=>
         a.action
           ? `<button class="order-action-btn ${a.cls}" data-order-id="${o.id}" data-action="${a.action}">${a.label}</button>`
@@ -1009,8 +1110,8 @@ function orderCardHTML(o){
 
 async function updateOrderStatus(orderId, newStatus){
   const { error } = await supabaseClient.from("orders").update({ status:newStatus }).eq("id", orderId);
-  if(error){ showToast("Ошибка: " + error.message); return; }
-  showToast("Статус обновлён");
+  if(error){ showToast(at("genericErrorPrefix") + error.message); return; }
+  showToast(at("statusUpdatedToast"));
   await loadOrders();
 }
 
@@ -1018,19 +1119,19 @@ async function updateOrderStatus(orderId, newStatus){
    Открывают WhatsApp клиента с готовым текстом — администратору остаётся нажать «отправить». */
 function buildPaymentRequestMessage(order, items){
   const shortId = String(order.id).slice(0,8);
-  let text = `Здравствуйте! Это ${CAFE_NAME}.\nВаш заказ №${shortId} принят, вот что вы заказали:\n\n`;
+  let text = at("waGreeting").replace("{cafe}", CAFE_NAME).replace("{id}", shortId);
   items.forEach(it=>{
-    text += `• ${it.dish_name} × ${it.qty} — ${Number(it.price)*it.qty} сом\n`;
+    text += at("waItemLine").replace("{name}", it.dish_name).replace("{qty}", it.qty).replace("{sum}", Number(it.price)*it.qty);
   });
-  text += `\nИтого к оплате: ${Number(order.total)} сом.\n`;
-  text += `Переводом на номер ${PAYMENT_PHONE} (получатель: ${PAYMENT_RECIPIENT_NAME}).\n`;
-  text += `Пожалуйста, отправьте чек после оплаты — как только получим, сразу начнём готовить.`;
+  text += at("waTotalLine").replace("{total}", Number(order.total));
+  text += at("waPaymentLine").replace("{phone}", PAYMENT_PHONE).replace("{name}", PAYMENT_RECIPIENT_NAME);
+  text += at("waReceiptLine");
   return text;
 }
 
 function buildOrderReadyMessage(order){
   const shortId = String(order.id).slice(0,8);
-  return `Ваш заказ №${shortId} в ${CAFE_NAME} готов! Можете забирать по адресу: ${CAFE_ADDRESS}. Ждём вас 🙂`;
+  return at("waReadyMessage").replace("{id}", shortId).replace("{cafe}", CAFE_NAME).replace("{address}", CAFE_ADDRESS);
 }
 
 function openWhatsAppWithText(phone, text){
@@ -1045,7 +1146,7 @@ async function runOrderAction(action, orderId){
   const items = ORDER_ITEMS_BY_ORDER[order.id] || [];
 
   if(action === "request_payment"){
-    if(!order.customer_contact){ showToast("У заказа нет номера телефона клиента"); return; }
+    if(!order.customer_contact){ showToast(at("noPhoneToast")); return; }
     openWhatsAppWithText(order.customer_contact, buildPaymentRequestMessage(order, items));
     await updateOrderStatus(order.id, "payment_requested");
     return;
@@ -1070,7 +1171,7 @@ function subscribeOrdersRealtime(){
         badge.textContent = newOrdersSinceView;
         badge.style.display = "inline-block";
       }
-      showToast("Новый заказ!");
+      showToast(at("newOrderToast"));
       loadOrders();
     })
     .on("postgres_changes", { event:"UPDATE", schema:"public", table:"orders" }, () => loadOrders())

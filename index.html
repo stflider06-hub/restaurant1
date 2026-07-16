@@ -690,6 +690,8 @@ const TRANSLATIONS = {
     namePlaceholder: "Ваше имя (по желанию)",
     phonePlaceholder: "Номер телефона *",
     totalLabel: "Итого",
+    curLabel: "сом",
+    unavailLabel: "Нет в наличии", noConnection: "Не удалось подключиться к базе данных. Проверьте интернет-соединение и попробуйте снова.", orderFailedMsg: "Не удалось оформить заказ. Проверьте интернет-соединение и попробуйте ещё раз.", menuLoadFailed: "Не удалось загрузить меню.", menuComingSoon: "Меню скоро появится", retryBtn: "Попробовать снова",
     submitOrderBtn: "Отправить заказ",
     checkoutNote: "На следующем экране проверьте заказ и подтвердите оплату",
     modalNoteLabel: "Комментарий к блюду (по желанию)",
@@ -740,6 +742,8 @@ const TRANSLATIONS = {
     namePlaceholder: "Атыңыз (каалосуз боюнча)",
     phonePlaceholder: "Телефон номери *",
     totalLabel: "Жалпы суммасы",
+    curLabel: "сом",
+    unavailLabel: "Жок", noConnection: "Базага туташуу мүмкүн болгон жок. Интернет байланышын текшерип, кайра аракет кылыңыз.", orderFailedMsg: "Буйрутманы тариздөө мүмкүн болгон жок. Интернет байланышын текшерип, кайра аракет кылыңыз.", menuLoadFailed: "Менюну жүктөө мүмкүн болгон жок.", menuComingSoon: "Меню жакында пайда болот", retryBtn: "Кайра аракет кылуу",
     submitOrderBtn: "Буйрутманы жөнөтүү",
     checkoutNote: "Кийинки экранда буйрутманы текшерип, төлөмдү ырастаңыз",
     modalNoteLabel: "Тамакка комментарий (каалосуз боюнча)",
@@ -790,6 +794,8 @@ const TRANSLATIONS = {
     namePlaceholder: "Your name (optional)",
     phonePlaceholder: "Phone number *",
     totalLabel: "Total",
+    curLabel: "som",
+    unavailLabel: "Out of stock", noConnection: "Could not connect to the database. Please check your internet connection and try again.", orderFailedMsg: "Could not place the order. Please check your internet connection and try again.", menuLoadFailed: "Could not load the menu.", menuComingSoon: "Menu coming soon", retryBtn: "Try again",
     submitOrderBtn: "Send order",
     checkoutNote: "On the next screen, review your order and confirm payment",
     modalNoteLabel: "Note for the kitchen (optional)",
@@ -1001,13 +1007,13 @@ function dishRowHTML(d){
   return `
     <div class="dish-row fade-up" data-id="${d.id}">
       <div class="dish-row-thumb ${d.grad}">
-        ${d.unavailable ? '<div class="badge-unavail">Нет в наличии</div>' : ''}
+        ${d.unavailable ? '<div class="badge-unavail">'+t("unavailLabel")+'</div>' : ''}
         <img src="${d.photo||''}" alt="${d.name}" loading="lazy" data-fallback-icon="${d.catIcon||'fa-utensils'}">
       </div>
       <div class="dish-row-info">
         <div class="dish-row-name">${d.name}</div>
         <div class="dish-row-desc">${d.desc}</div>
-        <div class="dish-row-price">${d.price} сом</div>
+        <div class="dish-row-price">${d.price} ${t("curLabel")}</div>
       </div>
       <div class="dish-row-actions" data-actions-for="${d.id}">
         ${d.unavailable ? '' : renderRowActionsHTML(d, qty)}
@@ -1122,7 +1128,7 @@ document.getElementById("modalClose").addEventListener("click", closeModal);
 dishModal.addEventListener("click", (e)=>{ if(e.target===dishModal) closeModal(); });
 
 function updateModalPrice(){
-  modalPrice.textContent = (modalDish.price * modalQty) + " сом";
+  modalPrice.textContent = (modalDish.price * modalQty) + " " + t("curLabel");
 }
 document.getElementById("qtyMinus").addEventListener("click", ()=>{
   if(modalQty>1){ modalQty--; qtyVal.textContent=modalQty; updateModalPrice(); }
@@ -1169,7 +1175,7 @@ function syncCart(){
   const count = cartItemCount();
   const total = cartTotal();
   cartCount.textContent = count;
-  cartFabTotal.textContent = total + " сом";
+  cartFabTotal.textContent = total + " " + t("curLabel");
   cartFab.classList.toggle("show", count>0);
   renderCartPanel();
   if(typeof refreshAllRowActions === "function") refreshAllRowActions();
@@ -1184,7 +1190,7 @@ function renderCartPanel(){
         <div class="cart-item-thumb ${e.dish.grad}"><img src="${e.dish.photo||''}" alt="${e.dish.name}" data-fallback-icon="${e.dish.catIcon||'fa-utensils'}"></div>
         <div class="cart-item-info">
           <div class="cart-item-name">${e.dish.name}</div>
-          <div class="cart-item-price">${e.dish.price} сом × ${e.qty}</div>
+          <div class="cart-item-price">${e.dish.price} ${t("curLabel")} × ${e.qty}</div>
           ${e.note ? `<div class="cart-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(e.note)}</div>` : ""}
         </div>
         <div class="cart-item-qty">
@@ -1208,7 +1214,7 @@ function renderCartPanel(){
       row.querySelector(".cart-plus").addEventListener("click", ()=> setQty(id, (cart[id]?cart[id].qty:0)+1));
     });
   }
-  cartTotalEl.textContent = cartTotal() + " сом";
+  cartTotalEl.textContent = cartTotal() + " " + t("curLabel");
   checkoutBtn.disabled = entries.length===0;
 }
 
@@ -1287,7 +1293,7 @@ function openConfirmOverlay(){
         <div class="confirm-item-name">${e.qty} × ${escapeHtml(e.dish.name)}</div>
         ${e.note ? `<div class="confirm-item-note">${escapeHtml(e.note)}</div>` : ""}
       </div>
-      <div>${e.dish.price*e.qty} сом</div>
+      <div>${e.dish.price*e.qty} ${t("curLabel")}</div>
     </div>
   `).join("");
   confirmOverlay.classList.add("open");
@@ -1311,11 +1317,11 @@ function openPaymentOverlay(){
   listEl.innerHTML = pendingOrder.entries.map(e=>`
     <div class="payment-summary-row">
       <span>${e.qty} × ${escapeHtml(e.dish.name)}${e.note ? ` <em style="color:var(--primary);font-style:italic;">(${escapeHtml(e.note)})</em>` : ""}</span>
-      <span>${e.dish.price*e.qty} сом</span>
+      <span>${e.dish.price*e.qty} ${t("curLabel")}</span>
     </div>
   `).join("");
-  document.getElementById("paymentTotal").textContent = pendingOrder.total + " сом";
-  document.getElementById("paymentFootTotal").textContent = pendingOrder.total + " сом";
+  document.getElementById("paymentTotal").textContent = pendingOrder.total + " " + t("curLabel");
+  document.getElementById("paymentFootTotal").textContent = pendingOrder.total + " " + t("curLabel");
   document.getElementById("paymentOrderId").textContent = String(pendingOrder.id).slice(0,8);
   document.getElementById("paymentDate").textContent = new Date().toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
   document.getElementById("paymentStatus").textContent = t("statusNew");
@@ -1335,7 +1341,7 @@ document.getElementById("paymentHelpBtn").addEventListener("click", ()=>{
 document.getElementById("payNowBtn").addEventListener("click", async ()=>{
   if(!pendingOrder) return;
   if(!supabaseClient){
-    alert("Не удалось подключиться к базе данных. Проверьте интернет-соединение и попробуйте снова.");
+    alert(t("noConnection"));
     return;
   }
   const payBtn = document.getElementById("payNowBtn");
@@ -1370,7 +1376,7 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
       payBtn.style.display = "flex";
     }, 1400);
   }catch(err){
-    alert("Не удалось оформить заказ. Проверьте интернет-соединение и попробуйте ещё раз.\n\n" + (err && err.message ? err.message : ""));
+    alert(t("orderFailedMsg") + "\n\n" + (err && err.message ? err.message : ""));
     payBtn.disabled = false;
     payBtn.innerHTML = `<i class="fa-solid fa-check"></i> ${t("payBtn")}`;
   }
@@ -1382,11 +1388,11 @@ async function sendTelegramNotification({ orderId, entries, total, customerName,
   if(!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
   let text = `🆕 Новый заказ №${String(orderId).slice(0,8)} — ${CAFE_NAME}\n\n`;
   entries.forEach(e=>{
-    text += `• ${e.dish.name} × ${e.qty} — ${e.dish.price*e.qty} сом`;
+    text += `• ${e.dish.name} × ${e.qty} — ${e.dish.price*e.qty} ${t("curLabel")}`;
     if(e.note) text += ` (${e.note})`;
     text += `\n`;
   });
-  text += `\nИтого: ${total} сом\n`;
+  text += `\n${t("totalLabel")}: ${total} ${t("curLabel")}\n`;
   text += `Клиент: ${customerName || "не указано"}\n`;
   text += `Телефон: ${customerPhone}`;
 
@@ -1422,7 +1428,7 @@ async function openHistoryOverlay(){
   }
   listEl.innerHTML = history.map(h=>`
     <div class="history-item" data-id="${h.id}">
-      <div class="history-item-top"><span>№${String(h.id).slice(0,8)}</span><span>${h.total} сом</span></div>
+      <div class="history-item-top"><span>№${String(h.id).slice(0,8)}</span><span>${h.total} ${t("curLabel")}</span></div>
       <div class="history-item-sub">${new Date(h.createdAt).toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" })}</div>
     </div>
   `).join("");
@@ -1541,7 +1547,7 @@ async function loadMenu(showSpinner){
     showMenuMessage('<i class="fa-solid fa-spinner fa-spin" style="font-size:1.6rem;"></i><br><br>Загружаем меню…');
   }
   if(!supabaseClient){
-    showMenuMessage('Не удалось подключиться к базе данных.<br>Проверьте интернет-соединение и обновите страницу.');
+    showMenuMessage(t("noConnection"));
     return;
   }
   const [{ data: cats, error: catErr }, { data: dishes, error: dishErr }] = await Promise.all([
@@ -1553,11 +1559,11 @@ async function loadMenu(showSpinner){
     const err = catErr || dishErr;
     const details = [err.message, err.details, err.hint, err.code ? ("code: "+err.code) : ""].filter(Boolean).join(" — ");
     showMenuMessage(`
-      Не удалось загрузить меню.
+      ${t("menuLoadFailed")}
       <div style="margin-top:14px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:12px;font-size:0.82rem;color:var(--ink);text-align:left;word-break:break-word;max-width:480px;margin-left:auto;margin-right:auto;">
         <b>Текст ошибки (пришлите скриншот этого блока):</b><br>${escapeHtml(details || "неизвестная ошибка, объект error пуст")}
       </div>
-      <button id="retryLoadBtn" style="margin-top:16px;color:var(--primary-dark);font-weight:800;text-decoration:underline;">Попробовать снова</button>
+      <button id="retryLoadBtn" style="margin-top:16px;color:var(--primary-dark);font-weight:800;text-decoration:underline;">${t("retryBtn")}</button>
     `);
     const retryBtn = document.getElementById("retryLoadBtn");
     if(retryBtn) retryBtn.addEventListener("click", ()=> loadMenu(true));
@@ -1586,7 +1592,7 @@ async function loadMenu(showSpinner){
 
   if(!MENU.length){
     catNav.innerHTML = "";
-    showMenuMessage('<i class="fa-solid fa-utensils" style="font-size:1.8rem;display:block;margin-bottom:12px;"></i>Меню скоро появится');
+    showMenuMessage('<i class="fa-solid fa-utensils" style="font-size:1.8rem;display:block;margin-bottom:12px;"></i>' + t("menuComingSoon"));
     return;
   }
 
