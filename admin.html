@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800;9..144,900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
 :root{
   --bg:#FBF7F1; --bg-alt:#F3EBDE; --bg-card:#FFFFFF; --ink:#2A211C; --ink-soft:#8B7A6B; --line:#E8DECF;
@@ -90,6 +91,24 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .stats-period button.active{ background:var(--primary); color:#fff; border-color:var(--primary); }
 .stats-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-bottom:24px; }
 .stat-card{ background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-md); padding:18px; box-shadow:var(--shadow-sm); }
+
+.expense-form-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+.expense-form-row input, .expense-form-row select{
+  padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:var(--bg-card);
+  color:var(--ink); font-family:inherit; font-size:14px; flex:1; min-width:120px;
+}
+.expense-row{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-md);
+  padding:14px 18px; margin-bottom:10px;
+}
+.expense-row-desc{ font-weight:700; font-size:.94rem; }
+.expense-row-meta{ font-size:.78rem; color:var(--ink-soft); }
+.expense-row-amount{ font-weight:800; color:var(--red); }
+.expense-row-delete{
+  width:30px; height:30px; border-radius:50%; background:var(--bg-alt); color:var(--ink-soft); border:none; flex-shrink:0;
+}
+.expense-row-delete:hover{ background:var(--red-soft); color:var(--red); }
 .stat-card-label{ font-size:0.78rem; color:var(--ink-soft); font-weight:700; margin-bottom:6px; }
 .stat-card-value{ font-family:var(--font-display); font-weight:800; font-size:1.5rem; color:var(--ink); }
 .top-dish-row{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
@@ -202,6 +221,7 @@ input:checked + .slider::before{ transform:translateX(18px); }
   <div class="tab-nav">
     <button class="tab-btn active" data-tab="menu"><i class="fa-solid fa-utensils"></i> <span data-i18n="tabMenu">Меню</span></button>
     <button class="tab-btn" data-tab="orders"><i class="fa-solid fa-receipt"></i> <span data-i18n="tabOrders">Заказы</span> <span class="tab-badge" id="newOrdersBadge" style="display:none;"></span></button>
+    <button class="tab-btn" data-tab="expenses"><i class="fa-solid fa-wallet"></i> <span data-i18n="tabExpenses">Расходы</span></button>
     <button class="tab-btn" data-tab="stats"><i class="fa-solid fa-chart-column"></i> <span data-i18n="tabStats">Статистика</span></button>
   </div>
 
@@ -227,6 +247,30 @@ input:checked + .slider::before{ transform:translateX(18px); }
     <div id="orderList"><div class="empty-state">Загрузка…</div></div>
   </div>
 
+  <div id="expensesTab" style="display:none;">
+    <div class="toolbar">
+      <div>
+        <h1 data-i18n="tabExpenses">Расходы</h1>
+      </div>
+    </div>
+    <form class="expense-form" id="expenseForm">
+      <div class="expense-form-row">
+        <input type="text" id="expDesc" placeholder="Например: аренда за июль" required>
+        <input type="number" id="expAmount" min="1" placeholder="Сумма, сом" required>
+        <select id="expCategory">
+          <option value="Аренда">Аренда</option>
+          <option value="Продукты">Продукты</option>
+          <option value="Зарплата">Зарплата</option>
+          <option value="Реклама">Реклама</option>
+          <option value="Другое">Другое</option>
+        </select>
+        <input type="date" id="expDate" required>
+        <button type="submit" class="btn btn-add"><i class="fa-solid fa-plus"></i> Добавить</button>
+      </div>
+    </form>
+    <div id="expenseList"><div class="empty-state">Загрузка…</div></div>
+  </div>
+
   <div id="statsTab" style="display:none;">
     <div class="toolbar">
       <div>
@@ -237,12 +281,29 @@ input:checked + .slider::before{ transform:translateX(18px); }
       <button class="active" data-period="today" data-i18n="periodToday">Сегодня</button>
       <button data-period="week" data-i18n="periodWeek">7 дней</button>
       <button data-period="month" data-i18n="periodMonth">30 дней</button>
+      <button data-period="quarter">Квартал</button>
+      <button data-period="halfyear">Полгода</button>
+      <button data-period="year">Год</button>
       <button data-period="all" data-i18n="periodAll">Всё время</button>
+      <button data-period="custom">Свой период</button>
+    </div>
+    <div class="expense-form-row" id="customPeriodRow" style="display:none;margin-bottom:16px;">
+      <input type="date" id="periodStart">
+      <input type="date" id="periodEnd">
+      <button type="button" class="btn btn-add" id="periodApplyBtn">Показать</button>
     </div>
     <div class="stats-cards">
       <div class="stat-card">
         <div class="stat-card-label" data-i18n="statRevenueLabel">Выручка</div>
         <div class="stat-card-value" id="statRevenue">0 сом</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Расход</div>
+        <div class="stat-card-value" id="statExpense" style="color:var(--red);">0 сом</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Прибыль</div>
+        <div class="stat-card-value" id="statProfit" style="color:var(--green);">0 сом</div>
       </div>
       <div class="stat-card">
         <div class="stat-card-label" data-i18n="statOrdersLabel">Заказов</div>
@@ -252,6 +313,11 @@ input:checked + .slider::before{ transform:translateX(18px); }
         <div class="stat-card-label" data-i18n="statAvgLabel">Средний чек</div>
         <div class="stat-card-value" id="statAvg">0 сом</div>
       </div>
+    </div>
+    <div class="order-card" style="margin-bottom:20px;">
+      <h3 style="margin-bottom:6px;font-size:1.05rem;">Выручка по дням</h3>
+      <div id="statsChartRange" style="font-size:.78rem;color:var(--ink-soft);margin-bottom:14px;"></div>
+      <canvas id="revenueChart" height="180"></canvas>
     </div>
     <div class="order-card">
       <h3 style="margin-bottom:16px;font-size:1.05rem;" data-i18n="topDishesTitle">Топ продаж</h3>
@@ -627,6 +693,7 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     const tab = btn.dataset.tab;
     document.getElementById("menuTab").style.display = tab==="menu" ? "" : "none";
     document.getElementById("ordersTab").style.display = tab==="orders" ? "" : "none";
+    document.getElementById("expensesTab").style.display = tab==="expenses" ? "" : "none";
     document.getElementById("statsTab").style.display = tab==="stats" ? "" : "none";
     if(tab==="orders"){
       newOrdersSinceView = 0;
@@ -641,9 +708,18 @@ document.querySelectorAll(".stats-period button").forEach(btn=>{
     document.querySelectorAll(".stats-period button").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
     statsPeriod = btn.dataset.period;
-    renderStats();
+    document.getElementById("customPeriodRow").style.display = statsPeriod === "custom" ? "flex" : "none";
+    if(statsPeriod !== "custom") renderStats();
   });
 });
+(function(){
+  const todayIso = new Date().toISOString().split("T")[0];
+  const ps = document.getElementById("periodStart"), pe = document.getElementById("periodEnd");
+  if(ps) ps.value = todayIso;
+  if(pe) pe.value = todayIso;
+  const applyBtn = document.getElementById("periodApplyBtn");
+  if(applyBtn) applyBtn.addEventListener("click", renderStats);
+})();
 
 /* ---------- orders ----------
    Статусы: new -> payment_requested -> paid -> accepted -> preparing -> ready -> completed (или cancelled)
@@ -687,28 +763,131 @@ async function loadOrders(){
 
 /* ---------- статистика (топ продаж, выручка за период) ---------- */
 let statsPeriod = "today";
-function ordersInPeriod(period){
-  const now = new Date();
+let EXPENSES = [];
+let revenueChartInstance = null;
+
+function getPeriodRange(period){
+  const today = new Date(); today.setHours(23,59,59,999);
+  let start = new Date(); start.setHours(0,0,0,0);
+  let end = new Date(today);
+
+  if(period === "week"){ start.setDate(start.getDate()-6); }
+  else if(period === "month"){ start.setDate(start.getDate()-29); }
+  else if(period === "quarter"){ start.setDate(start.getDate()-89); }
+  else if(period === "halfyear"){ start.setDate(start.getDate()-181); }
+  else if(period === "year"){ start.setDate(start.getDate()-364); }
+  else if(period === "all"){ start = new Date(2020,0,1); }
+  else if(period === "custom"){
+    const s = document.getElementById("periodStart").value;
+    const e = document.getElementById("periodEnd").value;
+    if(s) start = new Date(s);
+    if(e){ end = new Date(e); end.setHours(23,59,59,999); }
+  }
+  return { start, end };
+}
+
+function ordersInRange(start, end){
   return ORDERS.filter(o=>{
     if(o.status === "cancelled") return false;
     if(!o.created_at) return false;
     const d = new Date(o.created_at);
-    if(period === "today") return d.toDateString() === now.toDateString();
-    if(period === "week"){ const from = new Date(now); from.setDate(from.getDate()-7); return d >= from; }
-    if(period === "month"){ const from = new Date(now); from.setDate(from.getDate()-30); return d >= from; }
-    return true;
+    return d >= start && d <= end;
   });
 }
+function expensesInRange(start, end){
+  return EXPENSES.filter(ex=>{
+    if(!ex.expense_date) return false;
+    const d = new Date(ex.expense_date);
+    return d >= start && d <= end;
+  });
+}
+// Kept for backward-compatibility with any other callers
+function ordersInPeriod(period){
+  const { start, end } = getPeriodRange(period);
+  return ordersInRange(start, end);
+}
+
+function buildRevenueBuckets(orders, start, end){
+  const spanDays = Math.max(1, Math.round((end-start)/86400000)+1);
+  let granularity = "day";
+  if(spanDays > 31 && spanDays <= 182) granularity = "week";
+  else if(spanDays > 182) granularity = "month";
+
+  const buckets = [];
+  const cursor = new Date(start); cursor.setHours(0,0,0,0);
+
+  if(granularity === "day"){
+    while(cursor <= end){
+      buckets.push({ label: cursor.toLocaleDateString("ru-RU",{day:"2-digit",month:"2-digit"}), key: cursor.toDateString(), value:0 });
+      cursor.setDate(cursor.getDate()+1);
+    }
+    orders.forEach(o=>{
+      const d = new Date(o.created_at);
+      const b = buckets.find(x=>x.key === d.toDateString());
+      if(b) b.value += Number(o.total||0);
+    });
+  } else if(granularity === "week"){
+    while(cursor <= end){
+      const weekEnd = new Date(cursor); weekEnd.setDate(weekEnd.getDate()+6);
+      buckets.push({ label: cursor.toLocaleDateString("ru-RU",{day:"2-digit",month:"2-digit"}), start:new Date(cursor), end:new Date(weekEnd>end?end:weekEnd), value:0 });
+      cursor.setDate(cursor.getDate()+7);
+    }
+    orders.forEach(o=>{
+      const d = new Date(o.created_at);
+      const b = buckets.find(x=> d>=x.start && d<=x.end);
+      if(b) b.value += Number(o.total||0);
+    });
+  } else {
+    while(cursor <= end){
+      buckets.push({ label: cursor.toLocaleDateString("ru-RU",{month:"short",year:"2-digit"}), month:cursor.getMonth(), year:cursor.getFullYear(), value:0 });
+      cursor.setMonth(cursor.getMonth()+1);
+    }
+    orders.forEach(o=>{
+      const d = new Date(o.created_at);
+      const b = buckets.find(x=> x.month===d.getMonth() && x.year===d.getFullYear());
+      if(b) b.value += Number(o.total||0);
+    });
+  }
+  return buckets;
+}
+
+function renderRevenueChart(orders, start, end){
+  const canvas = document.getElementById("revenueChart");
+  if(!canvas || typeof Chart === "undefined") return;
+  const buckets = buildRevenueBuckets(orders, start, end);
+  if(revenueChartInstance) revenueChartInstance.destroy();
+  revenueChartInstance = new Chart(canvas, {
+    type: "bar",
+    data: { labels: buckets.map(b=>b.label), datasets: [{ data: buckets.map(b=>b.value), backgroundColor: "#B5502D", borderRadius:4 }] },
+    options: {
+      plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.parsed.y.toLocaleString("ru-RU")+" сом" } } },
+      scales: { y: { beginAtZero:true, ticks:{ callback: v => v.toLocaleString("ru-RU") } } }
+    }
+  });
+}
+
 function renderStats(){
   const revenueEl = document.getElementById("statRevenue");
   if(!revenueEl) return;
-  const orders = ordersInPeriod(statsPeriod);
+  const { start, end } = getPeriodRange(statsPeriod);
+  const orders = ordersInRange(start, end);
+  const expenses = expensesInRange(start, end);
+
   const revenue = orders.reduce((s,o)=> s + Number(o.total||0), 0);
+  const expenseSum = expenses.reduce((s,ex)=> s + Number(ex.amount||0), 0);
+  const profit = revenue - expenseSum;
   const count = orders.length;
   const avg = count ? Math.round(revenue/count) : 0;
+
   revenueEl.textContent = revenue.toLocaleString("ru-RU") + " сом";
+  document.getElementById("statExpense").textContent = expenseSum.toLocaleString("ru-RU") + " сом";
+  document.getElementById("statProfit").textContent = profit.toLocaleString("ru-RU") + " сом";
   document.getElementById("statOrders").textContent = String(count);
   document.getElementById("statAvg").textContent = avg.toLocaleString("ru-RU") + " сом";
+  document.getElementById("statsChartRange").textContent =
+    start.toLocaleDateString("ru-RU") + " — " + end.toLocaleDateString("ru-RU");
+
+  renderRevenueChart(orders, start, end);
 
   const dishTotals = {};
   orders.forEach(o=>{
@@ -730,6 +909,57 @@ function renderStats(){
     </div>
   `).join("") : `<div class="empty-state">${at("noSalesYet")}</div>`;
 }
+
+/* ---------- expenses ---------- */
+async function loadExpenses(){
+  const { data, error } = await supabaseClient.from("expenses").select("*").order("expense_date",{ascending:false});
+  if(error){
+    document.getElementById("expenseList").innerHTML = `<div class="empty-state">Не удалось загрузить: ${escapeHtml(error.message)}</div>`;
+    return;
+  }
+  EXPENSES = data || [];
+  renderExpenseList();
+  renderStats();
+}
+function renderExpenseList(){
+  const el = document.getElementById("expenseList");
+  if(!EXPENSES.length){ el.innerHTML = `<div class="empty-state">Расходов пока нет</div>`; return; }
+  el.innerHTML = EXPENSES.map(ex=>{
+    const dateDisplay = ex.expense_date ? new Date(ex.expense_date).toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"}) : "—";
+    return `
+    <div class="expense-row">
+      <div>
+        <div class="expense-row-desc">${escapeHtml(ex.description)}</div>
+        <div class="expense-row-meta">${escapeHtml(ex.category||"")} · ${dateDisplay}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div class="expense-row-amount">−${Number(ex.amount).toLocaleString("ru-RU")} сом</div>
+        <button class="expense-row-delete" onclick="deleteExpense('${ex.id}')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>`;
+  }).join("");
+}
+async function deleteExpense(id){
+  if(!confirm("Удалить этот расход?")) return;
+  const { error } = await supabaseClient.from("expenses").delete().eq("id", id);
+  if(error){ alert("Не удалось удалить: "+error.message); return; }
+  await loadExpenses();
+}
+
+document.getElementById("expDate").value = new Date().toISOString().split("T")[0];
+document.getElementById("expenseForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const description = document.getElementById("expDesc").value.trim();
+  const amount = parseInt(document.getElementById("expAmount").value, 10);
+  const category = document.getElementById("expCategory").value;
+  const expense_date = document.getElementById("expDate").value;
+  if(!description || !amount) return;
+  const { error } = await supabaseClient.from("expenses").insert({ description, amount, category, expense_date });
+  if(error){ alert("Не удалось добавить: "+error.message); return; }
+  e.target.reset();
+  document.getElementById("expDate").value = new Date().toISOString().split("T")[0];
+  await loadExpenses();
+});
 
 function renderOrders(){
   const listEl = document.getElementById("orderList");
@@ -855,6 +1085,7 @@ applyAdminTranslations();
   if(!staff) return;
   await loadData();
   await loadOrders();
+  await loadExpenses();
   subscribeOrdersRealtime();
 })();
 </script>
