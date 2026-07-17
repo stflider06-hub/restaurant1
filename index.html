@@ -18,25 +18,25 @@
    Fonts: Fraunces (display, serif) / Manrope (body)
    ========================================================= */
 :root{
-  --bg:            #F8F1E4;
-  --bg-alt:        #EFE1C9;
+  --bg:            #FFFFFF;
+  --bg-alt:        #F7F7F8;
   --bg-card:       #FFFFFF;
-  --ink:           #241A11;
-  --ink-soft:      #8A7360;
-  --line:          #E5D6B8;
-  --primary:       #A63C22;
-  --primary-dark:  #7C2C18;
-  --accent:        #C08A2E;
-  --primary-soft:  #F1DDC9;
+  --ink:           #1A1A1A;
+  --ink-soft:      #8A8A8E;
+  --line:          #ECECEE;
+  --primary:       #E8332B;
+  --primary-dark:  #C22820;
+  --accent:        #FF5B4F;
+  --primary-soft:  #FDE9E8;
   --teal:          #1E5C53;
   --teal-soft:     #DCEAE6;
   --danger:        #C1121F;
   --danger-soft:   #FBEAEA;
   --white:         #FFFFFF;
 
-  --shadow-sm: 0 1px 3px rgba(36,26,17,0.08), 0 1px 2px rgba(36,26,17,0.05);
-  --shadow-md: 0 10px 28px rgba(36,26,17,0.12);
-  --shadow-lg: 0 20px 48px rgba(36,26,17,0.18);
+  --shadow-sm: 0 1px 3px rgba(20,20,20,0.06), 0 1px 2px rgba(20,20,20,0.04);
+  --shadow-md: 0 10px 28px rgba(20,20,20,0.10);
+  --shadow-lg: 0 20px 48px rgba(20,20,20,0.16);
 
   --radius-sm: 16px;
   --radius-md: 20px;
@@ -46,11 +46,12 @@
   --font-body: 'Manrope', sans-serif;
 
   --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-  --gradient-glow: 0 8px 22px rgba(166,60,34,0.30);
+  --gradient-glow: 0 8px 22px rgba(232,51,43,0.28);
 
   --container: 1100px;
   --transition: 0.3s cubic-bezier(.25,.8,.25,1);
   --nav-h: 68px;
+  --tabbar-h: 64px;
 }
 
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
@@ -61,7 +62,7 @@ body{
   color:var(--ink);
   line-height:1.6;
   -webkit-font-smoothing:antialiased;
-  padding-bottom:96px;
+  padding-bottom:calc(var(--tabbar-h) + 12px);
 }
 img{ max-width:100%; display:block; }
 a{ color:inherit; text-decoration:none; }
@@ -212,51 +213,58 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
   color:var(--ink);
 }
 .menu-section-title i{ color:var(--primary); font-size:1.05rem; }
-.dish-list{ display:flex; flex-direction:column; gap:20px; }
+.dish-list{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .dish-row{
-  display:flex; gap:14px; align-items:center;
-  cursor:pointer; transition:transform 0.25s ease;
+  display:flex; flex-direction:column;
+  cursor:pointer; transition:transform 0.22s ease, box-shadow 0.22s ease;
+  background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-md);
+  overflow:hidden;
 }
-.dish-row:hover{ transform:translateY(-2px); }
+.dish-row:hover{ transform:translateY(-3px); box-shadow:var(--shadow-md); }
 .dish-row-thumb{
-  width:104px; height:104px; border-radius:18px; flex-shrink:0;
+  width:100%; aspect-ratio:1/1; border-radius:0; flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
   font-size:2rem; position:relative; overflow:hidden;
-  box-shadow:0 6px 20px rgba(36,26,17,0.14);
-  transition:box-shadow 0.25s ease;
+  background:var(--bg-alt);
 }
-.dish-row:hover .dish-row-thumb{ box-shadow:0 10px 28px rgba(36,26,17,0.20); }
 .dish-row-thumb img{ width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; }
 .dish-row:hover .dish-row-thumb img{ transform:scale(1.06); }
 .dish-row-thumb .badge-unavail{
   position:absolute; inset:0;
-  background:rgba(28,28,28,0.58);
+  background:rgba(20,20,20,0.58);
   color:#fff; font-size:0.62rem; font-weight:700; text-align:center; padding:0 6px;
   display:flex; align-items:center; justify-content:center;
   text-transform:uppercase; letter-spacing:0.03em; z-index:2;
 }
-.dish-row-info{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
-.dish-row-name{ font-family:var(--font-display); font-weight:700; font-size:1rem; color:var(--ink); }
-.dish-row-desc{ font-size:0.82rem; color:var(--ink-soft);
-  display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
-.dish-row-price{ font-weight:800; font-size:1.05rem; color:var(--primary); font-family:var(--font-display); margin-top:3px; }
-.dish-row-actions{ flex-shrink:0; display:flex; align-items:center; }
+.dish-row-info{ flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; padding:12px 12px 0; }
+.dish-row-name{ font-family:var(--font-display); font-weight:700; font-size:0.94rem; color:var(--ink); }
+.dish-row-desc{ font-size:0.78rem; color:var(--ink-soft); line-height:1.4;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.dish-row-price{ font-weight:800; font-size:1rem; color:var(--primary); font-family:var(--font-display); margin-top:2px; }
+.dish-row-actions{ flex-shrink:0; display:flex; align-items:center; justify-content:flex-end; padding:8px 12px 12px; }
 .dish-row-add{
-  width:40px; height:40px; border-radius:12px;
+  width:38px; height:38px; border-radius:12px;
   background:var(--gradient-primary); color:#fff;
   display:flex; align-items:center; justify-content:center;
-  font-size:1rem; transition:var(--transition); box-shadow:var(--gradient-glow);
+  font-size:0.95rem; transition:var(--transition); box-shadow:var(--gradient-glow);
 }
-.dish-row-add:hover{ transform:scale(1.08) translateY(-1px); box-shadow:0 10px 26px rgba(166,60,34,0.38); }
-.dish-row-stepper{ display:flex; align-items:center; gap:8px; }
+.dish-row-add:hover{ transform:scale(1.08) translateY(-1px); box-shadow:0 10px 26px rgba(232,51,43,0.38); }
+.dish-row-add:active{ transform:scale(0.92); }
+.dish-row-stepper{ display:flex; align-items:center; gap:6px; }
 .dish-row-stepper button{
-  width:36px; height:36px; border-radius:11px;
-  display:flex; align-items:center; justify-content:center; font-size:0.82rem;
+  width:32px; height:32px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center; font-size:0.76rem;
   transition:var(--transition);
 }
 .dish-row-stepper .step-minus{ background:var(--bg-alt); color:var(--ink-soft); border:1px solid var(--line); }
 .dish-row-stepper .step-minus:hover{ background:var(--danger-soft); color:var(--danger); border-color:var(--danger-soft); }
 .dish-row-stepper .step-plus{ background:var(--primary); color:#fff; }
+.dish-row-stepper .step-qty{ min-width:16px; text-align:center; font-weight:800; font-size:0.86rem; }
+@media (max-width:480px){
+  .dish-list{ gap:10px; }
+  .dish-row-name{ font-size:0.86rem; }
+  .dish-row-desc{ font-size:0.72rem; }
+}
 .dish-row-stepper .step-plus:hover{ background:var(--primary-dark); }
 .dish-row-stepper .step-qty{ min-width:18px; text-align:center; font-weight:800; color:var(--ink); font-size:0.95rem; }
 
@@ -322,25 +330,40 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .modal-note-input:focus{ outline:none; border-color:var(--primary); }
 
 /* ============ FLOATING CART BUTTON ============ */
-.cart-fab{
-  position:fixed; left:18px; right:18px; bottom:18px;
-  max-width:calc(var(--container) - 36px); margin:0 auto;
-  background:var(--ink); color:#fff;
-  border-radius:18px; padding:15px 20px;
-  display:none; align-items:center; justify-content:space-between;
-  box-shadow:var(--shadow-lg); z-index:60; font-weight:700;
-  transition:background var(--transition);
+/* ============ BOTTOM TAB BAR ============ */
+.tab-bar{
+  position:fixed; left:0; right:0; bottom:0; z-index:200;
+  background:#fff; border-top:1px solid var(--line);
+  display:flex; padding-bottom:env(safe-area-inset-bottom);
+  box-shadow:0 -2px 14px rgba(20,20,20,0.06);
 }
-.cart-fab:hover{ background:#000; }
-.cart-fab.show{ display:flex; }
-.cart-fab-left{ display:flex; align-items:center; gap:11px; }
-.cart-count{
-  background:var(--primary); color:#fff;
-  width:27px; height:27px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center; font-size:0.8rem;
+.tab-bar-btn{
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:3px; padding:9px 4px 8px; color:var(--ink-soft); font-size:0.7rem; font-weight:600;
+  position:relative; transition:color 0.2s ease;
 }
-.cart-fab-label{ font-size:0.92rem; }
-.cart-fab-total{ font-family:var(--font-display); font-size:1.05rem; }
+.tab-bar-btn i{ font-size:1.25rem; transition:transform 0.2s ease; }
+.tab-bar-btn.active{ color:var(--primary); }
+.tab-bar-btn.active i{ transform:translateY(-1px) scale(1.08); }
+.tab-bar-badge{
+  position:absolute; top:2px; right:calc(50% - 22px);
+  background:var(--primary); color:#fff; font-size:0.62rem; font-weight:800;
+  min-width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  padding:0 3px; box-shadow:0 2px 6px rgba(232,51,43,0.4);
+  transform:scale(0); transition:transform 0.25s cubic-bezier(.34,1.4,.4,1);
+}
+.tab-bar-badge.show{ transform:scale(1); }
+
+/* ============ ADD-TO-CART TOAST ============ */
+.add-toast{
+  position:fixed; left:50%; bottom:calc(var(--tabbar-h) + 14px); z-index:210;
+  transform:translate(-50%, 16px); opacity:0; pointer-events:none;
+  background:var(--gradient-primary); color:#fff; font-weight:700; font-size:0.86rem;
+  padding:12px 22px; border-radius:100px; box-shadow:var(--gradient-glow);
+  display:flex; align-items:center; gap:10px; white-space:nowrap;
+  transition:opacity 0.28s ease, transform 0.28s ease;
+}
+.add-toast.show{ opacity:1; transform:translate(-50%, 0); }
 
 /* ============ ORDER TRACKER ============ */
 .order-tracker{
@@ -371,22 +394,39 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .order-tracker-cancelled-text{ color:var(--danger); font-weight:700; font-size:0.85rem; text-align:center; }
 
 /* ============ CART PANEL ============ */
-.cart-panel{
-  position:fixed; inset:0; z-index:110;
-  background:rgba(28,28,28,0.55);
-  display:flex; justify-content:flex-end;
-  opacity:0; pointer-events:none; transition:opacity var(--transition);
-}
-.cart-panel.open{ opacity:1; pointer-events:auto; }
-.cart-sheet{
-  background:var(--bg-alt); width:100%; max-width:420px; height:100%;
-  display:flex; flex-direction:column;
-  transform:translateX(100%); transition:transform var(--transition);
-}
-.cart-panel.open .cart-sheet{ transform:translateX(0); }
+.app-screen{ animation:screenFadeIn 0.32s ease; min-height:50vh; }
+@keyframes screenFadeIn{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none;} }
+.screen-head{ padding:24px 20px 6px; max-width:var(--container); margin:0 auto; }
+.screen-head h2{ font-family:var(--font-display); font-size:1.4rem; color:var(--ink); }
 .cart-head{ padding:22px 22px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); background:var(--bg-card); }
 .cart-head h3{ font-size:1.25rem; color:var(--ink); }
-.cart-items{ flex:1; overflow-y:auto; padding:16px 18px; display:flex; flex-direction:column; gap:12px; }
+.cart-items{ padding:14px 0 4px; display:flex; flex-direction:column; gap:12px; }
+
+/* ============ PROMO CAROUSEL ============ */
+.promo-carousel{ position:relative; margin:16px 0 6px; }
+.promo-track{
+  display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:12px;
+  scrollbar-width:none; -webkit-overflow-scrolling:touch; border-radius:var(--radius-md);
+}
+.promo-track::-webkit-scrollbar{ display:none; }
+.promo-slide{
+  flex:0 0 100%; scroll-snap-align:start; border-radius:var(--radius-md); overflow:hidden;
+  position:relative; aspect-ratio:16/7.4; background:var(--gradient-primary); color:#fff;
+  display:flex; align-items:center; padding:24px 28px;
+}
+.promo-slide::after{ content:""; position:absolute; inset:0; background:radial-gradient(circle at 85% 30%, rgba(255,255,255,0.16), transparent 55%); }
+.promo-slide-text{ position:relative; z-index:1; max-width:64%; }
+.promo-slide-text h3{ font-family:var(--font-display); font-size:1.15rem; font-weight:800; margin-bottom:4px; line-height:1.2; }
+.promo-slide-text p{ font-size:0.8rem; opacity:0.92; }
+.promo-slide i{ position:absolute; right:14px; bottom:-10px; font-size:5.2rem; opacity:0.22; z-index:0; }
+.promo-dots{ display:flex; justify-content:center; gap:6px; margin-top:10px; }
+.promo-dot{ width:6px; height:6px; border-radius:50%; background:var(--line); transition:all 0.25s ease; }
+.promo-dot.active{ background:var(--primary); width:18px; border-radius:4px; }
+
+/* ============ PHONE INPUT WITH WHATSAPP ICON ============ */
+.phone-input-wrap{ position:relative; }
+.phone-input-wrap i{ position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#25D366; font-size:1.05rem; pointer-events:none; }
+.phone-input-wrap input{ padding-left:40px !important; }
 .cart-empty{ text-align:center; color:var(--ink-soft); padding:60px 20px; font-size:0.92rem; }
 .cart-item{ display:flex; gap:12px; background:var(--bg-card); border-radius:var(--radius-sm); padding:10px; border:1px solid var(--line); align-items:center; }
 .cart-item-thumb{ width:52px; height:52px; border-radius:12px; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; }
@@ -397,7 +437,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .cart-item-note{ font-size:0.75rem; color:var(--primary); margin-top:3px; font-style:italic; }
 .cart-item-qty{ display:flex; align-items:center; gap:9px; }
 .cart-item-qty button{ width:30px; height:30px; border-radius:50%; background:var(--bg-alt); border:1px solid var(--line); font-size:0.75rem; display:flex; align-items:center; justify-content:center; }
-.cart-foot{ padding:18px 22px 24px; background:var(--bg-card); border-top:1px solid var(--line); }
+.cart-foot{ padding:16px 0 24px; background:var(--bg-card); }
 .cart-customer-fields{ display:flex; flex-direction:column; gap:9px; margin-bottom:16px; }
 .cart-input{
   width:100%; padding:12px 14px; font-family:inherit; font-size:0.9rem; color:var(--ink);
@@ -480,13 +520,14 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
   .whatsapp-contact-btn .wa-label{ display:none; }
   .whatsapp-contact-btn{ padding:9px; }
   .dish-row-thumb{ width:80px; height:80px; }
-  .cart-fab{ left:12px; right:12px; bottom:12px; padding:13px 16px; }
+  .tab-bar-btn{ font-size:0.66rem; }
   .order-tracker{ left:12px; right:12px; bottom:12px; }
 }
 </style>
 </head>
 <body>
 
+<div id="screenMenu" class="app-screen">
 <header class="site-header">
   <div class="container">
     <div class="brand">
@@ -516,7 +557,6 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
           <button type="button" data-lang="ky">KY</button>
           <button type="button" data-lang="en">EN</button>
         </div>
-        <button type="button" class="history-btn" id="historyBtn"><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="historyBtn">История заказов</span></button>
         <a class="whatsapp-contact-btn" id="whatsappContactBtn" href="#" target="_blank" rel="noopener">
           <i class="fa-brands fa-whatsapp"></i> <span class="wa-label" data-i18n="whatsappBtn">Написать в WhatsApp</span>
         </a>
@@ -530,6 +570,13 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
     </div>
   </div>
 </header>
+
+<div class="container">
+  <div class="promo-carousel" id="promoCarousel">
+    <div class="promo-track" id="promoTrack"></div>
+    <div class="promo-dots" id="promoDots"></div>
+  </div>
+</div>
 
 <div class="cat-nav-wrap">
   <div class="cat-nav-row">
@@ -549,14 +596,6 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 
 <main class="container menu-section" id="menuSection"></main>
 
-<button class="cart-fab" id="cartFab">
-  <span class="cart-fab-left">
-    <span class="cart-count" id="cartCount">0</span>
-    <span class="cart-fab-label" data-i18n="cartLabel">Корзина</span>
-  </span>
-  <span class="cart-fab-total" id="cartFabTotal">0 сом</span>
-</button>
-
 <div class="order-tracker" id="orderTracker">
   <div class="order-tracker-top">
     <div class="order-tracker-title"><i class="fa-solid fa-receipt"></i> <span data-i18n="orderSentTitle">Ваш заказ отправлен</span></div>
@@ -564,6 +603,12 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
   </div>
   <div id="orderTrackerBody"></div>
 </div>
+
+<footer class="site-footer">
+  <span data-i18n="footerText">Демо-шаблон меню для кафе и ресторанов</span> · <strong>Дастархан</strong> · <span data-i18n="footerMade">сделано для показа клиентам</span>
+</footer>
+</div>
+<!-- /screenMenu -->
 
 <!-- Dish modal -->
 <div class="modal-overlay" id="dishModal">
@@ -590,18 +635,19 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
   </div>
 </div>
 
-<!-- Cart panel -->
-<div class="cart-panel" id="cartPanel">
-  <div class="cart-sheet">
-    <div class="cart-head">
-      <h3 data-i18n="cartTitle">Ваш заказ</h3>
-      <button class="modal-close" id="cartClose" style="position:static;"><i class="fa-solid fa-xmark"></i></button>
-    </div>
+<div id="screenCart" class="app-screen" style="display:none;">
+  <div class="screen-head">
+    <h2 data-i18n="cartTitle">Ваш заказ</h2>
+  </div>
+  <div class="container">
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-foot">
       <div class="cart-customer-fields">
         <input type="text" id="customerNameInput" class="cart-input" data-i18n-placeholder="namePlaceholder" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
-        <input type="tel" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
+        <div class="phone-input-wrap">
+          <i class="fa-brands fa-whatsapp"></i>
+          <input type="tel" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
+        </div>
         <textarea id="customerCommentInput" class="cart-input" data-i18n-placeholder="commentPlaceholder" placeholder="Комментарий к заказу (по желанию)" maxlength="200" rows="2"></textarea>
       </div>
       <div class="cart-total-row"><span data-i18n="totalLabel">Итого</span><span id="cartTotal">0 сом</span></div>
@@ -610,6 +656,7 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
     </div>
   </div>
 </div>
+<!-- /screenCart -->
 
 <!-- Экран подтверждения заказа -->
 <div class="full-overlay" id="confirmOverlay">
@@ -665,20 +712,33 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
   </div>
 </div>
 
-<!-- История заказов -->
-<div class="full-overlay" id="historyOverlay">
-  <div class="full-overlay-head">
-    <h2 data-i18n="historyTitle">История заказов</h2>
-    <button class="icon-btn-plain" id="historyCloseBtn"><i class="fa-solid fa-xmark"></i></button>
+<div id="screenOrders" class="app-screen" style="display:none;">
+  <div class="screen-head">
+    <h2 data-i18n="historyTitle">Заказы</h2>
   </div>
-  <div class="full-overlay-body">
+  <div class="container">
     <div class="history-list" id="historyList"></div>
   </div>
 </div>
+<!-- /screenOrders -->
 
-<footer class="site-footer">
-  <span data-i18n="footerText">Демо-шаблон меню для кафе и ресторанов</span> · <strong>Дастархан</strong> · <span data-i18n="footerMade">сделано для показа клиентам</span>
-</footer>
+<div class="add-toast" id="addToast"><i class="fa-solid fa-circle-check"></i> <span id="addToastText"></span></div>
+
+<nav class="tab-bar" id="tabBar">
+  <button type="button" class="tab-bar-btn active" data-screen="menu">
+    <i class="fa-solid fa-bars"></i>
+    <span data-i18n="tabMenu">Меню</span>
+  </button>
+  <button type="button" class="tab-bar-btn" data-screen="cart">
+    <i class="fa-solid fa-cart-shopping"></i>
+    <span data-i18n="tabCart">Корзина</span>
+    <span class="tab-bar-badge" id="tabCartBadge">0</span>
+  </button>
+  <button type="button" class="tab-bar-btn" data-screen="orders">
+    <i class="fa-solid fa-clipboard-list"></i>
+    <span data-i18n="tabOrders">Заказы</span>
+  </button>
+</nav>
 
 <script>
 /* ===================== DATA ===================== */
@@ -714,6 +774,8 @@ const TRANSLATIONS = {
     cartLabel: "Корзина",
     cartEmptyTitle: "Корзина пуста",
     cartEmptySub: "Выберите блюда из меню",
+    tabMenu: "Меню", tabCart: "Корзина", tabOrders: "Заказы", addedToCart: "Добавлено: {name}",
+    promo1Title: "Готовим с любовью", promo1Sub: "Свежие блюда каждый день", promo2Title: "Быстрый самовывоз", promo2Sub: "Забирайте заказ уже через 15 минут", promo3Title: "Ждём вас снова", promo3Sub: "Спасибо, что выбираете нас",
     searchPlaceholder: "Поиск блюд…",
     searchEmpty: "Ничего не найдено",
     namePlaceholder: "Ваше имя (по желанию)",
@@ -767,6 +829,8 @@ const TRANSLATIONS = {
     cartLabel: "Себет",
     cartEmptyTitle: "Себет бош",
     cartEmptySub: "Менюдан тамак тандаңыз",
+    tabMenu: "Меню", tabCart: "Себет", tabOrders: "Буйрутмалар", addedToCart: "Кошулду: {name}",
+    promo1Title: "Сүйүү менен бышырабыз", promo1Sub: "Ар күнү жаңы даярдалган тамактар", promo2Title: "Тез алып кетүү", promo2Sub: "Буйрутманы 15 мүнөттөн кийин алыңыз", promo3Title: "Кайра күтөбүз", promo3Sub: "Бизди тандаганыңыз үчүн рахмат",
     searchPlaceholder: "Тамак издөө…",
     searchEmpty: "Эч нерсе табылган жок",
     namePlaceholder: "Атыңыз (каалосуз боюнча)",
@@ -820,6 +884,8 @@ const TRANSLATIONS = {
     cartLabel: "Cart",
     cartEmptyTitle: "Your cart is empty",
     cartEmptySub: "Pick some dishes from the menu",
+    tabMenu: "Menu", tabCart: "Cart", tabOrders: "Orders", addedToCart: "Added: {name}",
+    promo1Title: "Made with love", promo1Sub: "Fresh dishes every day", promo2Title: "Fast pickup", promo2Sub: "Grab your order in as little as 15 minutes", promo3Title: "See you again soon", promo3Sub: "Thank you for choosing us",
     searchPlaceholder: "Search dishes…",
     searchEmpty: "Nothing found",
     namePlaceholder: "Your name (optional)",
@@ -1179,10 +1245,7 @@ modalAddBtn.addEventListener("click", ()=>{
 });
 
 /* ===================== CART ===================== */
-const cartFab = document.getElementById("cartFab");
-const cartCount = document.getElementById("cartCount");
-const cartFabTotal = document.getElementById("cartFabTotal");
-const cartPanel = document.getElementById("cartPanel");
+const tabCartBadge = document.getElementById("tabCartBadge");
 const cartItemsEl = document.getElementById("cartItems");
 const cartTotalEl = document.getElementById("cartTotal");
 const checkoutBtn = document.getElementById("checkoutBtn");
@@ -1193,6 +1256,8 @@ function addToCart(id, qty, note){
   const noteNow = note ? note : (existing ? existing.note : "");
   cart[id] = { qty: qtyNow, note: noteNow || "" };
   syncCart();
+  const d = MENU.find(x=>x.id===id);
+  if(d) showAddToast(d.name);
 }
 function setQty(id, qty){
   if(qty<=0){ delete cart[id]; } else { cart[id] = { qty, note: (cart[id] && cart[id].note) || "" }; }
@@ -1209,13 +1274,21 @@ function cartItemCount(){
 }
 function syncCart(){
   const count = cartItemCount();
-  const total = cartTotal();
-  cartCount.textContent = count;
-  cartFabTotal.textContent = total + " " + t("curLabel");
-  cartFab.classList.toggle("show", count>0);
+  tabCartBadge.textContent = count;
+  tabCartBadge.classList.toggle("show", count>0);
   renderCartPanel();
   if(typeof refreshAllRowActions === "function") refreshAllRowActions();
 }
+
+let addToastTimer = null;
+function showAddToast(name){
+  const toast = document.getElementById("addToast");
+  document.getElementById("addToastText").textContent = t("addedToCart").replace("{name}", name);
+  toast.classList.add("show");
+  clearTimeout(addToastTimer);
+  addToastTimer = setTimeout(()=> toast.classList.remove("show"), 1600);
+}
+
 function renderCartPanel(){
   const entries = cartEntries();
   if(!entries.length){
@@ -1254,9 +1327,26 @@ function renderCartPanel(){
   checkoutBtn.disabled = entries.length===0;
 }
 
-cartFab.addEventListener("click", ()=> cartPanel.classList.add("open"));
-document.getElementById("cartClose").addEventListener("click", ()=> cartPanel.classList.remove("open"));
-cartPanel.addEventListener("click", (e)=>{ if(e.target===cartPanel) cartPanel.classList.remove("open"); });
+/* ===================== SCREENS / TAB BAR ===================== */
+const appScreens = {
+  menu: document.getElementById("screenMenu"),
+  cart: document.getElementById("screenCart"),
+  orders: document.getElementById("screenOrders")
+};
+let currentScreen = "menu";
+function switchScreen(name){
+  if(!appScreens[name] || name===currentScreen && appScreens[name].style.display!=="none"){
+    if(!appScreens[name]) return;
+  }
+  currentScreen = name;
+  Object.entries(appScreens).forEach(([key, el])=>{ el.style.display = key===name ? "" : "none"; });
+  document.querySelectorAll(".tab-bar-btn").forEach(btn=> btn.classList.toggle("active", btn.dataset.screen===name));
+  window.scrollTo({ top:0, behavior:"auto" });
+  if(name==="orders") openHistoryOverlay();
+}
+document.querySelectorAll(".tab-bar-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=> switchScreen(btn.dataset.screen));
+});
 
 /* ===================== ПОИСК ПО МЕНЮ ===================== */
 const searchToggleBtn = document.getElementById("searchToggleBtn");
@@ -1319,7 +1409,6 @@ customerPhoneInput.addEventListener("input", ()=>{
    Запись в базу и уведомление в Telegram происходят только на шаге «Оплатить». */
 const confirmOverlay = document.getElementById("confirmOverlay");
 const paymentOverlay = document.getElementById("paymentOverlay");
-const historyOverlay = document.getElementById("historyOverlay");
 let pendingOrder = null; // { id, entries, total, customerName, customerPhone }
 
 checkoutBtn.addEventListener("click", ()=>{
@@ -1343,7 +1432,6 @@ checkoutBtn.addEventListener("click", ()=>{
   catch(e){ orderId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c=>{ const r=Math.random()*16|0; return (c==="x"?r:(r&0x3|0x8)).toString(16); }); }
 
   pendingOrder = { id: orderId, entries, total: cartTotal(), customerName, customerPhone, customerComment };
-  cartPanel.classList.remove("open");
   openConfirmOverlay();
 });
 
@@ -1362,11 +1450,11 @@ function openConfirmOverlay(){
 }
 document.getElementById("confirmCloseBtn").addEventListener("click", ()=>{
   confirmOverlay.classList.remove("open");
-  cartPanel.classList.add("open");
+  switchScreen("cart");
 });
 document.getElementById("confirmChangeBtn").addEventListener("click", ()=>{
   confirmOverlay.classList.remove("open");
-  cartPanel.classList.add("open");
+  switchScreen("cart");
 });
 document.getElementById("confirmProceedBtn").addEventListener("click", ()=>{
   confirmOverlay.classList.remove("open");
@@ -1437,6 +1525,7 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
     setTimeout(()=>{
       paymentOverlay.classList.remove("open");
       payBtn.style.display = "flex";
+      switchScreen("menu");
     }, 1400);
   }catch(err){
     alert(t("orderFailedMsg") + "\n\n" + (err && err.message ? err.message : ""));
@@ -1478,16 +1567,12 @@ function saveOrderToHistory(orderId, total){
   }catch(e){ /* ignore */ }
 }
 
-document.getElementById("historyBtn").addEventListener("click", openHistoryOverlay);
-document.getElementById("historyCloseBtn").addEventListener("click", ()=> historyOverlay.classList.remove("open"));
-
 async function openHistoryOverlay(){
-  historyOverlay.classList.add("open");
   const listEl = document.getElementById("historyList");
   let history = [];
   try{ history = JSON.parse(localStorage.getItem(ORDER_HISTORY_KEY) || "[]"); }catch(e){ /* ignore */ }
   if(!history.length){
-    listEl.innerHTML = `<div class="cart-empty">${t("historyEmpty")}</div>`;
+    listEl.innerHTML = `<div class="cart-empty"><i class="fa-solid fa-clipboard-list" style="font-size:1.8rem;display:block;margin-bottom:10px;"></i>${t("historyEmpty")}</div>`;
     return;
   }
   listEl.innerHTML = history.map(h=>`
@@ -1498,7 +1583,7 @@ async function openHistoryOverlay(){
   `).join("");
   listEl.querySelectorAll(".history-item").forEach(row=>{
     row.addEventListener("click", ()=>{
-      historyOverlay.classList.remove("open");
+      switchScreen("menu");
       startOrderTracking(row.dataset.id);
     });
   });
@@ -1596,6 +1681,7 @@ function escapeHtml(str){
 function renderAll(){
   renderCatNav();
   renderMenu();
+  renderPromoCarousel();
   syncCart();
   requestAnimationFrame(()=>{
     if(!activeCat && CATEGORIES.length) activeCat = CATEGORIES[0].id;
@@ -1603,6 +1689,44 @@ function renderAll(){
     initScrollSpy();
     initFadeUp();
   });
+}
+
+/* ===================== PROMO CAROUSEL ===================== */
+let promoInterval = null;
+function renderPromoCarousel(){
+  const track = document.getElementById("promoTrack");
+  const dotsEl = document.getElementById("promoDots");
+  if(!track) return;
+
+  const slides = [
+    { icon:"fa-kitchen-set", title: t("promo1Title"), sub: t("promo1Sub") },
+    { icon:"fa-bolt", title: t("promo2Title"), sub: t("promo2Sub") },
+    { icon:"fa-heart", title: t("promo3Title"), sub: t("promo3Sub") }
+  ];
+  track.innerHTML = slides.map(s=>`
+    <div class="promo-slide">
+      <div class="promo-slide-text"><h3>${s.title}</h3><p>${s.sub}</p></div>
+      <i class="fa-solid ${s.icon}"></i>
+    </div>
+  `).join("");
+  dotsEl.innerHTML = slides.map((_,i)=> `<span class="promo-dot${i===0?' active':''}"></span>`).join("");
+
+  const dots = dotsEl.querySelectorAll(".promo-dot");
+  function updateDots(){
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    dots.forEach((d,i)=> d.classList.toggle("active", i===idx));
+  }
+  track.addEventListener("scroll", ()=>{
+    clearTimeout(track._scrollTimer);
+    track._scrollTimer = setTimeout(updateDots, 80);
+  });
+
+  clearInterval(promoInterval);
+  promoInterval = setInterval(()=>{
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    const next = (idx+1) % slides.length;
+    track.scrollTo({ left: next*track.clientWidth, behavior:"smooth" });
+  }, 4500);
 }
 
 async function loadMenu(showSpinner){
