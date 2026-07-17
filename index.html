@@ -227,8 +227,8 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
   font-size:2rem; position:relative; overflow:hidden;
   background:var(--bg-alt);
 }
-.dish-row-thumb img{ width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; }
-.dish-row:hover .dish-row-thumb img{ transform:scale(1.06); }
+.dish-row-thumb img{ width:100%; height:100%; object-fit:cover; transform:scale(1.18); transition:transform 0.5s ease; }
+.dish-row:hover .dish-row-thumb img{ transform:scale(1.26); }
 .dish-row-thumb .badge-unavail{
   position:absolute; inset:0;
   background:rgba(20,20,20,0.58);
@@ -298,7 +298,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
   height:230px; display:flex; align-items:center; justify-content:center;
   font-size:4rem; position:relative; overflow:hidden;
 }
-.modal-photo img{ width:100%; height:100%; object-fit:cover; }
+.modal-photo img{ width:100%; height:100%; object-fit:cover; transform:scale(1.15); }
 .modal-close{
   position:absolute; top:14px; right:14px;
   width:38px; height:38px; border-radius:50%;
@@ -367,12 +367,12 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 
 /* ============ ORDER TRACKER ============ */
 .order-tracker{
-  position:fixed; left:18px; right:18px; bottom:18px;
+  position:fixed; left:18px; right:18px; bottom:calc(var(--tabbar-h) + 14px);
   max-width:calc(var(--container) - 36px); margin:0 auto;
   background:var(--bg-card); color:var(--ink);
   border-radius:var(--radius-md); padding:16px 18px;
   display:none; flex-direction:column; gap:10px;
-  box-shadow:var(--shadow-lg); z-index:60; border:1px solid var(--line);
+  box-shadow:var(--shadow-lg); z-index:190; border:1px solid var(--line);
 }
 .order-tracker.show{ display:flex; }
 .order-tracker-top{ display:flex; align-items:center; justify-content:space-between; }
@@ -430,7 +430,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .cart-empty{ text-align:center; color:var(--ink-soft); padding:60px 20px; font-size:0.92rem; }
 .cart-item{ display:flex; gap:12px; background:var(--bg-card); border-radius:var(--radius-sm); padding:10px; border:1px solid var(--line); align-items:center; }
 .cart-item-thumb{ width:52px; height:52px; border-radius:12px; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; }
-.cart-item-thumb img{ width:100%; height:100%; object-fit:cover; }
+.cart-item-thumb img{ width:100%; height:100%; object-fit:cover; transform:scale(1.15); }
 .cart-item-info{ flex:1; min-width:0; }
 .cart-item-name{ font-weight:700; font-size:0.88rem; font-family:var(--font-display); color:var(--ink); }
 .cart-item-price{ font-size:0.78rem; color:var(--ink-soft); }
@@ -461,7 +461,7 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 
 /* ============ CONFIRM / PAYMENT / HISTORY OVERLAYS ============ */
 .full-overlay{
-  position:fixed; inset:0; z-index:120;
+  position:fixed; inset:0; z-index:300;
   background:var(--bg); display:flex; flex-direction:column;
   opacity:0; pointer-events:none; transform:translateY(16px);
   transition:opacity var(--transition), transform var(--transition);
@@ -609,7 +609,7 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 
 <div class="order-tracker" id="orderTracker">
   <div class="order-tracker-top">
-    <div class="order-tracker-title"><i class="fa-solid fa-receipt"></i> <span data-i18n="orderSentTitle">Ваш заказ отправлен</span></div>
+    <div class="order-tracker-title"><i class="fa-solid fa-receipt"></i> <span data-i18n="orderSentTitle">Ваш заказ отправлен</span><span id="orderTrackerNumber"></span></div>
     <button class="order-tracker-close" id="orderTrackerClose" aria-label="Скрыть"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div id="orderTrackerBody"></div>
@@ -653,17 +653,8 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
   <div class="container">
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-foot">
-      <div class="cart-customer-fields">
-        <input type="text" id="customerNameInput" class="cart-input" data-i18n-placeholder="namePlaceholder" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
-        <div class="phone-input-wrap">
-          <i class="fa-brands fa-whatsapp"></i>
-          <input type="tel" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
-        </div>
-        <textarea id="customerCommentInput" class="cart-input" data-i18n-placeholder="commentPlaceholder" placeholder="Комментарий к заказу (по желанию)" maxlength="200" rows="2"></textarea>
-      </div>
       <div class="cart-total-row"><span data-i18n="totalLabel">Итого</span><span id="cartTotal">0 сом</span></div>
-      <button class="checkout-btn" id="checkoutBtn"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="submitOrderBtn">Отправить заказ</span></button>
-      <p class="checkout-note" data-i18n="checkoutNote">На следующем экране проверьте заказ и подтвердите оплату</p>
+      <button class="checkout-btn" id="checkoutBtn"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="submitOrderBtn">Оформить заказ</span></button>
     </div>
   </div>
 </div>
@@ -678,6 +669,14 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
   <div class="full-overlay-body">
     <p class="full-overlay-sub" data-i18n="confirmSub">Проверьте, что всё верно. После создания изменить его уже не получится.</p>
     <div class="confirm-list" id="confirmList"></div>
+    <div class="cart-customer-fields">
+      <input type="text" id="customerNameInput" class="cart-input" data-i18n-placeholder="namePlaceholder" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
+      <div class="phone-input-wrap">
+        <i class="fa-brands fa-whatsapp"></i>
+        <input type="tel" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
+      </div>
+      <textarea id="customerCommentInput" class="cart-input" data-i18n-placeholder="commentPlaceholder" placeholder="Комментарий к заказу (по желанию)" maxlength="200" rows="2"></textarea>
+    </div>
     <div class="confirm-actions">
       <button class="btn-black" id="confirmProceedBtn" data-i18n="confirmBtn">Подтвердить</button>
       <button class="btn-outline-gray" id="confirmChangeBtn" data-i18n="changeBtn">Изменить</button>
@@ -1426,23 +1425,11 @@ checkoutBtn.addEventListener("click", ()=>{
   const entries = cartEntries();
   if(!entries.length) return;
 
-  const customerName = customerNameInput.value.trim();
-  const customerPhone = customerPhoneInput.value.trim();
-  const customerComment = customerCommentInput.value.trim();
-  const phoneDigitsOnly = customerPhone.replace(/\D/g, "").replace(/^996/, "");
-  if(!customerPhone || phoneDigitsOnly.length < 9){
-    customerPhoneInput.classList.add("field-error");
-    customerPhoneInput.focus();
-    alert(t("phoneRequired"));
-    return;
-  }
-  customerPhoneInput.classList.remove("field-error");
-
   let orderId;
   try{ orderId = crypto.randomUUID(); }
   catch(e){ orderId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c=>{ const r=Math.random()*16|0; return (c==="x"?r:(r&0x3|0x8)).toString(16); }); }
 
-  pendingOrder = { id: orderId, entries, total: cartTotal(), customerName, customerPhone, customerComment };
+  pendingOrder = { id: orderId, entries, total: cartTotal(), customerName:"", customerPhone:"", customerComment:"" };
   openConfirmOverlay();
 });
 
@@ -1457,17 +1444,38 @@ function openConfirmOverlay(){
       <div>${e.dish.price*e.qty} ${t("curLabel")}</div>
     </div>
   `).join("");
+  customerNameInput.value = "";
+  customerPhoneInput.value = "";
+  customerCommentInput.value = "";
+  customerPhoneInput.classList.remove("field-error");
   confirmOverlay.classList.add("open");
+  document.getElementById("tabBar").style.display = "none";
 }
 document.getElementById("confirmCloseBtn").addEventListener("click", ()=>{
   confirmOverlay.classList.remove("open");
+  document.getElementById("tabBar").style.display = "";
   switchScreen("cart");
 });
 document.getElementById("confirmChangeBtn").addEventListener("click", ()=>{
   confirmOverlay.classList.remove("open");
+  document.getElementById("tabBar").style.display = "";
   switchScreen("cart");
 });
 document.getElementById("confirmProceedBtn").addEventListener("click", ()=>{
+  const customerPhone = customerPhoneInput.value.trim();
+  const phoneDigitsOnly = customerPhone.replace(/\D/g, "").replace(/^996/, "");
+  if(!customerPhone || phoneDigitsOnly.length < 9){
+    customerPhoneInput.classList.add("field-error");
+    customerPhoneInput.focus();
+    alert(t("phoneRequired"));
+    return;
+  }
+  customerPhoneInput.classList.remove("field-error");
+
+  pendingOrder.customerName = customerNameInput.value.trim();
+  pendingOrder.customerPhone = customerPhone;
+  pendingOrder.customerComment = customerCommentInput.value.trim();
+
   confirmOverlay.classList.remove("open");
   openPaymentOverlay();
 });
@@ -1483,7 +1491,7 @@ function openPaymentOverlay(){
   `).join("");
   document.getElementById("paymentTotal").textContent = pendingOrder.total + " " + t("curLabel");
   document.getElementById("paymentFootTotal").textContent = pendingOrder.total + " " + t("curLabel");
-  document.getElementById("paymentOrderId").textContent = String(pendingOrder.id).slice(0,8);
+  document.getElementById("paymentOrderId").textContent = "—";
   document.getElementById("paymentDate").textContent = new Date().toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
   document.getElementById("paymentStatus").textContent = t("statusNew");
   document.getElementById("paymentStatus").dataset.i18n = "statusNew";
@@ -1492,6 +1500,7 @@ function openPaymentOverlay(){
   payBtn.disabled = false;
   payBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span data-i18n="payBtn">${t("payBtn")}</span>`;
   paymentOverlay.classList.add("open");
+  document.getElementById("tabBar").style.display = "none";
 }
 
 document.getElementById("paymentHelpBtn").addEventListener("click", ()=>{
@@ -1511,18 +1520,30 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
 
   const { id: orderId, entries, total, customerName, customerPhone, customerComment } = pendingOrder;
   try{
-    const { error: orderErr } = await supabaseClient.from("orders").insert({
-      id: orderId, status:"new", total, customer_name: customerName || null, customer_contact: customerPhone, comment: customerComment || null
-    });
-    if(orderErr) throw orderErr;
+    function randomOrderNumber(){ return Math.floor(1000 + Math.random()*9000); }
+
+    let orderNumber = null;
+    for(let attempt=0; attempt<6; attempt++){
+      const candidate = randomOrderNumber();
+      const { error: orderErr } = await supabaseClient.from("orders").insert({
+        id: orderId, order_number: candidate, status:"new", total,
+        customer_name: customerName || null, customer_contact: customerPhone, comment: customerComment || null
+      });
+      if(!orderErr){ orderNumber = candidate; break; }
+      if(orderErr.code !== "23505") throw orderErr; // не про уникальность номера — реальная ошибка, прекращаем
+      // иначе номер уже занят — пробуем другой на следующей итерации
+    }
+    if(orderNumber === null) throw new Error(t("orderFailedMsg"));
+    document.getElementById("paymentOrderId").textContent = orderNumber;
+
     const { error: itemsErr } = await supabaseClient.from("order_items").insert(entries.map(e=>({
       order_id: orderId, dish_id: e.dish.id, dish_name: e.dish.name, price: e.dish.price, qty: e.qty, note: e.note || null
     })));
     if(itemsErr) throw itemsErr;
 
-    sendTelegramNotification({ orderId, entries, total, customerName, customerPhone, customerComment });
-    saveOrderToHistory(orderId, total);
-    startOrderTracking(orderId);
+    sendTelegramNotification({ orderId, orderNumber, entries, total, customerName, customerPhone, customerComment });
+    saveOrderToHistory(orderId, orderNumber, total);
+    startOrderTracking(orderId, orderNumber);
 
     document.getElementById("paymentWaitingBanner").style.display = "block";
     payBtn.style.display = "none";
@@ -1535,6 +1556,7 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
 
     setTimeout(()=>{
       paymentOverlay.classList.remove("open");
+      document.getElementById("tabBar").style.display = "";
       payBtn.style.display = "flex";
       switchScreen("menu");
     }, 1400);
@@ -1547,9 +1569,9 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
 
 // Отправляет уведомление о новом заказе в Telegram-бота (лучше-чем-ничего: если не получится,
 // заказ всё равно уже сохранён в базе и виден в админке).
-async function sendTelegramNotification({ orderId, entries, total, customerName, customerPhone, customerComment }){
+async function sendTelegramNotification({ orderId, orderNumber, entries, total, customerName, customerPhone, customerComment }){
   if(!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
-  let text = `🆕 Новый заказ №${String(orderId).slice(0,8)} — ${CAFE_NAME}\n\n`;
+  let text = `🆕 Новый заказ №${orderNumber} — ${CAFE_NAME}\n\n`;
   entries.forEach(e=>{
     text += `• ${e.dish.name} × ${e.qty} — ${e.dish.price*e.qty} ${t("curLabel")}`;
     if(e.note) text += ` (${e.note})`;
@@ -1570,10 +1592,10 @@ async function sendTelegramNotification({ orderId, entries, total, customerName,
 }
 
 /* ===================== ИСТОРИЯ ЗАКАЗОВ (localStorage) ===================== */
-function saveOrderToHistory(orderId, total){
+function saveOrderToHistory(orderId, orderNumber, total){
   try{
     const list = JSON.parse(localStorage.getItem(ORDER_HISTORY_KEY) || "[]");
-    list.unshift({ id: orderId, total, createdAt: Date.now() });
+    list.unshift({ id: orderId, orderNumber, total, createdAt: Date.now() });
     localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(list.slice(0, 20)));
   }catch(e){ /* ignore */ }
 }
@@ -1613,13 +1635,13 @@ function historyItemHTML(h, status){
   return `
     <div class="history-item" data-id="${h.id}">
       <div class="history-item-top">
-        <span>№${String(h.id).slice(0,8)}</span>
+        <span>№${h.orderNumber || String(h.id).slice(0,8)}</span>
         ${statusBadgeHTML(status)}
       </div>
       <div class="history-item-sub">${new Date(h.createdAt).toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" })}</div>
       <div class="history-item-bottom">
         <span class="history-item-total">${h.total} ${t("curLabel")}</span>
-        <button type="button" class="history-track-btn" data-id="${h.id}">${t("trackOrderBtn")}</button>
+        <button type="button" class="history-track-btn" data-id="${h.id}" data-number="${h.orderNumber||''}">${t("trackOrderBtn")}</button>
       </div>
     </div>
   `;
@@ -1630,7 +1652,7 @@ function wireHistoryItemEvents(){
     btn.addEventListener("click", (e)=>{
       e.stopPropagation();
       switchScreen("menu");
-      startOrderTracking(btn.dataset.id);
+      startOrderTracking(btn.dataset.id, btn.dataset.number || null);
     });
   });
 }
@@ -1654,8 +1676,10 @@ const ORDER_HISTORY_KEY = "dastarkhan_order_history";
 const ORDER_TRACK_MAX_AGE_MS = 3*60*60*1000; // не отслеживаем заказы старше 3 часов
 let orderPollTimer = null;
 
-function startOrderTracking(orderId){
-  localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify({ id: orderId, startedAt: Date.now() }));
+function startOrderTracking(orderId, orderNumber){
+  const numberToShow = orderNumber || (JSON.parse(localStorage.getItem(ORDER_STORAGE_KEY) || "null")||{}).orderNumber;
+  localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify({ id: orderId, orderNumber: numberToShow, startedAt: Date.now() }));
+  document.getElementById("orderTrackerNumber").textContent = numberToShow ? ` №${numberToShow}` : "";
   document.getElementById("orderTracker").classList.add("show");
   pollOrderStatus(orderId);
   clearInterval(orderPollTimer);
@@ -1706,7 +1730,7 @@ function renderOrderTracker(status){
   try{
     const saved = JSON.parse(localStorage.getItem(ORDER_STORAGE_KEY) || "null");
     if(saved && saved.id && (Date.now() - saved.startedAt) < ORDER_TRACK_MAX_AGE_MS){
-      startOrderTracking(saved.id);
+      startOrderTracking(saved.id, saved.orderNumber);
     } else if(saved){
       localStorage.removeItem(ORDER_STORAGE_KEY);
     }

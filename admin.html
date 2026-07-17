@@ -1243,7 +1243,7 @@ function orderCardHTML(o){
     <div class="order-card">
       <div class="order-card-top">
         <div>
-          <div class="order-card-id">№${escapeHtml(String(o.id).slice(0,8))}</div>
+          <div class="order-card-id">№${o.order_number ? escapeHtml(String(o.order_number)) : escapeHtml(String(o.id).slice(0,8))}</div>
           <div class="order-card-time">${time}</div>
         </div>
         <span class="order-status-badge status-${o.status}">${orderStatusLabel(o.status)}</span>
@@ -1276,7 +1276,7 @@ async function updateOrderStatus(orderId, newStatus){
 /* ---------- действия «Запросить оплату» / «Подтвердить оплату» / «Готово» ----------
    Открывают WhatsApp клиента с готовым текстом — администратору остаётся нажать «отправить». */
 function buildPaymentRequestMessage(order, items){
-  const shortId = String(order.id).slice(0,8);
+  const shortId = order.order_number || String(order.id).slice(0,8);
   let text = at("waGreeting").replace("{cafe}", CAFE_NAME).replace("{id}", shortId);
   items.forEach(it=>{
     text += at("waItemLine").replace("{name}", it.dish_name).replace("{qty}", it.qty).replace("{sum}", Number(it.price)*it.qty);
@@ -1288,7 +1288,7 @@ function buildPaymentRequestMessage(order, items){
 }
 
 function buildOrderReadyMessage(order){
-  const shortId = String(order.id).slice(0,8);
+  const shortId = order.order_number || String(order.id).slice(0,8);
   return at("waReadyMessage").replace("{id}", shortId).replace("{cafe}", CAFE_NAME).replace("{address}", CAFE_ADDRESS);
 }
 
