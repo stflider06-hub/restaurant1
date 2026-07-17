@@ -859,6 +859,10 @@ function setLang(lang){
   currentLang = lang;
   try{ localStorage.setItem(LANG_STORAGE_KEY, lang); }catch(e){ /* ignore */ }
   applyTranslations();
+  if(RAW_DISHES.length || RAW_CATEGORIES.length){
+    remapMenuForLanguage();
+    renderAll();
+  }
 }
 function langSwitchHTML(){
   return `<div class="lang-switch">
@@ -1570,21 +1574,9 @@ async function loadMenu(showSpinner){
     return;
   }
 
-  const catIconById = {};
-  (cats||[]).forEach(c=> catIconById[c.id] = c.icon || "fa-utensils");
-
-  CATEGORIES = (cats||[]).map(c=>({ id:c.id, label:c.name, icon:c.icon||"fa-utensils" }));
-  MENU = (dishes||[]).map(d=>({
-    id:d.id,
-    cat:d.category_id,
-    catIcon: catIconById[d.category_id] || "fa-utensils",
-    grad: gradFor(d.id),
-    photo:d.photo_url,
-    name:d.name,
-    desc:d.description,
-    price:Number(d.price),
-    unavailable: !d.is_available
-  }));
+  RAW_CATEGORIES = cats || [];
+  RAW_DISHES = dishes || [];
+  remapMenuForLanguage();
 
   if(!activeCat || !CATEGORIES.find(c=>c.id===activeCat)){
     activeCat = CATEGORIES.length ? CATEGORIES[0].id : null;
@@ -1597,6 +1589,39 @@ async function loadMenu(showSpinner){
   }
 
   renderAll();
+}
+
+let RAW_CATEGORIES = [];
+let RAW_DISHES = [];
+
+// Picks the field for the currently selected language, falling back to the
+// Russian (default) text if that dish/category hasn't been translated yet.
+function localizedText(base, ky, en){
+  if(currentLang === "ky") return (ky && ky.trim()) ? ky : base;
+  if(currentLang === "en") return (en && en.trim()) ? en : base;
+  return base;
+}
+
+function remapMenuForLanguage(){
+  const catIconById = {};
+  RAW_CATEGORIES.forEach(c=> catIconById[c.id] = c.icon || "fa-utensils");
+
+  CATEGORIES = RAW_CATEGORIES.map(c=>({
+    id:c.id,
+    label: localizedText(c.name, c.name_ky, c.name_en),
+    icon:c.icon||"fa-utensils"
+  }));
+  MENU = RAW_DISHES.map(d=>({
+    id:d.id,
+    cat:d.category_id,
+    catIcon: catIconById[d.category_id] || "fa-utensils",
+    grad: gradFor(d.id),
+    photo:d.photo_url,
+    name: localizedText(d.name, d.name_ky, d.name_en),
+    desc: localizedText(d.description, d.description_ky, d.description_en),
+    price:Number(d.price),
+    unavailable: !d.is_available
+  }));
 }
 
 function subscribeRealtime(){

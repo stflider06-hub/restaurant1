@@ -349,12 +349,28 @@ input:checked + .slider::before{ transform:translateX(18px); }
           <select id="dishCategory" required></select>
         </div>
         <div class="field">
-          <label for="dishName" data-i18n="dishNameLabel">Название</label>
+          <label for="dishName" data-i18n="dishNameLabel">Название (русский)</label>
           <input type="text" id="dishName" required data-i18n-ph="dishNamePh" placeholder="Например: Плов">
         </div>
         <div class="field">
-          <label for="dishDesc" data-i18n="dishDescLabel">Описание / состав</label>
+          <label for="dishNameKy">Название (кыргызча)</label>
+          <input type="text" id="dishNameKy" placeholder="Мисалы: Палоо">
+        </div>
+        <div class="field">
+          <label for="dishNameEn">Name (English)</label>
+          <input type="text" id="dishNameEn" placeholder="E.g.: Plov">
+        </div>
+        <div class="field">
+          <label for="dishDesc" data-i18n="dishDescLabel">Описание / состав (русский)</label>
           <textarea id="dishDesc" data-i18n-ph="dishDescPh" placeholder="Из чего состоит блюдо"></textarea>
+        </div>
+        <div class="field">
+          <label for="dishDescKy">Сүрөттөмө (кыргызча)</label>
+          <textarea id="dishDescKy" placeholder="Тамак эмнеден турат"></textarea>
+        </div>
+        <div class="field">
+          <label for="dishDescEn">Description (English)</label>
+          <textarea id="dishDescEn" placeholder="What the dish contains"></textarea>
         </div>
         <div class="field">
           <label for="dishPrice" data-i18n="dishPriceLabel">Цена (сом)</label>
@@ -704,6 +720,10 @@ function openForm(id){
     document.getElementById("dishCategory").value = d.category_id;
     document.getElementById("dishName").value = d.name;
     document.getElementById("dishDesc").value = d.description || "";
+    document.getElementById("dishNameKy").value = d.name_ky || "";
+    document.getElementById("dishNameEn").value = d.name_en || "";
+    document.getElementById("dishDescKy").value = d.description_ky || "";
+    document.getElementById("dishDescEn").value = d.description_en || "";
     document.getElementById("dishPrice").value = d.price;
     document.getElementById("dishAvailable").checked = d.is_available;
     document.getElementById("dishPublished").checked = d.is_published;
@@ -750,6 +770,10 @@ dishForm.addEventListener("submit", async (e) => {
       category_id: document.getElementById("dishCategory").value,
       name: document.getElementById("dishName").value.trim(),
       description: document.getElementById("dishDesc").value.trim(),
+      name_ky: document.getElementById("dishNameKy").value.trim() || null,
+      name_en: document.getElementById("dishNameEn").value.trim() || null,
+      description_ky: document.getElementById("dishDescKy").value.trim() || null,
+      description_en: document.getElementById("dishDescEn").value.trim() || null,
       price: Number(document.getElementById("dishPrice").value),
       photo_url: photoUrl,
       is_available: document.getElementById("dishAvailable").checked,
