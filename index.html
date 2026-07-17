@@ -18,23 +18,25 @@
    Fonts: Fraunces (display, serif) / Manrope (body)
    ========================================================= */
 :root{
-  --bg:            #FBF7F1;
-  --bg-alt:        #F3EBDE;
+  --bg:            #F8F1E4;
+  --bg-alt:        #EFE1C9;
   --bg-card:       #FFFFFF;
-  --ink:           #2A211C;
-  --ink-soft:      #8B7A6B;
-  --line:          #E8DECF;
-  --primary:       #B5502D;
-  --primary-dark:  #8F3D21;
-  --accent:        #C9973D;
-  --primary-soft:  #F3E1D3;
+  --ink:           #241A11;
+  --ink-soft:      #8A7360;
+  --line:          #E5D6B8;
+  --primary:       #A63C22;
+  --primary-dark:  #7C2C18;
+  --accent:        #C08A2E;
+  --primary-soft:  #F1DDC9;
+  --teal:          #1E5C53;
+  --teal-soft:     #DCEAE6;
   --danger:        #C1121F;
   --danger-soft:   #FBEAEA;
   --white:         #FFFFFF;
 
-  --shadow-sm: 0 1px 3px rgba(42,33,28,0.07), 0 1px 2px rgba(42,33,28,0.05);
-  --shadow-md: 0 8px 24px rgba(42,33,28,0.10);
-  --shadow-lg: 0 16px 40px rgba(42,33,28,0.16);
+  --shadow-sm: 0 1px 3px rgba(36,26,17,0.08), 0 1px 2px rgba(36,26,17,0.05);
+  --shadow-md: 0 10px 28px rgba(36,26,17,0.12);
+  --shadow-lg: 0 20px 48px rgba(36,26,17,0.18);
 
   --radius-sm: 16px;
   --radius-md: 20px;
@@ -42,6 +44,9 @@
 
   --font-display: 'Fraunces', serif;
   --font-body: 'Manrope', sans-serif;
+
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  --gradient-glow: 0 8px 22px rgba(166,60,34,0.30);
 
   --container: 1100px;
   --transition: 0.3s cubic-bezier(.25,.8,.25,1);
@@ -73,15 +78,24 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .site-header{
   background:var(--bg-alt);
   color:var(--ink);
-  padding:30px 0 26px;
+  padding:34px 0 28px;
   position:relative;
   overflow:hidden;
   border-bottom:1px solid var(--line);
 }
+.site-header::before{
+  content:"";
+  position:absolute; top:0; left:0; right:0; height:7px; z-index:2;
+  background:
+    linear-gradient(135deg, transparent 42%, rgba(255,255,255,0.55) 42% 58%, transparent 58%) 0 0/18px 18px,
+    linear-gradient(45deg, transparent 42%, var(--teal) 42% 58%, transparent 58%) 0 0/18px 18px,
+    var(--primary);
+}
 .site-header::after{
   content:"";
   position:absolute; inset:0;
-  background:radial-gradient(circle at 88% 0%, rgba(139,0,0,0.06), transparent 55%);
+  background:radial-gradient(circle at 90% -10%, rgba(166,60,34,0.10), transparent 55%),
+             radial-gradient(circle at 6% 110%, rgba(30,92,83,0.08), transparent 50%);
   pointer-events:none;
 }
 .site-header .container{ position:relative; z-index:1; }
@@ -110,18 +124,18 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .lang-switch button{ padding:6px 11px; border-radius:999px; font-size:0.72rem; font-weight:800; color:var(--ink-soft); letter-spacing:0.02em; }
 .lang-switch button.active{ background:var(--primary); color:#fff; }
 .brand-mark{
-  width:50px; height:50px; border-radius:50%;
-  background:var(--primary-soft);
+  width:52px; height:52px; border-radius:50%;
+  background:linear-gradient(145deg, var(--primary-soft) 0%, #fff 100%);
   display:flex; align-items:center; justify-content:center;
   flex-shrink:0; padding:8px;
-  box-shadow:0 0 0 1px rgba(139,0,0,0.08) inset;
+  box-shadow:0 0 0 1px rgba(166,60,34,0.14) inset, 0 6px 18px rgba(166,60,34,0.22);
 }
 .brand-mark svg{ width:100%; height:100%; }
-.brand-name{ font-family:var(--font-display); font-weight:800; font-size:1.5rem; letter-spacing:-0.01em; color:var(--ink); }
-.brand-sub{ font-size:0.8rem; opacity:0.75; font-weight:600; color:var(--ink-soft); }
-.header-title{ font-size:2rem; max-width:540px; margin-bottom:10px; font-weight:800; color:var(--ink); }
-.header-desc{ color:var(--ink-soft); font-size:0.97rem; max-width:480px; font-weight:500; }
-.header-meta{ display:flex; gap:12px; margin-top:22px; flex-wrap:wrap; }
+.brand-name{ font-family:var(--font-display); font-weight:800; font-size:1.65rem; letter-spacing:-0.01em; color:var(--ink); }
+.brand-sub{ font-size:0.76rem; opacity:0.85; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:0.09em; }
+.header-title{ font-family:var(--font-display); font-size:2.5rem; line-height:1.08; max-width:600px; margin-bottom:12px; font-weight:700; color:var(--ink); letter-spacing:-0.015em; }
+.header-desc{ color:var(--ink-soft); font-size:1rem; max-width:480px; font-weight:500; }
+.header-meta{ display:flex; gap:12px; margin-top:24px; flex-wrap:wrap; }
 .header-meta span{
   font-size:0.8rem; color:var(--ink-soft); display:flex; align-items:center; gap:7px; font-weight:600;
   background:var(--bg-card); border:1px solid var(--line); border-radius:999px; padding:7px 14px;
@@ -164,8 +178,14 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
   color:var(--ink-soft);
   transition:color var(--transition), font-weight var(--transition);
   white-space:nowrap;
+  position:relative;
 }
-.cat-btn.active{ color:var(--ink); font-weight:800; }
+.cat-btn.active{ color:var(--primary); font-weight:800; }
+.cat-btn.active::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:3px;
+  background:linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius:3px;
+}
 
 /* ============ SEARCH BAR ============ */
 .search-bar-wrap{ background:var(--bg); border-bottom:1px solid var(--line); padding:12px 0; display:none; }
@@ -195,13 +215,17 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .dish-list{ display:flex; flex-direction:column; gap:20px; }
 .dish-row{
   display:flex; gap:14px; align-items:center;
-  cursor:pointer;
+  cursor:pointer; transition:transform 0.25s ease;
 }
+.dish-row:hover{ transform:translateY(-2px); }
 .dish-row-thumb{
   width:104px; height:104px; border-radius:18px; flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
   font-size:2rem; position:relative; overflow:hidden;
+  box-shadow:0 6px 20px rgba(36,26,17,0.14);
+  transition:box-shadow 0.25s ease;
 }
+.dish-row:hover .dish-row-thumb{ box-shadow:0 10px 28px rgba(36,26,17,0.20); }
 .dish-row-thumb img{ width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; }
 .dish-row:hover .dish-row-thumb img{ transform:scale(1.06); }
 .dish-row-thumb .badge-unavail{
@@ -215,15 +239,15 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .dish-row-name{ font-family:var(--font-display); font-weight:700; font-size:1rem; color:var(--ink); }
 .dish-row-desc{ font-size:0.82rem; color:var(--ink-soft);
   display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
-.dish-row-price{ font-weight:800; font-size:1.05rem; color:var(--ink); font-family:var(--font-display); margin-top:3px; }
+.dish-row-price{ font-weight:800; font-size:1.05rem; color:var(--primary); font-family:var(--font-display); margin-top:3px; }
 .dish-row-actions{ flex-shrink:0; display:flex; align-items:center; }
 .dish-row-add{
   width:40px; height:40px; border-radius:12px;
-  background:var(--primary); color:#fff;
+  background:var(--gradient-primary); color:#fff;
   display:flex; align-items:center; justify-content:center;
-  font-size:1rem; transition:var(--transition);
+  font-size:1rem; transition:var(--transition); box-shadow:var(--gradient-glow);
 }
-.dish-row-add:hover{ background:var(--primary-dark); transform:scale(1.06); }
+.dish-row-add:hover{ transform:scale(1.08) translateY(-1px); box-shadow:0 10px 26px rgba(166,60,34,0.38); }
 .dish-row-stepper{ display:flex; align-items:center; gap:8px; }
 .dish-row-stepper button{
   width:36px; height:36px; border-radius:11px;
@@ -379,14 +403,18 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
   width:100%; padding:12px 14px; font-family:inherit; font-size:0.9rem; color:var(--ink);
   background:var(--bg-alt); border:1px solid var(--line); border-radius:var(--radius-sm);
 }
+textarea.cart-input{ resize:vertical; min-height:44px; }
 .cart-input:focus{ outline:none; border-color:var(--primary); }
 .cart-input.field-error{ border-color:var(--danger); }
 .cart-total-row{ display:flex; justify-content:space-between; font-weight:800; font-size:1.15rem; margin-bottom:16px; font-family:var(--font-display); color:var(--ink); }
 .checkout-btn{
-  width:100%; height:50px; padding:0 16px; background:var(--primary); color:#fff; border-radius:16px;
+  width:100%; height:52px; padding:0 16px;
+  background:linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color:#fff; border-radius:16px;
   font-weight:700; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:10px;
-  transition:var(--transition);
+  transition:var(--transition); box-shadow:0 10px 24px rgba(166,60,34,0.28);
 }
+.checkout-btn:hover{ box-shadow:0 14px 30px rgba(166,60,34,0.36); transform:translateY(-1px); }
 .checkout-btn:hover{ background:var(--primary-dark); box-shadow:var(--shadow-md); }
 .checkout-btn:disabled{ background:#D8D8D8; box-shadow:none; }
 .checkout-note{ text-align:center; font-size:0.75rem; color:var(--ink-soft); margin-top:11px; }
@@ -447,7 +475,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 /* ============ MOBILE ============ */
 @media (max-width:480px){
   .site-header{ padding:22px 0 22px; }
-  .header-title{ font-size:1.5rem; }
+  .header-title{ font-size:1.8rem; }
   .brand-name{ font-size:1.25rem; }
   .whatsapp-contact-btn .wa-label{ display:none; }
   .whatsapp-contact-btn{ padding:9px; }
@@ -466,7 +494,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
         <div class="brand-mark">
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <defs><radialGradient id="bgm" cx="35%" cy="30%" r="75%">
-              <stop offset="0%" stop-color="#CB6B41"/><stop offset="55%" stop-color="#B5502D"/><stop offset="100%" stop-color="#8F3D21"/>
+              <stop offset="0%" stop-color="#C55A38"/><stop offset="55%" stop-color="#A63C22"/><stop offset="100%" stop-color="#7C2C18"/>
             </radialGradient></defs>
             <circle cx="100" cy="100" r="98" fill="url(#bgm)"/>
             <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="0.5 7" stroke-linecap="round"/>
@@ -574,6 +602,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
       <div class="cart-customer-fields">
         <input type="text" id="customerNameInput" class="cart-input" data-i18n-placeholder="namePlaceholder" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
         <input type="tel" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
+        <textarea id="customerCommentInput" class="cart-input" data-i18n-placeholder="commentPlaceholder" placeholder="Комментарий к заказу (по желанию)" maxlength="200" rows="2"></textarea>
       </div>
       <div class="cart-total-row"><span data-i18n="totalLabel">Итого</span><span id="cartTotal">0 сом</span></div>
       <button class="checkout-btn" id="checkoutBtn"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="submitOrderBtn">Отправить заказ</span></button>
@@ -689,6 +718,7 @@ const TRANSLATIONS = {
     searchEmpty: "Ничего не найдено",
     namePlaceholder: "Ваше имя (по желанию)",
     phonePlaceholder: "Номер телефона *",
+    commentPlaceholder: "Комментарий к заказу (по желанию)",
     totalLabel: "Итого",
     curLabel: "сом",
     unavailLabel: "Нет в наличии", noConnection: "Не удалось подключиться к базе данных. Проверьте интернет-соединение и попробуйте снова.", orderFailedMsg: "Не удалось оформить заказ. Проверьте интернет-соединение и попробуйте ещё раз.", menuLoadFailed: "Не удалось загрузить меню.", menuComingSoon: "Меню скоро появится", retryBtn: "Попробовать снова",
@@ -741,6 +771,7 @@ const TRANSLATIONS = {
     searchEmpty: "Эч нерсе табылган жок",
     namePlaceholder: "Атыңыз (каалосуз боюнча)",
     phonePlaceholder: "Телефон номери *",
+    commentPlaceholder: "Буйрутмага комментарий (каалосуна жараша)",
     totalLabel: "Жалпы суммасы",
     curLabel: "сом",
     unavailLabel: "Жок", noConnection: "Базага туташуу мүмкүн болгон жок. Интернет байланышын текшерип, кайра аракет кылыңыз.", orderFailedMsg: "Буйрутманы тариздөө мүмкүн болгон жок. Интернет байланышын текшерип, кайра аракет кылыңыз.", menuLoadFailed: "Менюну жүктөө мүмкүн болгон жок.", menuComingSoon: "Меню жакында пайда болот", retryBtn: "Кайра аракет кылуу",
@@ -793,6 +824,7 @@ const TRANSLATIONS = {
     searchEmpty: "Nothing found",
     namePlaceholder: "Your name (optional)",
     phonePlaceholder: "Phone number *",
+    commentPlaceholder: "Order comment (optional)",
     totalLabel: "Total",
     curLabel: "som",
     unavailLabel: "Out of stock", noConnection: "Could not connect to the database. Please check your internet connection and try again.", orderFailedMsg: "Could not place the order. Please check your internet connection and try again.", menuLoadFailed: "Could not load the menu.", menuComingSoon: "Menu coming soon", retryBtn: "Try again",
@@ -1256,6 +1288,30 @@ searchClearBtn.addEventListener("click", ()=>{
 
 const customerNameInput = document.getElementById("customerNameInput");
 const customerPhoneInput = document.getElementById("customerPhoneInput");
+const customerCommentInput = document.getElementById("customerCommentInput");
+
+/* Автоформат номера под Кыргызстан: +996 (XXX) XXX-XXX */
+function formatKgPhone(raw){
+  let digits = raw.replace(/\D/g, "");
+  if(digits.startsWith("996")) digits = digits.slice(3);
+  else if(digits.startsWith("0")) digits = digits.slice(1);
+  digits = digits.slice(0, 9);
+
+  let out = "+996";
+  if(digits.length){
+    out += " (" + digits.slice(0,3);
+    if(digits.length >= 3) out += ")";
+    if(digits.length > 3) out += " " + digits.slice(3,6);
+    if(digits.length > 6) out += "-" + digits.slice(6,9);
+  }
+  return out;
+}
+customerPhoneInput.addEventListener("focus", ()=>{
+  if(!customerPhoneInput.value) customerPhoneInput.value = "+996 ";
+});
+customerPhoneInput.addEventListener("input", ()=>{
+  customerPhoneInput.value = formatKgPhone(customerPhoneInput.value);
+});
 
 /* ===================== ПОДТВЕРЖДЕНИЕ ЗАКАЗА → ОПЛАТА =====================
    Новая цепочка экранов (по образцу Pai.kg):
@@ -1272,7 +1328,9 @@ checkoutBtn.addEventListener("click", ()=>{
 
   const customerName = customerNameInput.value.trim();
   const customerPhone = customerPhoneInput.value.trim();
-  if(!customerPhone){
+  const customerComment = customerCommentInput.value.trim();
+  const phoneDigitsOnly = customerPhone.replace(/\D/g, "").replace(/^996/, "");
+  if(!customerPhone || phoneDigitsOnly.length < 9){
     customerPhoneInput.classList.add("field-error");
     customerPhoneInput.focus();
     alert(t("phoneRequired"));
@@ -1284,7 +1342,7 @@ checkoutBtn.addEventListener("click", ()=>{
   try{ orderId = crypto.randomUUID(); }
   catch(e){ orderId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c=>{ const r=Math.random()*16|0; return (c==="x"?r:(r&0x3|0x8)).toString(16); }); }
 
-  pendingOrder = { id: orderId, entries, total: cartTotal(), customerName, customerPhone };
+  pendingOrder = { id: orderId, entries, total: cartTotal(), customerName, customerPhone, customerComment };
   cartPanel.classList.remove("open");
   openConfirmOverlay();
 });
@@ -1352,10 +1410,10 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
   payBtn.disabled = true;
   payBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${t("payingBtn")}`;
 
-  const { id: orderId, entries, total, customerName, customerPhone } = pendingOrder;
+  const { id: orderId, entries, total, customerName, customerPhone, customerComment } = pendingOrder;
   try{
     const { error: orderErr } = await supabaseClient.from("orders").insert({
-      id: orderId, status:"new", total, customer_name: customerName || null, customer_contact: customerPhone
+      id: orderId, status:"new", total, customer_name: customerName || null, customer_contact: customerPhone, comment: customerComment || null
     });
     if(orderErr) throw orderErr;
     const { error: itemsErr } = await supabaseClient.from("order_items").insert(entries.map(e=>({
@@ -1363,7 +1421,7 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
     })));
     if(itemsErr) throw itemsErr;
 
-    sendTelegramNotification({ orderId, entries, total, customerName, customerPhone });
+    sendTelegramNotification({ orderId, entries, total, customerName, customerPhone, customerComment });
     saveOrderToHistory(orderId, total);
     startOrderTracking(orderId);
 
@@ -1373,6 +1431,7 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
     cart = {};
     customerNameInput.value = "";
     customerPhoneInput.value = "";
+    customerCommentInput.value = "";
     syncCart();
 
     setTimeout(()=>{
@@ -1388,7 +1447,7 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
 
 // Отправляет уведомление о новом заказе в Telegram-бота (лучше-чем-ничего: если не получится,
 // заказ всё равно уже сохранён в базе и виден в админке).
-async function sendTelegramNotification({ orderId, entries, total, customerName, customerPhone }){
+async function sendTelegramNotification({ orderId, entries, total, customerName, customerPhone, customerComment }){
   if(!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
   let text = `🆕 Новый заказ №${String(orderId).slice(0,8)} — ${CAFE_NAME}\n\n`;
   entries.forEach(e=>{
@@ -1399,6 +1458,7 @@ async function sendTelegramNotification({ orderId, entries, total, customerName,
   text += `\n${t("totalLabel")}: ${total} ${t("curLabel")}\n`;
   text += `Клиент: ${customerName || "не указано"}\n`;
   text += `Телефон: ${customerPhone}`;
+  if(customerComment) text += `\nКомментарий: ${customerComment}`;
 
   try{
     await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {

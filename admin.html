@@ -11,12 +11,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
 :root{
-  --bg:#FBF7F1; --bg-alt:#F3EBDE; --bg-card:#FFFFFF; --ink:#2A211C; --ink-soft:#8B7A6B; --line:#E8DECF;
-  --primary:#B5502D; --primary-dark:#8F3D21; --accent:#C9973D; --primary-soft:#F3E1D3;
+  --bg:#F8F1E4; --bg-alt:#EFE1C9; --bg-card:#FFFFFF; --ink:#241A11; --ink-soft:#8A7360; --line:#E5D6B8;
+  --primary:#A63C22; --primary-dark:#7C2C18; --accent:#C08A2E; --primary-soft:#F1DDC9;
   --green:#3F7D52; --green-soft:#E7F0E9; --red:#C1121F; --red-soft:#FBEAEA;
-  --shadow-sm: 0 1px 3px rgba(42,33,28,0.07), 0 1px 2px rgba(42,33,28,0.05);
-  --shadow-md: 0 8px 24px rgba(42,33,28,0.10);
-  --shadow-lg: 0 16px 40px rgba(42,33,28,0.16);
+  --shadow-sm: 0 1px 3px rgba(36,26,17,0.08), 0 1px 2px rgba(36,26,17,0.05);
+  --shadow-md: 0 8px 24px rgba(36,26,17,0.10);
+  --shadow-lg: 0 16px 40px rgba(36,26,17,0.16);
   --radius-sm:16px; --radius-md:20px; --radius-lg:24px;
   --font-display:'Fraunces',serif; --font-body:'Manrope',sans-serif;
 }
@@ -52,6 +52,15 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .tab-badge{ background:var(--red); color:#fff; font-size:0.68rem; font-weight:800; border-radius:999px; padding:2px 7px; }
 
 /* orders */
+.pie-charts-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+@media (max-width:720px){ .pie-charts-grid{ grid-template-columns:1fr; } }
+.pie-legend{ display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+.pie-legend-item{ display:flex; align-items:center; gap:8px; font-size:0.82rem; }
+.pie-legend-dot{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.pie-legend-label{ flex:1; color:var(--ink); }
+.pie-legend-value{ font-weight:800; color:var(--ink-soft); }
+.pie-empty{ text-align:center; color:var(--ink-soft); font-size:0.85rem; padding:30px 0; }
+
 .order-card{ background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-md); padding:16px 18px; margin-bottom:14px; box-shadow:var(--shadow-sm); }
 .order-card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
 .order-card-id{ font-size:0.72rem; color:var(--ink-soft); font-weight:700; }
@@ -66,6 +75,11 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .status-completed{ background:var(--line); color:var(--ink-soft); }
 .status-cancelled{ background:var(--red-soft); color:var(--red); }
 .order-customer{ display:flex; gap:16px; flex-wrap:wrap; font-size:0.82rem; color:var(--ink-soft); font-weight:700; margin-bottom:10px; }
+.order-comment{
+  font-size:0.82rem; color:var(--ink); background:var(--bg-alt); border-radius:10px;
+  padding:8px 12px; margin-bottom:10px; display:flex; gap:8px; align-items:flex-start;
+}
+.order-comment i{ color:var(--primary); margin-top:2px; }
 .order-customer i{ color:var(--primary-dark); margin-right:5px; }
 .order-items-list{ font-size:0.86rem; color:var(--ink); margin-bottom:10px; }
 .order-items-list div{ display:flex; justify-content:space-between; padding:3px 0; }
@@ -184,6 +198,39 @@ input:checked + .slider::before{ transform:translateX(18px); }
 .toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:#fff; padding:13px 22px; border-radius:999px; font-size:0.85rem; font-weight:700; box-shadow:var(--shadow-lg); opacity:0; pointer-events:none; transition:0.25s; z-index:200; display:flex; align-items:center; gap:9px; }
 .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 .toast i{ color:#8FD19E; }
+/* ---------- mobile ---------- */
+@media (max-width:720px){
+  .container{ padding:0 14px; }
+  .topbar{ padding:14px 0; margin-bottom:18px; }
+  .topbar .container{ gap:10px; }
+  .topbar-brand{ gap:9px; }
+  .topbar-mark{ width:32px; height:32px; }
+  .topbar-title{ font-size:0.98rem; }
+  .topbar-sub{ font-size:0.72rem; }
+  .topbar-actions{ width:100%; justify-content:space-between; gap:8px; }
+  .topbar-actions .btn-ghost span{ display:none; }
+  .topbar-actions .btn-ghost{ padding:9px 12px; }
+  .lang-switch button{ padding:6px 9px; font-size:0.68rem; }
+
+  .tab-nav{
+    flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;
+    scrollbar-width:none; margin:0 -14px 18px; padding:0 14px 4px;
+  }
+  .tab-nav::-webkit-scrollbar{ display:none; }
+  .tab-btn{ flex-shrink:0; padding:9px 14px; font-size:0.8rem; }
+
+  .stats-period{ overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
+  .stats-period button{ flex-shrink:0; white-space:nowrap; }
+  .stats-cards{ grid-template-columns:repeat(2,1fr); gap:10px; }
+  .stat-card{ padding:14px; }
+  .stat-card-value{ font-size:1.15rem; }
+
+  .expense-form-row{ flex-direction:column; }
+  .expense-form-row input, .expense-form-row select, .expense-form-row button{ width:100%; }
+  .expense-row{ flex-wrap:wrap; }
+
+  .toolbar{ flex-direction:column; align-items:flex-start; gap:10px; }
+}
 </style>
 </head>
 <body>
@@ -193,11 +240,11 @@ input:checked + .slider::before{ transform:translateX(18px); }
     <div class="topbar-brand">
       <div class="topbar-mark">
         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <path d="M78,88 C72,77 84,71 78,58" stroke="#B5502D" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
-          <path d="M100,84 C94,71 106,64 100,50" stroke="#B5502D" stroke-width="6.5" stroke-linecap="round" fill="none"/>
-          <path d="M122,88 C116,77 128,71 122,58" stroke="#B5502D" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
-          <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#B5502D"/>
-          <ellipse cx="100" cy="108" rx="44" ry="10" fill="#B5502D"/>
+          <path d="M78,88 C72,77 84,71 78,58" stroke="#A63C22" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
+          <path d="M100,84 C94,71 106,64 100,50" stroke="#A63C22" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+          <path d="M122,88 C116,77 128,71 122,58" stroke="#A63C22" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
+          <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#A63C22"/>
+          <ellipse cx="100" cy="108" rx="44" ry="10" fill="#A63C22"/>
         </svg>
       </div>
       <div>
@@ -319,6 +366,18 @@ input:checked + .slider::before{ transform:translateX(18px); }
       <div id="statsChartRange" style="font-size:.78rem;color:var(--ink-soft);margin-bottom:14px;"></div>
       <canvas id="revenueChart" height="180"></canvas>
     </div>
+    <div class="pie-charts-grid">
+      <div class="order-card">
+        <h3 style="margin-bottom:16px;font-size:1.05rem;" data-i18n="expenseByCatTitle">Расходы по категориям</h3>
+        <canvas id="expensePieChart" height="220"></canvas>
+        <div class="pie-legend" id="expensePieLegend"></div>
+      </div>
+      <div class="order-card">
+        <h3 style="margin-bottom:16px;font-size:1.05rem;" data-i18n="revenueByCatTitle">Доход по категориям меню</h3>
+        <canvas id="revenuePieChart" height="220"></canvas>
+        <div class="pie-legend" id="revenuePieLegend"></div>
+      </div>
+    </div>
     <div class="order-card">
       <h3 style="margin-bottom:16px;font-size:1.05rem;" data-i18n="topDishesTitle">Топ продаж</h3>
       <div id="topDishList"></div>
@@ -435,7 +494,7 @@ const ADMIN_TRANSLATIONS = {
     expDescPh:"Например: аренда за июль", expAmountPh:"Сумма, сом",
     expCatRent:"Аренда", expCatProducts:"Продукты", expCatSalary:"Зарплата", expCatAds:"Реклама", expCatOther:"Другое",
     addExpenseBtn:"Добавить", periodQuarter:"Квартал", periodHalfyear:"Полгода", periodYear:"Год", periodCustom:"Свой период",
-    periodApplyBtn:"Показать", statExpenseLabel:"Расход", statProfitLabel:"Прибыль", revenueByDayTitle:"Выручка по дням",
+    periodApplyBtn:"Показать", statExpenseLabel:"Расход", statProfitLabel:"Прибыль", revenueByDayTitle:"Выручка по дням", expenseByCatTitle:"Расходы по категориям", revenueByCatTitle:"Доход по категориям меню", noDataYet:"Пока нет данных за этот период", otherCategory:"Другое",
     curLabel:"сом",
     dishPhotoLabel:"Фото блюда", dishPhotoHint:"Нажмите, чтобы выбрать фото<br>(JPG/PNG, до 5 МБ)",
     dishCategoryLabel:"Категория", dishNameLabel:"Название", dishNamePh:"Например: Плов",
@@ -481,7 +540,7 @@ const ADMIN_TRANSLATIONS = {
     expDescPh:"Мисалы: июль үчүн ижара", expAmountPh:"Сумма, сом",
     expCatRent:"Ижара", expCatProducts:"Азык-түлүк", expCatSalary:"Эмгек акы", expCatAds:"Жарнама", expCatOther:"Башка",
     addExpenseBtn:"Кошуу", periodQuarter:"Чейрек", periodHalfyear:"Жарым жыл", periodYear:"Жыл", periodCustom:"Өз мезгили",
-    periodApplyBtn:"Көрсөтүү", statExpenseLabel:"Чыгаша", statProfitLabel:"Пайда", revenueByDayTitle:"Күн сайынкы түшүм",
+    periodApplyBtn:"Көрсөтүү", statExpenseLabel:"Чыгаша", statProfitLabel:"Пайда", revenueByDayTitle:"Күн сайынкы түшүм", expenseByCatTitle:"Категориялар боюнча чыгашалар", revenueByCatTitle:"Меню категориялары боюнча түшүм", noDataYet:"Бул мезгил үчүн дайын жок", otherCategory:"Башка",
     curLabel:"сом",
     dishPhotoLabel:"Тамактын сүрөтү", dishPhotoHint:"Сүрөт тандоо үчүн басыңыз<br>(JPG/PNG, 5 МБга чейин)",
     dishCategoryLabel:"Категория", dishNameLabel:"Аталышы", dishNamePh:"Мисалы: Плов",
@@ -527,7 +586,7 @@ const ADMIN_TRANSLATIONS = {
     expDescPh:"E.g.: July rent", expAmountPh:"Amount, som",
     expCatRent:"Rent", expCatProducts:"Groceries", expCatSalary:"Payroll", expCatAds:"Advertising", expCatOther:"Other",
     addExpenseBtn:"Add", periodQuarter:"Quarter", periodHalfyear:"Half year", periodYear:"Year", periodCustom:"Custom range",
-    periodApplyBtn:"Show", statExpenseLabel:"Expenses", statProfitLabel:"Profit", revenueByDayTitle:"Revenue by day",
+    periodApplyBtn:"Show", statExpenseLabel:"Expenses", statProfitLabel:"Profit", revenueByDayTitle:"Revenue by day", expenseByCatTitle:"Expenses by category", revenueByCatTitle:"Revenue by menu category", noDataYet:"No data for this period yet", otherCategory:"Other",
     curLabel:"som",
     dishPhotoLabel:"Dish photo", dishPhotoHint:"Click to choose a photo<br>(JPG/PNG, up to 5 MB)",
     dishCategoryLabel:"Category", dishNameLabel:"Name", dishNamePh:"E.g.: Plov",
@@ -983,12 +1042,84 @@ function renderRevenueChart(orders, start, end){
   if(revenueChartInstance) revenueChartInstance.destroy();
   revenueChartInstance = new Chart(canvas, {
     type: "bar",
-    data: { labels: buckets.map(b=>b.label), datasets: [{ data: buckets.map(b=>b.value), backgroundColor: "#B5502D", borderRadius:4 }] },
+    data: { labels: buckets.map(b=>b.label), datasets: [{ data: buckets.map(b=>b.value), backgroundColor: "#A63C22", borderRadius:4 }] },
     options: {
       plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.parsed.y.toLocaleString("ru-RU")+" "+at("curLabel") } } },
       scales: { y: { beginAtZero:true, ticks:{ callback: v => v.toLocaleString("ru-RU") } } }
     }
   });
+}
+
+const PIE_COLORS = ["#A63C22","#C08A2E","#1E5C53","#4A7A9C","#9B5C8F","#D97D54","#7A6C5D"];
+let expensePieInstance = null, revenuePieInstance = null;
+
+function drawPie(canvasId, legendId, instanceRef, dataObj){
+  const canvas = document.getElementById(canvasId);
+  const legendEl = document.getElementById(legendId);
+  if(!canvas || typeof Chart === "undefined") return null;
+
+  const entries = Object.entries(dataObj).filter(([,v])=> v > 0);
+  if(!entries.length){
+    canvas.style.display = "none";
+    legendEl.innerHTML = `<div class="pie-empty">${at("noDataYet")}</div>`;
+    return null;
+  }
+  canvas.style.display = "";
+  const labels = entries.map(e=>e[0]);
+  const values = entries.map(e=>e[1]);
+  const total = values.reduce((a,b)=>a+b,0);
+  const colors = labels.map((_,i)=> PIE_COLORS[i % PIE_COLORS.length]);
+
+  if(instanceRef) instanceRef.destroy();
+  const chart = new Chart(canvas, {
+    type: "doughnut",
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth:0 }] },
+    options: {
+      plugins: {
+        legend: { display:false },
+        tooltip: { callbacks: { label: ctx => ctx.label+": "+ctx.parsed.toLocaleString("ru-RU")+" "+at("curLabel") } }
+      },
+      cutout: "60%"
+    }
+  });
+
+  legendEl.innerHTML = labels.map((label,i)=>{
+    const pct = Math.round((values[i]/total)*100);
+    return `<div class="pie-legend-item">
+      <span class="pie-legend-dot" style="background:${colors[i]}"></span>
+      <span class="pie-legend-label">${escapeHtml(label)}</span>
+      <span class="pie-legend-value">${pct}% · ${values[i].toLocaleString("ru-RU")} ${at("curLabel")}</span>
+    </div>`;
+  }).join("");
+
+  return chart;
+}
+
+function renderExpensePie(expenses){
+  const byCategory = {};
+  expenses.forEach(ex=>{
+    const cat = ex.category || at("otherCategory") || "—";
+    byCategory[cat] = (byCategory[cat]||0) + Number(ex.amount||0);
+  });
+  expensePieInstance = drawPie("expensePieChart", "expensePieLegend", expensePieInstance, byCategory);
+}
+
+function renderRevenuePie(orders){
+  const catNameById = {};
+  CATEGORIES.forEach(c=> catNameById[c.id] = c.name);
+  const dishCatById = {};
+  DISHES.forEach(d=> dishCatById[d.id] = d.category_id);
+
+  const byCategory = {};
+  orders.forEach(o=>{
+    (ORDER_ITEMS_BY_ORDER[o.id]||[]).forEach(it=>{
+      const catId = dishCatById[it.dish_id];
+      const catName = catNameById[catId] || at("otherCategory") || "—";
+      const sum = Number(it.price||0) * Number(it.qty||0);
+      byCategory[catName] = (byCategory[catName]||0) + sum;
+    });
+  });
+  revenuePieInstance = drawPie("revenuePieChart", "revenuePieLegend", revenuePieInstance, byCategory);
 }
 
 function renderStats(){
@@ -1013,6 +1144,8 @@ function renderStats(){
     start.toLocaleDateString("ru-RU") + " — " + end.toLocaleDateString("ru-RU");
 
   renderRevenueChart(orders, start, end);
+  renderExpensePie(expenses);
+  renderRevenuePie(orders);
 
   const dishTotals = {};
   orders.forEach(o=>{
@@ -1119,6 +1252,7 @@ function orderCardHTML(o){
         ${o.customer_name ? `<span><i class="fa-solid fa-user"></i> ${escapeHtml(o.customer_name)}</span>` : ""}
         ${o.customer_contact ? `<span><i class="fa-solid fa-phone"></i> ${escapeHtml(o.customer_contact)}</span>` : ""}
       </div>` : ""}
+      ${o.comment ? `<div class="order-comment"><i class="fa-solid fa-comment-dots"></i> ${escapeHtml(o.comment)}</div>` : ""}
       <div class="order-items-list">
         ${items.map(it=>`<div><span>${escapeHtml(it.dish_name)} × ${it.qty}${it.note ? `<div class="order-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(it.note)}</div>` : ""}</span><span>${Number(it.price)*it.qty} ${at("curLabel")}</span></div>`).join("") || `<div style="color:var(--ink-soft);">${at("noItems")}</div>`}
       </div>
