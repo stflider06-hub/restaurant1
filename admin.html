@@ -11,12 +11,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
 :root{
-  --bg:#F8F1E4; --bg-alt:#EFE1C9; --bg-card:#FFFFFF; --ink:#241A11; --ink-soft:#8A7360; --line:#E5D6B8;
-  --primary:#A63C22; --primary-dark:#7C2C18; --accent:#C08A2E; --primary-soft:#F1DDC9;
-  --green:#3F7D52; --green-soft:#E7F0E9; --red:#C1121F; --red-soft:#FBEAEA;
-  --shadow-sm: 0 1px 3px rgba(36,26,17,0.08), 0 1px 2px rgba(36,26,17,0.05);
-  --shadow-md: 0 8px 24px rgba(36,26,17,0.10);
-  --shadow-lg: 0 16px 40px rgba(36,26,17,0.16);
+  --bg:#FFFFFF; --bg-alt:#F7F7F8; --bg-card:#FFFFFF; --ink:#1A1A1A; --ink-soft:#8A8A8E; --line:#ECECEE;
+  --primary:#E8332B; --primary-dark:#C22820; --accent:#FF5B4F; --primary-soft:#FDE9E8;
+  --green:#2E9E5B; --green-soft:#E7F5EC; --red:#C1121F; --red-soft:#FBEAEA;
+  --shadow-sm: 0 1px 3px rgba(20,20,20,0.06), 0 1px 2px rgba(20,20,20,0.04);
+  --shadow-md: 0 8px 24px rgba(20,20,20,0.08);
+  --shadow-lg: 0 16px 40px rgba(20,20,20,0.14);
   --radius-sm:16px; --radius-md:20px; --radius-lg:24px;
   --font-display:'Fraunces',serif; --font-body:'Manrope',sans-serif;
 }
@@ -240,11 +240,11 @@ input:checked + .slider::before{ transform:translateX(18px); }
     <div class="topbar-brand">
       <div class="topbar-mark">
         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <path d="M78,88 C72,77 84,71 78,58" stroke="#A63C22" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
-          <path d="M100,84 C94,71 106,64 100,50" stroke="#A63C22" stroke-width="6.5" stroke-linecap="round" fill="none"/>
-          <path d="M122,88 C116,77 128,71 122,58" stroke="#A63C22" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
-          <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#A63C22"/>
-          <ellipse cx="100" cy="108" rx="44" ry="10" fill="#A63C22"/>
+          <path d="M78,88 C72,77 84,71 78,58" stroke="#E8332B" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
+          <path d="M100,84 C94,71 106,64 100,50" stroke="#E8332B" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+          <path d="M122,88 C116,77 128,71 122,58" stroke="#E8332B" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
+          <path d="M56,108 C56,108 62,148 100,148 C138,148 144,108 144,108 Z" fill="#E8332B"/>
+          <ellipse cx="100" cy="108" rx="44" ry="10" fill="#E8332B"/>
         </svg>
       </div>
       <div>
@@ -1042,7 +1042,7 @@ function renderRevenueChart(orders, start, end){
   if(revenueChartInstance) revenueChartInstance.destroy();
   revenueChartInstance = new Chart(canvas, {
     type: "bar",
-    data: { labels: buckets.map(b=>b.label), datasets: [{ data: buckets.map(b=>b.value), backgroundColor: "#A63C22", borderRadius:4 }] },
+    data: { labels: buckets.map(b=>b.label), datasets: [{ data: buckets.map(b=>b.value), backgroundColor: "#E8332B", borderRadius:4 }] },
     options: {
       plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.parsed.y.toLocaleString("ru-RU")+" "+at("curLabel") } } },
       scales: { y: { beginAtZero:true, ticks:{ callback: v => v.toLocaleString("ru-RU") } } }
@@ -1050,7 +1050,7 @@ function renderRevenueChart(orders, start, end){
   });
 }
 
-const PIE_COLORS = ["#A63C22","#C08A2E","#1E5C53","#4A7A9C","#9B5C8F","#D97D54","#7A6C5D"];
+const PIE_COLORS = ["#E8332B","#FF5B4F","#2E9E5B","#4A7A9C","#9B5C8F","#F5A623","#7A6C5D"];
 let expensePieInstance = null, revenuePieInstance = null;
 
 function drawPie(canvasId, legendId, instanceRef, dataObj){

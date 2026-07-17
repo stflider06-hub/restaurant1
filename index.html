@@ -504,8 +504,19 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 .history-list{ display:flex; flex-direction:column; gap:10px; }
 .history-item{ background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; cursor:pointer; transition:var(--transition); }
 .history-item:hover{ border-color:var(--primary); box-shadow:var(--shadow-sm); }
-.history-item-top{ display:flex; justify-content:space-between; font-weight:700; color:var(--ink); font-size:0.9rem; }
+.history-item-top{ display:flex; justify-content:space-between; align-items:center; font-weight:700; color:var(--ink); font-size:0.9rem; }
 .history-item-sub{ font-size:0.78rem; color:var(--ink-soft); margin-top:3px; }
+.history-item-bottom{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid var(--line); }
+.history-item-total{ font-weight:800; color:var(--primary); font-family:var(--font-display); font-size:0.98rem; }
+.history-track-btn{ font-size:0.78rem; font-weight:700; color:var(--primary); }
+.history-track-btn:hover{ text-decoration:underline; }
+.order-status-badge{
+  font-size:0.68rem; font-weight:800; padding:4px 10px; border-radius:100px; text-transform:uppercase; letter-spacing:0.02em;
+}
+.order-status-badge.status-new{ background:#E6F0FA; color:#2C6FBF; }
+.order-status-badge.status-progress{ background:var(--primary-soft); color:var(--primary-dark); }
+.order-status-badge.status-done{ background:var(--green-soft, #E7F5EC); color:var(--green, #2E9E5B); }
+.order-status-badge.status-cancelled{ background:var(--danger-soft); color:var(--danger); }
 .icon-btn-plain{ width:38px; height:38px; border-radius:50%; background:var(--bg-alt); display:flex; align-items:center; justify-content:center; color:var(--ink-soft); }
 
 /* ============ FOOTER ============ */
@@ -535,7 +546,7 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
         <div class="brand-mark">
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <defs><radialGradient id="bgm" cx="35%" cy="30%" r="75%">
-              <stop offset="0%" stop-color="#C55A38"/><stop offset="55%" stop-color="#A63C22"/><stop offset="100%" stop-color="#7C2C18"/>
+              <stop offset="0%" stop-color="#FF6B5F"/><stop offset="55%" stop-color="#E8332B"/><stop offset="100%" stop-color="#C22820"/>
             </radialGradient></defs>
             <circle cx="100" cy="100" r="98" fill="url(#bgm)"/>
             <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="0.5 7" stroke-linecap="round"/>
@@ -810,7 +821,7 @@ const TRANSLATIONS = {
     stepNew: "Новый",
     stepPaid: "Оплачен",
     stepPreparing: "Готовится",
-    stepReady: "Готово",
+    stepReady: "Готово", statusCancelled: "Отменён", statusCompletedBadge: "Завершён", trackOrderBtn: "Отследить",
     cancelledText: "Заказ отменён. Свяжитесь с заведением, если это не так.",
     footerText: "Демо-шаблон меню для кафе и ресторанов",
     footerMade: "сделано для показа клиентам",
@@ -865,7 +876,7 @@ const TRANSLATIONS = {
     stepNew: "Жаңы",
     stepPaid: "Төлөндү",
     stepPreparing: "Даярдалууда",
-    stepReady: "Даяр",
+    stepReady: "Даяр", statusCancelled: "Жокко чыгарылды", statusCompletedBadge: "Аяктады", trackOrderBtn: "Байкоо",
     cancelledText: "Буйрутма жокко чыгарылды. Эгер бул андай эмес болсо, менеджер менен байланышыңыз.",
     footerText: "Кафе жана ресторандар үчүн демо-меню шаблону",
     footerMade: "кардарларга көрсөтүү үчүн жасалган",
@@ -920,7 +931,7 @@ const TRANSLATIONS = {
     stepNew: "New",
     stepPaid: "Paid",
     stepPreparing: "Cooking",
-    stepReady: "Ready",
+    stepReady: "Ready", statusCancelled: "Cancelled", statusCompletedBadge: "Completed", trackOrderBtn: "Track",
     cancelledText: "This order was cancelled. Please contact the cafe if that's not right.",
     footerText: "Demo menu template for cafes and restaurants",
     footerMade: "made to show clients",
@@ -1575,16 +1586,51 @@ async function openHistoryOverlay(){
     listEl.innerHTML = `<div class="cart-empty"><i class="fa-solid fa-clipboard-list" style="font-size:1.8rem;display:block;margin-bottom:10px;"></i>${t("historyEmpty")}</div>`;
     return;
   }
-  listEl.innerHTML = history.map(h=>`
+
+  listEl.innerHTML = history.map(h=>historyItemHTML(h, null)).join("");
+  wireHistoryItemEvents();
+
+  if(supabaseClient){
+    const ids = history.map(h=>h.id);
+    const { data: liveOrders } = await supabaseClient.from("orders").select("id, status").in("id", ids);
+    const statusById = {};
+    (liveOrders||[]).forEach(o=> statusById[o.id] = o.status);
+    listEl.innerHTML = history.map(h=>historyItemHTML(h, statusById[h.id] || null)).join("");
+    wireHistoryItemEvents();
+  }
+}
+
+function statusBadgeHTML(status){
+  if(!status) return "";
+  if(status === "cancelled") return `<span class="order-status-badge status-cancelled">${t("statusCancelled")}</span>`;
+  if(status === "completed") return `<span class="order-status-badge status-done">${t("statusCompletedBadge")}</span>`;
+  const step = mapStatusToStep(status);
+  const cls = step === "ready" ? "status-done" : (step === "new" ? "status-new" : "status-progress");
+  return `<span class="order-status-badge ${cls}">${orderStepLabel(step)}</span>`;
+}
+
+function historyItemHTML(h, status){
+  return `
     <div class="history-item" data-id="${h.id}">
-      <div class="history-item-top"><span>№${String(h.id).slice(0,8)}</span><span>${h.total} ${t("curLabel")}</span></div>
+      <div class="history-item-top">
+        <span>№${String(h.id).slice(0,8)}</span>
+        ${statusBadgeHTML(status)}
+      </div>
       <div class="history-item-sub">${new Date(h.createdAt).toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" })}</div>
+      <div class="history-item-bottom">
+        <span class="history-item-total">${h.total} ${t("curLabel")}</span>
+        <button type="button" class="history-track-btn" data-id="${h.id}">${t("trackOrderBtn")}</button>
+      </div>
     </div>
-  `).join("");
-  listEl.querySelectorAll(".history-item").forEach(row=>{
-    row.addEventListener("click", ()=>{
+  `;
+}
+
+function wireHistoryItemEvents(){
+  document.querySelectorAll(".history-track-btn").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      e.stopPropagation();
       switchScreen("menu");
-      startOrderTracking(row.dataset.id);
+      startOrderTracking(btn.dataset.id);
     });
   });
 }
