@@ -269,6 +269,7 @@ input:checked + .slider::before{ transform:translateX(18px); }
     <button class="tab-btn active" data-tab="menu"><i class="fa-solid fa-utensils"></i> <span data-i18n="tabMenu">Меню</span></button>
     <button class="tab-btn" data-tab="orders"><i class="fa-solid fa-receipt"></i> <span data-i18n="tabOrders">Заказы</span> <span class="tab-badge" id="newOrdersBadge" style="display:none;"></span></button>
     <button class="tab-btn" data-tab="expenses"><i class="fa-solid fa-wallet"></i> <span data-i18n="tabExpenses">Расходы</span></button>
+    <button class="tab-btn" data-tab="promos"><i class="fa-solid fa-bullhorn"></i> <span data-i18n="tabPromos">Акции</span></button>
     <button class="tab-btn" data-tab="stats"><i class="fa-solid fa-chart-column"></i> <span data-i18n="tabStats">Статистика</span></button>
   </div>
 
@@ -316,6 +317,17 @@ input:checked + .slider::before{ transform:translateX(18px); }
       </div>
     </form>
     <div id="expenseList"><div class="empty-state" data-i18n="loadingText">Загрузка…</div></div>
+  </div>
+
+  <div id="promosTab" style="display:none;">
+    <div class="toolbar">
+      <div>
+        <h1 data-i18n="promosTitle">Акции и новости</h1>
+        <div class="count" id="promoCount"></div>
+      </div>
+      <button class="btn btn-add" id="addPromoBtn"><i class="fa-solid fa-plus"></i> <span data-i18n="addPromoBtn">Добавить</span></button>
+    </div>
+    <div id="promosList"><div class="empty-state" data-i18n="loadingText">Загрузка…</div></div>
   </div>
 
   <div id="statsTab" style="display:none;">
@@ -458,6 +470,63 @@ input:checked + .slider::before{ transform:translateX(18px); }
   </div>
 </div>
 
+<div class="modal-overlay" id="promoFormModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="promoFormTitle">Новая акция</h3>
+      <button class="modal-close" id="promoFormClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-error" id="promoFormError"></div>
+      <form id="promoForm">
+        <div class="field">
+          <label data-i18n="promoPhotoLabel">Фото</label>
+          <label class="photo-upload">
+            <div class="photo-preview" id="promoPhotoPreview"><i class="fa-solid fa-image" style="font-size:1.4rem;"></i></div>
+            <div class="photo-upload-text" data-i18n="dishPhotoHint">Нажмите, чтобы выбрать фото<br>(JPG/PNG, до 5 МБ)</div>
+            <input type="file" accept="image/*" id="promoPhotoInput" style="display:none;">
+          </label>
+        </div>
+        <div class="field">
+          <label for="promoTitle" data-i18n="promoTitleLabel">Заголовок (русский)</label>
+          <input type="text" id="promoTitle" required placeholder="Например: Скидка 20% на пиццу">
+        </div>
+        <div class="field">
+          <label for="promoTitleKy">Аталышы (кыргызча)</label>
+          <input type="text" id="promoTitleKy">
+        </div>
+        <div class="field">
+          <label for="promoTitleEn">Title (English)</label>
+          <input type="text" id="promoTitleEn">
+        </div>
+        <div class="field">
+          <label for="promoSubtitle" data-i18n="promoSubtitleLabel">Подзаголовок (русский)</label>
+          <input type="text" id="promoSubtitle" placeholder="Например: Только до конца месяца">
+        </div>
+        <div class="field">
+          <label for="promoSubtitleKy">Түшүндүрмө (кыргызча)</label>
+          <input type="text" id="promoSubtitleKy">
+        </div>
+        <div class="field">
+          <label for="promoSubtitleEn">Subtitle (English)</label>
+          <input type="text" id="promoSubtitleEn">
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-row-label" data-i18n="dishPublishedLabel">Опубликовано</div>
+            <div class="toggle-row-sub" data-i18n="promoPublishedSub">Показывать эту акцию на сайте прямо сейчас</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="promoPublished" checked><span class="slider"></span></label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="promoFormCancel" data-i18n="formCancelBtn">Отмена</button>
+          <button type="submit" class="btn-save" id="promoFormSave" data-i18n="formSaveBtn">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText"></span></div>
 
 <script>
@@ -517,6 +586,11 @@ const ADMIN_TRANSLATIONS = {
     noPhoneToast:"У заказа нет номера телефона клиента", newOrderToast:"Новый заказ!",
     confirmDeleteDish:"Удалить блюдо «{name}»? Это действие нельзя отменить.",
     dishFormEditTitle:"Редактировать блюдо", dishFormNewTitle:"Новое блюдо", dishCountLabel:"Всего блюд",
+    tabPromos:"Акции", promosTitle:"Акции и новости", addPromoBtn:"Добавить", promoPhotoLabel:"Фото",
+    promoTitleLabel:"Заголовок (русский)", promoSubtitleLabel:"Подзаголовок (русский)", promoPublishedSub:"Показывать эту акцию на сайте прямо сейчас",
+    promoCountLabel:"Всего акций", noPromosYet:"Пока нет ни одной акции — добавьте первую", confirmDeletePromo:"Удалить эту акцию?",
+    promoFormEditTitle:"Редактировать акцию", promoFormNewTitle:"Новая акция", promoUpdatedToast:"Акция обновлена", promoAddedToast:"Акция добавлена",
+    promoSaveError:"Не удалось сохранить акцию", promoDeleteErrorPrefix:"Ошибка удаления: ", promoDeletedToast:"Акция удалена", promoLoadErrorPrefix:"Не удалось загрузить акции: ",
     waGreeting:"Здравствуйте! Это {cafe}.\nВаш заказ №{id} принят, вот что вы заказали:\n\n",
     waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\nИтого к оплате: {total} сом.\n",
     waPaymentLine:"Переводом на номер {phone} (получатель: {name}).\n",
@@ -563,6 +637,11 @@ const ADMIN_TRANSLATIONS = {
     noPhoneToast:"Буйрутмада кардардын телефон номери жок", newOrderToast:"Жаңы буйрутма!",
     confirmDeleteDish:"«{name}» тамагын өчүрөсүзбү? Бул аракетти артка кайтарууга болбойт.",
     dishFormEditTitle:"Тамакты түзөтүү", dishFormNewTitle:"Жаңы тамак", dishCountLabel:"Бардыгы тамак",
+    tabPromos:"Акциялар", promosTitle:"Акциялар жана жаңылыктар", addPromoBtn:"Кошуу", promoPhotoLabel:"Сүрөт",
+    promoTitleLabel:"Аталышы (орусча)", promoSubtitleLabel:"Түшүндүрмө (орусча)", promoPublishedSub:"Бул акцияны сайтта азыр эле көрсөтүү",
+    promoCountLabel:"Бардыгы акция", noPromosYet:"Азырынча бир да акция жок — биринчисин кошуңуз", confirmDeletePromo:"Бул акцияны өчүрөсүзбү?",
+    promoFormEditTitle:"Акцияны түзөтүү", promoFormNewTitle:"Жаңы акция", promoUpdatedToast:"Акция жаңыртылды", promoAddedToast:"Акция кошулду",
+    promoSaveError:"Акция сакталган жок", promoDeleteErrorPrefix:"Өчүрүү катасы: ", promoDeletedToast:"Акция өчүрүлдү", promoLoadErrorPrefix:"Акциялар жүктөлгөн жок: ",
     waGreeting:"Саламатсызбы! Бул {cafe}.\n№{id} буйрутмаңыз кабыл алынды, сиз тандагандар:\n\n",
     waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\nТөлөнүүчү сумма: {total} сом.\n",
     waPaymentLine:"{phone} номерине которуу (алуучу: {name}).\n",
@@ -609,6 +688,11 @@ const ADMIN_TRANSLATIONS = {
     noPhoneToast:"This order has no customer phone number", newOrderToast:"New order!",
     confirmDeleteDish:"Delete dish \u201c{name}\u201d? This action cannot be undone.",
     dishFormEditTitle:"Edit dish", dishFormNewTitle:"New dish", dishCountLabel:"Total dishes",
+    tabPromos:"Promos", promosTitle:"Promos & news", addPromoBtn:"Add", promoPhotoLabel:"Photo",
+    promoTitleLabel:"Title (Russian)", promoSubtitleLabel:"Subtitle (Russian)", promoPublishedSub:"Show this promo on the site right now",
+    promoCountLabel:"Total promos", noPromosYet:"No promos yet — add your first one", confirmDeletePromo:"Delete this promo?",
+    promoFormEditTitle:"Edit promo", promoFormNewTitle:"New promo", promoUpdatedToast:"Promo updated", promoAddedToast:"Promo added",
+    promoSaveError:"Could not save the promo", promoDeleteErrorPrefix:"Delete error: ", promoDeletedToast:"Promo deleted", promoLoadErrorPrefix:"Could not load promos: ",
     waGreeting:"Hello! This is {cafe}.\nYour order #{id} has been received, here's what you ordered:\n\n",
     waItemLine:"• {name} × {qty} — {sum} som\n", waTotalLine:"\nTotal due: {total} som.\n",
     waPaymentLine:"By transfer to {phone} (recipient: {name}).\n",
@@ -632,6 +716,7 @@ function applyAdminTranslations(){
   if(typeof renderList === "function") renderList();
   if(typeof renderStats === "function") renderStats();
   if(typeof renderExpenseList === "function") renderExpenseList();
+  if(typeof renderPromosList === "function" && PROMOS.length) renderPromosList();
 }
 document.addEventListener("click", (e)=>{
   const btn = e.target.closest(".lang-switch button");
@@ -869,6 +954,160 @@ async function deleteDish(id){
   await loadData();
 }
 
+/* ---------- promos (акции/новости для баннера на сайте) ---------- */
+let PROMOS = [];
+let editingPromoId = null;
+let selectedPromoFile = null;
+
+async function loadPromos(){
+  const { data, error } = await supabaseClient.from("promos").select("*").order("sort_order");
+  if(error){
+    document.getElementById("promosList").innerHTML = `<div class="empty-state">${escapeHtml(at("promoLoadErrorPrefix"))}${escapeHtml(error.message)}</div>`;
+    return;
+  }
+  PROMOS = data || [];
+  renderPromosList();
+}
+
+function renderPromosList(){
+  const listEl = document.getElementById("promosList");
+  document.getElementById("promoCount").textContent = `${at("promoCountLabel")}: ${PROMOS.length}`;
+  if(!PROMOS.length){
+    listEl.innerHTML = `<div class="empty-state"><i class="fa-solid fa-bullhorn" style="font-size:1.8rem;display:block;margin-bottom:12px;"></i>${escapeHtml(at("noPromosYet"))}</div>`;
+    return;
+  }
+  listEl.innerHTML = PROMOS.map(promoRowHTML).join("");
+  listEl.querySelectorAll("[data-edit-promo]").forEach(btn=>{
+    btn.addEventListener("click", ()=> openPromoForm(btn.dataset.editPromo));
+  });
+  listEl.querySelectorAll("[data-delete-promo]").forEach(btn=>{
+    btn.addEventListener("click", ()=> deletePromo(btn.dataset.deletePromo));
+  });
+  listEl.querySelectorAll(".dish-thumb img").forEach(img=>{
+    img.addEventListener("error", function(){ this.replaceWith(Object.assign(document.createElement("i"), { className:"fa-solid fa-image" })); }, { once:true });
+  });
+}
+
+function promoRowHTML(p){
+  return `
+    <div class="dish-row">
+      <div class="dish-thumb">${p.photo_url ? `<img src="${p.photo_url}" alt="">` : '<i class="fa-solid fa-bullhorn"></i>'}</div>
+      <div class="dish-row-info">
+        <div class="dish-row-name">${escapeHtml(p.title)}</div>
+        <div class="expense-row-meta">${escapeHtml(p.subtitle||"")}</div>
+        <div class="badges">
+          ${p.is_published ? '<span class="badge badge-pub">'+escapeHtml(at("badgePublished"))+'</span>' : '<span class="badge badge-draft">'+escapeHtml(at("badgeDraft"))+'</span>'}
+        </div>
+      </div>
+      <div class="dish-row-actions">
+        <button class="icon-btn" data-edit-promo="${p.id}" aria-label="${escapeHtml(at("editLabel"))}"><i class="fa-solid fa-pen"></i></button>
+        <button class="icon-btn danger" data-delete-promo="${p.id}" aria-label="${escapeHtml(at("deleteLabel"))}"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+  `;
+}
+
+const promoFormModal = document.getElementById("promoFormModal");
+const promoForm = document.getElementById("promoForm");
+const promoFormError = document.getElementById("promoFormError");
+const promoPhotoInput = document.getElementById("promoPhotoInput");
+const promoPhotoPreview = document.getElementById("promoPhotoPreview");
+
+document.getElementById("addPromoBtn").addEventListener("click", ()=> openPromoForm(null));
+document.getElementById("promoFormClose").addEventListener("click", closePromoForm);
+document.getElementById("promoFormCancel").addEventListener("click", closePromoForm);
+promoFormModal.addEventListener("click", (e)=>{ if(e.target===promoFormModal) closePromoForm(); });
+
+function openPromoForm(id){
+  editingPromoId = id;
+  selectedPromoFile = null;
+  promoFormError.classList.remove("show");
+  promoForm.reset();
+  promoPhotoPreview.innerHTML = '<i class="fa-solid fa-image" style="font-size:1.4rem;"></i>';
+
+  if(id){
+    const p = PROMOS.find(x=>x.id===id);
+    document.getElementById("promoFormTitle").textContent = at("promoFormEditTitle");
+    document.getElementById("promoTitle").value = p.title || "";
+    document.getElementById("promoTitleKy").value = p.title_ky || "";
+    document.getElementById("promoTitleEn").value = p.title_en || "";
+    document.getElementById("promoSubtitle").value = p.subtitle || "";
+    document.getElementById("promoSubtitleKy").value = p.subtitle_ky || "";
+    document.getElementById("promoSubtitleEn").value = p.subtitle_en || "";
+    document.getElementById("promoPublished").checked = p.is_published;
+    if(p.photo_url) promoPhotoPreview.innerHTML = `<img src="${p.photo_url}" alt="">`;
+  } else {
+    document.getElementById("promoFormTitle").textContent = at("promoFormNewTitle");
+    document.getElementById("promoPublished").checked = true;
+  }
+  promoFormModal.classList.add("open");
+}
+function closePromoForm(){ promoFormModal.classList.remove("open"); }
+
+promoPhotoInput.addEventListener("change", ()=>{
+  const file = promoPhotoInput.files[0];
+  if(!file) return;
+  if(file.size > 5*1024*1024){ promoFormError.textContent = at("fileTooLarge"); promoFormError.classList.add("show"); return; }
+  selectedPromoFile = file;
+  const reader = new FileReader();
+  reader.onload = (e) => { promoPhotoPreview.innerHTML = `<img src="${e.target.result}" alt="">`; };
+  reader.readAsDataURL(file);
+});
+
+promoForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  promoFormError.classList.remove("show");
+  const saveBtn = document.getElementById("promoFormSave");
+  saveBtn.disabled = true;
+  saveBtn.textContent = at("savingText");
+  try{
+    let photoUrl = editingPromoId ? (PROMOS.find(x=>x.id===editingPromoId)||{}).photo_url : null;
+    if(selectedPromoFile){
+      const ext = (selectedPromoFile.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g,"") || "jpg";
+      const path = `promo-${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+      const { error: upErr } = await supabaseClient.storage.from(PHOTO_BUCKET).upload(path, selectedPromoFile, { upsert:false });
+      if(upErr) throw new Error(at("photoUploadErrorPrefix") + upErr.message);
+      const { data: pub } = supabaseClient.storage.from(PHOTO_BUCKET).getPublicUrl(path);
+      photoUrl = pub.publicUrl;
+    }
+    const payload = {
+      title: document.getElementById("promoTitle").value.trim(),
+      title_ky: document.getElementById("promoTitleKy").value.trim() || null,
+      title_en: document.getElementById("promoTitleEn").value.trim() || null,
+      subtitle: document.getElementById("promoSubtitle").value.trim() || null,
+      subtitle_ky: document.getElementById("promoSubtitleKy").value.trim() || null,
+      subtitle_en: document.getElementById("promoSubtitleEn").value.trim() || null,
+      photo_url: photoUrl,
+      is_published: document.getElementById("promoPublished").checked
+    };
+    let saveErr;
+    if(editingPromoId){
+      ({ error: saveErr } = await supabaseClient.from("promos").update(payload).eq("id", editingPromoId));
+    } else {
+      payload.sort_order = PROMOS.length;
+      ({ error: saveErr } = await supabaseClient.from("promos").insert(payload));
+    }
+    if(saveErr) throw new Error(saveErr.message);
+    closePromoForm();
+    showToast(editingPromoId ? at("promoUpdatedToast") : at("promoAddedToast"));
+    await loadPromos();
+  } catch(err){
+    promoFormError.textContent = err.message || at("promoSaveError");
+    promoFormError.classList.add("show");
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = at("formSaveBtn");
+  }
+});
+
+async function deletePromo(id){
+  if(!confirm(at("confirmDeletePromo"))) return;
+  const { error } = await supabaseClient.from("promos").delete().eq("id", id);
+  if(error){ showToast(at("promoDeleteErrorPrefix") + error.message); return; }
+  showToast(at("promoDeletedToast"));
+  await loadPromos();
+}
+
 /* ---------- tabs ---------- */
 document.querySelectorAll(".tab-btn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
@@ -878,6 +1117,7 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     document.getElementById("menuTab").style.display = tab==="menu" ? "" : "none";
     document.getElementById("ordersTab").style.display = tab==="orders" ? "" : "none";
     document.getElementById("expensesTab").style.display = tab==="expenses" ? "" : "none";
+    document.getElementById("promosTab").style.display = tab==="promos" ? "" : "none";
     document.getElementById("statsTab").style.display = tab==="stats" ? "" : "none";
     if(tab==="orders"){
       newOrdersSinceView = 0;
@@ -1345,6 +1585,7 @@ applyAdminTranslations();
   await loadData();
   await loadOrders();
   await loadExpenses();
+  await loadPromos();
   subscribeOrdersRealtime();
 })();
 </script>
