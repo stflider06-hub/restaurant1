@@ -1408,8 +1408,10 @@ function renderKgPhone(digits){
   }
   return out;
 }
+const KG_PHONE_PREFIX_LEN = "+996".length;
 function kgPhoneDigitIndexAtCaret(formatted, caretPos){
-  return formatted.slice(0, caretPos).replace(/\D/g, "").length;
+  const from = Math.max(caretPos, KG_PHONE_PREFIX_LEN);
+  return formatted.slice(KG_PHONE_PREFIX_LEN, from).replace(/\D/g, "").length;
 }
 function kgPhoneCaretPosForDigitIndex(formatted, idx){
   if(idx <= 0){
@@ -1417,7 +1419,7 @@ function kgPhoneCaretPosForDigitIndex(formatted, idx){
     return parenPos >= 0 ? parenPos + 1 : formatted.length;
   }
   let count = 0;
-  for(let i=0; i<formatted.length; i++){
+  for(let i=KG_PHONE_PREFIX_LEN; i<formatted.length; i++){
     if(/\d/.test(formatted[i])){
       count++;
       if(count === idx) return i+1;
@@ -1459,9 +1461,16 @@ customerPhoneInput.addEventListener("beforeinput", (e)=>{
   }
   if(e.inputType === "insertText" || e.inputType === "insertFromPaste" || e.inputType === "insertCompositionText"){
     const raw = e.data != null ? e.data : (e.dataTransfer ? e.dataTransfer.getData("text") : "");
-    const insertDigits = String(raw || "").replace(/\D/g, "");
+    let insertDigits = String(raw || "").replace(/\D/g, "");
     e.preventDefault();
     if(!insertDigits) return;
+    if(insertDigits.length > 1){
+      // вставка/автозаполнение целиком: если скопировали номер вместе с кодом страны или
+      // ведущим нулём, срезаем его — но только у самого вставляемого куска, набор по одной
+      // цифре это не затрагивает
+      if(insertDigits.startsWith("996")) insertDigits = insertDigits.slice(3);
+      else if(insertDigits.startsWith("0")) insertDigits = insertDigits.slice(1);
+    }
     const merged = (phoneDigits.slice(0, idxStart) + insertDigits + phoneDigits.slice(idxEnd)).slice(0, 9);
     setKgPhoneField(merged, Math.min(idxStart + insertDigits.length, merged.length));
     return;
