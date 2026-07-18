@@ -488,6 +488,10 @@ input:checked + .slider::before{ transform:translateX(18px); }
           </label>
         </div>
         <div class="field">
+          <label for="promoPhotoUrl" data-i18n="promoPhotoUrlLabel">Или вставьте ссылку на фото (необязательно)</label>
+          <input type="url" id="promoPhotoUrl" placeholder="https://...">
+        </div>
+        <div class="field">
           <label for="promoTitle" data-i18n="promoTitleLabel">Заголовок (русский)</label>
           <input type="text" id="promoTitle" required placeholder="Например: Скидка 20% на пиццу">
         </div>
@@ -586,7 +590,7 @@ const ADMIN_TRANSLATIONS = {
     noPhoneToast:"У заказа нет номера телефона клиента", newOrderToast:"Новый заказ!",
     confirmDeleteDish:"Удалить блюдо «{name}»? Это действие нельзя отменить.",
     dishFormEditTitle:"Редактировать блюдо", dishFormNewTitle:"Новое блюдо", dishCountLabel:"Всего блюд",
-    tabPromos:"Акции", promosTitle:"Акции и новости", addPromoBtn:"Добавить", promoPhotoLabel:"Фото",
+    tabPromos:"Акции", promosTitle:"Акции и новости", addPromoBtn:"Добавить", promoPhotoLabel:"Фото", promoPhotoUrlLabel:"Или вставьте ссылку на фото (необязательно)",
     promoTitleLabel:"Заголовок (русский)", promoSubtitleLabel:"Подзаголовок (русский)", promoPublishedSub:"Показывать эту акцию на сайте прямо сейчас",
     promoCountLabel:"Всего акций", noPromosYet:"Пока нет ни одной акции — добавьте первую", confirmDeletePromo:"Удалить эту акцию?",
     promoFormEditTitle:"Редактировать акцию", promoFormNewTitle:"Новая акция", promoUpdatedToast:"Акция обновлена", promoAddedToast:"Акция добавлена",
@@ -637,7 +641,7 @@ const ADMIN_TRANSLATIONS = {
     noPhoneToast:"Буйрутмада кардардын телефон номери жок", newOrderToast:"Жаңы буйрутма!",
     confirmDeleteDish:"«{name}» тамагын өчүрөсүзбү? Бул аракетти артка кайтарууга болбойт.",
     dishFormEditTitle:"Тамакты түзөтүү", dishFormNewTitle:"Жаңы тамак", dishCountLabel:"Бардыгы тамак",
-    tabPromos:"Акциялар", promosTitle:"Акциялар жана жаңылыктар", addPromoBtn:"Кошуу", promoPhotoLabel:"Сүрөт",
+    tabPromos:"Акциялар", promosTitle:"Акциялар жана жаңылыктар", addPromoBtn:"Кошуу", promoPhotoLabel:"Сүрөт", promoPhotoUrlLabel:"Же сүрөттүн шилтемесин коюңуз (милдеттүү эмес)",
     promoTitleLabel:"Аталышы (орусча)", promoSubtitleLabel:"Түшүндүрмө (орусча)", promoPublishedSub:"Бул акцияны сайтта азыр эле көрсөтүү",
     promoCountLabel:"Бардыгы акция", noPromosYet:"Азырынча бир да акция жок — биринчисин кошуңуз", confirmDeletePromo:"Бул акцияны өчүрөсүзбү?",
     promoFormEditTitle:"Акцияны түзөтүү", promoFormNewTitle:"Жаңы акция", promoUpdatedToast:"Акция жаңыртылды", promoAddedToast:"Акция кошулду",
@@ -688,7 +692,7 @@ const ADMIN_TRANSLATIONS = {
     noPhoneToast:"This order has no customer phone number", newOrderToast:"New order!",
     confirmDeleteDish:"Delete dish \u201c{name}\u201d? This action cannot be undone.",
     dishFormEditTitle:"Edit dish", dishFormNewTitle:"New dish", dishCountLabel:"Total dishes",
-    tabPromos:"Promos", promosTitle:"Promos & news", addPromoBtn:"Add", promoPhotoLabel:"Photo",
+    tabPromos:"Promos", promosTitle:"Promos & news", addPromoBtn:"Add", promoPhotoLabel:"Photo", promoPhotoUrlLabel:"Or paste a photo URL (optional)",
     promoTitleLabel:"Title (Russian)", promoSubtitleLabel:"Subtitle (Russian)", promoPublishedSub:"Show this promo on the site right now",
     promoCountLabel:"Total promos", noPromosYet:"No promos yet — add your first one", confirmDeletePromo:"Delete this promo?",
     promoFormEditTitle:"Edit promo", promoFormNewTitle:"New promo", promoUpdatedToast:"Promo updated", promoAddedToast:"Promo added",
@@ -1012,6 +1016,7 @@ const promoForm = document.getElementById("promoForm");
 const promoFormError = document.getElementById("promoFormError");
 const promoPhotoInput = document.getElementById("promoPhotoInput");
 const promoPhotoPreview = document.getElementById("promoPhotoPreview");
+const promoPhotoUrlInput = document.getElementById("promoPhotoUrl");
 
 document.getElementById("addPromoBtn").addEventListener("click", ()=> openPromoForm(null));
 document.getElementById("promoFormClose").addEventListener("click", closePromoForm);
@@ -1049,9 +1054,17 @@ promoPhotoInput.addEventListener("change", ()=>{
   if(!file) return;
   if(file.size > 5*1024*1024){ promoFormError.textContent = at("fileTooLarge"); promoFormError.classList.add("show"); return; }
   selectedPromoFile = file;
+  promoPhotoUrlInput.value = "";
   const reader = new FileReader();
   reader.onload = (e) => { promoPhotoPreview.innerHTML = `<img src="${e.target.result}" alt="">`; };
   reader.readAsDataURL(file);
+});
+promoPhotoUrlInput.addEventListener("input", ()=>{
+  const url = promoPhotoUrlInput.value.trim();
+  if(!url) return;
+  selectedPromoFile = null;
+  promoPhotoInput.value = "";
+  promoPhotoPreview.innerHTML = `<img src="${url}" alt="">`;
 });
 
 promoForm.addEventListener("submit", async (e) => {
@@ -1062,6 +1075,7 @@ promoForm.addEventListener("submit", async (e) => {
   saveBtn.textContent = at("savingText");
   try{
     let photoUrl = editingPromoId ? (PROMOS.find(x=>x.id===editingPromoId)||{}).photo_url : null;
+    const pastedUrl = promoPhotoUrlInput.value.trim();
     if(selectedPromoFile){
       const ext = (selectedPromoFile.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g,"") || "jpg";
       const path = `promo-${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
@@ -1069,6 +1083,8 @@ promoForm.addEventListener("submit", async (e) => {
       if(upErr) throw new Error(at("photoUploadErrorPrefix") + upErr.message);
       const { data: pub } = supabaseClient.storage.from(PHOTO_BUCKET).getPublicUrl(path);
       photoUrl = pub.publicUrl;
+    } else if(pastedUrl){
+      photoUrl = pastedUrl;
     }
     const payload = {
       title: document.getElementById("promoTitle").value.trim(),
