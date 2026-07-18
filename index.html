@@ -365,6 +365,22 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 }
 .add-toast.show{ opacity:1; transform:translate(-50%, 0); }
 
+/* ============ FLOATING CART BAR (появляется, когда в корзине есть товары) ============ */
+.floating-cart-bar{
+  position:fixed; left:18px; right:18px; bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px);
+  max-width:calc(var(--container) - 36px); margin:0 auto;
+  background:var(--gradient-primary); color:#fff; border:none;
+  border-radius:999px; padding:14px 10px 14px 20px;
+  display:none; align-items:center; justify-content:space-between; gap:12px;
+  box-shadow:var(--gradient-glow); z-index:195; font-family:inherit;
+  cursor:pointer; transition:transform 0.18s ease, opacity 0.18s ease;
+}
+.floating-cart-bar.show{ display:flex; }
+.floating-cart-bar:active{ transform:scale(0.97); }
+.floating-cart-bar-left{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:0.92rem; }
+.floating-cart-bar-count{ background:rgba(255,255,255,0.28); width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800; flex-shrink:0; }
+.floating-cart-bar-total{ background:rgba(255,255,255,0.22); padding:9px 16px; border-radius:999px; font-weight:800; font-size:0.9rem; white-space:nowrap; }
+
 /* ============ ORDER TRACKER ============ */
 .order-tracker{
   position:fixed; left:18px; right:18px; bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px);
@@ -419,6 +435,8 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .promo-slide-text h3{ font-family:var(--font-display); font-size:1.15rem; font-weight:800; margin-bottom:4px; line-height:1.2; }
 .promo-slide-text p{ font-size:0.8rem; opacity:0.92; }
 .promo-slide i{ position:absolute; right:14px; bottom:-10px; font-size:5.2rem; opacity:0.22; z-index:0; }
+.promo-slide-photo{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+.promo-slide.has-photo::after{ background:linear-gradient(90deg, rgba(20,20,20,0.62) 0%, rgba(20,20,20,0.34) 55%, rgba(20,20,20,0.05) 100%); }
 .promo-dots{ display:flex; justify-content:center; gap:6px; margin-top:10px; }
 .promo-dot{ width:6px; height:6px; border-radius:50%; background:var(--line); transition:all 0.25s ease; }
 .promo-dot.active{ background:var(--primary); width:18px; border-radius:4px; }
@@ -734,6 +752,11 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 
 <div class="add-toast" id="addToast"><i class="fa-solid fa-circle-check"></i> <span id="addToastText"></span></div>
 
+<button type="button" class="floating-cart-bar" id="floatingCartBar">
+  <span class="floating-cart-bar-left"><span class="floating-cart-bar-count" id="floatingCartBarCount">0</span> <i class="fa-solid fa-cart-shopping"></i> <span data-i18n="goToCartBtn">В корзину</span></span>
+  <span class="floating-cart-bar-total" id="floatingCartBarTotal">0 сом</span>
+</button>
+
 <nav class="tab-bar" id="tabBar">
   <button type="button" class="tab-bar-btn active" data-screen="menu">
     <i class="fa-solid fa-bars"></i>
@@ -784,7 +807,7 @@ const TRANSLATIONS = {
     cartLabel: "Корзина",
     cartEmptyTitle: "Корзина пуста",
     cartEmptySub: "Выберите блюда из меню",
-    tabMenu: "Меню", tabCart: "Корзина", tabOrders: "Заказы", addedToCart: "Добавлено: {name}",
+    tabMenu: "Меню", tabCart: "Корзина", tabOrders: "Заказы", addedToCart: "Добавлено: {name}", goToCartBtn: "В корзину",
     promo1Title: "Готовим с любовью", promo1Sub: "Свежие блюда каждый день", promo2Title: "Быстрый самовывоз", promo2Sub: "Забирайте заказ уже через 15 минут", promo3Title: "Ждём вас снова", promo3Sub: "Спасибо, что выбираете нас",
     searchPlaceholder: "Поиск блюд…",
     searchEmpty: "Ничего не найдено",
@@ -839,7 +862,7 @@ const TRANSLATIONS = {
     cartLabel: "Себет",
     cartEmptyTitle: "Себет бош",
     cartEmptySub: "Менюдан тамак тандаңыз",
-    tabMenu: "Меню", tabCart: "Себет", tabOrders: "Буйрутмалар", addedToCart: "Кошулду: {name}",
+    tabMenu: "Меню", tabCart: "Себет", tabOrders: "Буйрутмалар", addedToCart: "Кошулду: {name}", goToCartBtn: "Себетке",
     promo1Title: "Сүйүү менен бышырабыз", promo1Sub: "Ар күнү жаңы даярдалган тамактар", promo2Title: "Тез алып кетүү", promo2Sub: "Буйрутманы 15 мүнөттөн кийин алыңыз", promo3Title: "Кайра күтөбүз", promo3Sub: "Бизди тандаганыңыз үчүн рахмат",
     searchPlaceholder: "Тамак издөө…",
     searchEmpty: "Эч нерсе табылган жок",
@@ -894,7 +917,7 @@ const TRANSLATIONS = {
     cartLabel: "Cart",
     cartEmptyTitle: "Your cart is empty",
     cartEmptySub: "Pick some dishes from the menu",
-    tabMenu: "Menu", tabCart: "Cart", tabOrders: "Orders", addedToCart: "Added: {name}",
+    tabMenu: "Menu", tabCart: "Cart", tabOrders: "Orders", addedToCart: "Added: {name}", goToCartBtn: "View cart",
     promo1Title: "Made with love", promo1Sub: "Fresh dishes every day", promo2Title: "Fast pickup", promo2Sub: "Grab your order in as little as 15 minutes", promo3Title: "See you again soon", promo3Sub: "Thank you for choosing us",
     searchPlaceholder: "Search dishes…",
     searchEmpty: "Nothing found",
@@ -967,6 +990,7 @@ function setLang(lang){
   currentLang = lang;
   try{ localStorage.setItem(LANG_STORAGE_KEY, lang); }catch(e){ /* ignore */ }
   applyTranslations();
+  if(RAW_PROMOS.length){ remapPromosForLanguage(); renderPromoCarousel(); }
   if(RAW_DISHES.length || RAW_CATEGORIES.length){
     remapMenuForLanguage();
     renderAll();
@@ -1282,12 +1306,26 @@ function cartTotal(){
 function cartItemCount(){
   return cartEntries().reduce((sum,e)=> sum+e.qty, 0);
 }
+const floatingCartBar = document.getElementById("floatingCartBar");
+function updateFloatingCartBar(){
+  if(!floatingCartBar) return;
+  const count = cartItemCount();
+  const tabBarEl = document.getElementById("tabBar");
+  const tabBarVisible = tabBarEl && tabBarEl.style.display !== "none";
+  const shouldShow = count>0 && tabBarVisible && currentScreen !== "cart";
+  floatingCartBar.classList.toggle("show", shouldShow);
+  document.getElementById("floatingCartBarCount").textContent = count;
+  document.getElementById("floatingCartBarTotal").textContent = cartTotal() + " " + t("curLabel");
+}
+floatingCartBar.addEventListener("click", ()=> switchScreen("cart"));
+
 function syncCart(){
   const count = cartItemCount();
   tabCartBadge.textContent = count;
   tabCartBadge.classList.toggle("show", count>0);
   renderCartPanel();
   if(typeof refreshAllRowActions === "function") refreshAllRowActions();
+  updateFloatingCartBar();
 }
 
 let addToastTimer = null;
@@ -1353,6 +1391,7 @@ function switchScreen(name){
   document.querySelectorAll(".tab-bar-btn").forEach(btn=> btn.classList.toggle("active", btn.dataset.screen===name));
   window.scrollTo({ top:0, behavior:"auto" });
   if(name==="orders") openHistoryOverlay();
+  if(typeof updateFloatingCartBar === "function") updateFloatingCartBar();
 }
 document.querySelectorAll(".tab-bar-btn").forEach(btn=>{
   btn.addEventListener("click", ()=> switchScreen(btn.dataset.screen));
@@ -1521,6 +1560,7 @@ function openConfirmOverlay(){
   customerPhoneInput.classList.remove("field-error");
   confirmOverlay.classList.add("open");
   document.getElementById("tabBar").style.display = "none";
+  if(typeof updateFloatingCartBar === "function") updateFloatingCartBar();
 }
 document.getElementById("confirmCloseBtn").addEventListener("click", ()=>{
   confirmOverlay.classList.remove("open");
@@ -1572,6 +1612,7 @@ function openPaymentOverlay(){
   payBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span data-i18n="payBtn">${t("payBtn")}</span>`;
   paymentOverlay.classList.add("open");
   document.getElementById("tabBar").style.display = "none";
+  if(typeof updateFloatingCartBar === "function") updateFloatingCartBar();
 }
 
 document.getElementById("paymentHelpBtn").addEventListener("click", ()=>{
@@ -1835,20 +1876,43 @@ function renderAll(){
 
 /* ===================== PROMO CAROUSEL ===================== */
 let promoInterval = null;
+let RAW_PROMOS = [];
+let PROMOS = [];
+
+function remapPromosForLanguage(){
+  PROMOS = RAW_PROMOS.map(p=>({
+    id: p.id,
+    title: localizedText(p.title, p.title_ky, p.title_en),
+    sub: localizedText(p.subtitle, p.subtitle_ky, p.subtitle_en),
+    photo: p.photo_url || ""
+  }));
+}
+
+async function loadPromos(){
+  if(!supabaseClient) return;
+  const { data, error } = await supabaseClient.from("promos").select("*").eq("is_published", true).order("sort_order");
+  RAW_PROMOS = (!error && data) ? data : [];
+  remapPromosForLanguage();
+  renderPromoCarousel();
+}
+
 function renderPromoCarousel(){
   const track = document.getElementById("promoTrack");
   const dotsEl = document.getElementById("promoDots");
   if(!track) return;
 
-  const slides = [
+  // Слайды из базы (управляются в админке, вкладка «Акции»); если админ ещё ничего не
+  // добавил или таблица не создана — показываем 3 стандартных слайда как раньше.
+  const slides = PROMOS.length ? PROMOS.map(p=>({ title: p.title, sub: p.sub, photo: p.photo, icon: "fa-heart" })) : [
     { icon:"fa-kitchen-set", title: t("promo1Title"), sub: t("promo1Sub") },
     { icon:"fa-bolt", title: t("promo2Title"), sub: t("promo2Sub") },
     { icon:"fa-heart", title: t("promo3Title"), sub: t("promo3Sub") }
   ];
   track.innerHTML = slides.map(s=>`
-    <div class="promo-slide">
-      <div class="promo-slide-text"><h3>${s.title}</h3><p>${s.sub}</p></div>
-      <i class="fa-solid ${s.icon}"></i>
+    <div class="promo-slide${s.photo ? ' has-photo' : ''}">
+      ${s.photo ? `<img class="promo-slide-photo" src="${s.photo}" alt="" loading="lazy">` : ""}
+      <div class="promo-slide-text"><h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.sub||"")}</p></div>
+      ${s.photo ? "" : `<i class="fa-solid ${s.icon}"></i>`}
     </div>
   `).join("");
   dotsEl.innerHTML = slides.map((_,i)=> `<span class="promo-dot${i===0?' active':''}"></span>`).join("");
@@ -1956,6 +2020,7 @@ function subscribeRealtime(){
     .channel("menu-changes")
     .on("postgres_changes", { event:"*", schema:"public", table:"dishes" }, ()=> loadMenu(false))
     .on("postgres_changes", { event:"*", schema:"public", table:"categories" }, ()=> loadMenu(false))
+    .on("postgres_changes", { event:"*", schema:"public", table:"promos" }, ()=> loadPromos())
     .subscribe();
 }
 
@@ -1967,6 +2032,7 @@ window.addEventListener("resize", ()=>{
 /* ===================== INIT ===================== */
 applyTranslations();
 loadMenu(true).then(subscribeRealtime);
+loadPromos();
 </script>
 </body>
 </html>
