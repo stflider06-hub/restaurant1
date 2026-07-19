@@ -84,7 +84,7 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .order-items-list{ font-size:0.86rem; color:var(--ink); margin-bottom:10px; }
 .order-items-list div{ display:flex; justify-content:space-between; padding:3px 0; }
 .order-item-note{ font-size:0.76rem; color:var(--primary-dark); font-style:italic; font-weight:500; margin-top:1px; }
-.order-total-row{ display:flex; justify-content:space-between; font-weight:800; font-family:var(--font-display); font-size:1rem; padding-top:8px; border-top:1px solid var(--line); margin-bottom:12px; }
+.order-total-row{ display:flex; justify-content:space-between; font-weight:700; font-size:1rem; padding-top:8px; border-top:1px solid var(--line); margin-bottom:12px; }
 .order-actions{ display:flex; gap:8px; flex-wrap:wrap; }
 .order-action-btn{ border:none; border-radius:999px; padding:9px 16px; font-weight:700; font-size:0.82rem; }
 .order-action-primary{ background:var(--primary); color:#fff; }
@@ -124,7 +124,7 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 }
 .expense-row-delete:hover{ background:var(--red-soft); color:var(--red); }
 .stat-card-label{ font-size:0.78rem; color:var(--ink-soft); font-weight:700; margin-bottom:6px; }
-.stat-card-value{ font-family:var(--font-display); font-weight:800; font-size:1.5rem; color:var(--ink); }
+.stat-card-value{ font-weight:700; font-size:1.5rem; color:var(--ink); }
 .top-dish-row{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
 .top-dish-row:last-child{ margin-bottom:0; }
 .top-dish-rank{ width:26px; height:26px; border-radius:50%; background:var(--primary-soft); color:var(--primary-dark); font-weight:800; font-size:0.8rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -135,6 +135,14 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .top-dish-qty{ font-size:0.76rem; color:var(--ink-soft); white-space:nowrap; }
 
 /* dish list */
+.cat-manage-box{ background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-md); padding:14px 16px; margin-bottom:22px; box-shadow:var(--shadow-sm); }
+.cat-manage-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:700; font-size:0.9rem; color:var(--ink-soft); margin-bottom:12px; flex-wrap:wrap; }
+.cat-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.cat-chip{ display:flex; align-items:center; gap:8px; background:var(--bg-alt); border:1px solid var(--line); border-radius:999px; padding:7px 8px 7px 14px; font-size:0.85rem; font-weight:700; color:var(--ink); }
+.cat-chip button{ width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--ink-soft); font-size:0.7rem; border:none; background:none; }
+.cat-chip button:hover{ background:var(--line); color:var(--ink); }
+.cat-chip button.cat-chip-delete:hover{ background:var(--red-soft); color:var(--red); }
+
 .cat-group{ margin-bottom:30px; }
 .cat-group h2{ font-size:1.05rem; margin-bottom:12px; display:flex; align-items:center; gap:9px; color:var(--ink); }
 .cat-group h2 i{ color:var(--primary); font-size:0.95rem; }
@@ -166,6 +174,7 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .modal-body{ padding:0 24px 26px; }
 .field{ margin-bottom:16px; }
 .field label{ font-size:0.8rem; font-weight:700; color:var(--ink-soft); display:block; margin-bottom:6px; }
+.field-hint{ font-size:0.76rem; color:var(--ink-soft); margin-top:6px; }
 .field input, .field select, .field textarea{ width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--line); background:var(--bg); font-family:inherit; font-size:0.92rem; color:var(--ink); }
 .field textarea{ resize:vertical; min-height:70px; }
 .field input:focus, .field select:focus, .field textarea:focus{ outline:2px solid var(--primary); outline-offset:1px; }
@@ -280,6 +289,14 @@ input:checked + .slider::before{ transform:translateX(18px); }
         <div class="count" id="dishCount"></div>
       </div>
       <button class="btn btn-add" id="addDishBtn"><i class="fa-solid fa-plus"></i> <span data-i18n="addDishBtn">Добавить блюдо</span></button>
+    </div>
+
+    <div class="cat-manage-box">
+      <div class="cat-manage-head">
+        <span data-i18n="categoriesLabel">Категории</span>
+        <button type="button" class="btn btn-ghost" id="addCategoryBtn"><i class="fa-solid fa-plus"></i> <span data-i18n="addCategoryBtn">Добавить категорию</span></button>
+      </div>
+      <div id="categoryChips" class="cat-chips"></div>
     </div>
 
     <div id="dishList"><div class="empty-state" data-i18n="loadingText">Загрузка…</div></div>
@@ -420,28 +437,21 @@ input:checked + .slider::before{ transform:translateX(18px); }
           <select id="dishCategory" required></select>
         </div>
         <div class="field">
-          <label for="dishName" data-i18n="dishNameLabel">Название (русский)</label>
+          <label for="dishName" data-i18n="dishNameLabel">Название</label>
           <input type="text" id="dishName" required data-i18n-ph="dishNamePh" placeholder="Например: Плов">
         </div>
         <div class="field">
-          <label for="dishNameKy">Название (кыргызча)</label>
-          <input type="text" id="dishNameKy" placeholder="Мисалы: Палоо">
+          <label for="dishNameKy" data-i18n="dishNameKyLabel">Название (кыргызча)</label>
+          <input type="text" id="dishNameKy" data-i18n-ph="dishNameKyPh" placeholder="Мисалы: Палоо">
         </div>
         <div class="field">
-          <label for="dishNameEn">Name (English)</label>
-          <input type="text" id="dishNameEn" placeholder="E.g.: Plov">
-        </div>
-        <div class="field">
-          <label for="dishDesc" data-i18n="dishDescLabel">Описание / состав (русский)</label>
+          <label for="dishDesc" data-i18n="dishDescLabel">Описание / состав</label>
           <textarea id="dishDesc" data-i18n-ph="dishDescPh" placeholder="Из чего состоит блюдо"></textarea>
         </div>
         <div class="field">
-          <label for="dishDescKy">Сүрөттөмө (кыргызча)</label>
-          <textarea id="dishDescKy" placeholder="Тамак эмнеден турат"></textarea>
-        </div>
-        <div class="field">
-          <label for="dishDescEn">Description (English)</label>
-          <textarea id="dishDescEn" placeholder="What the dish contains"></textarea>
+          <label for="dishDescKy" data-i18n="dishDescKyLabel">Сүрөттөмө (кыргызча)</label>
+          <textarea id="dishDescKy" data-i18n-ph="dishDescKyPh" placeholder="Тамак эмнеден турат"></textarea>
+          <div class="field-hint" data-i18n="autoTranslateHint">Английский перевод подставляется автоматически на сайте. Кыргызский — бесплатный переводчик справляется плохо, поэтому лучше указать вручную (если оставить пустым, будет показан русский текст).</div>
         </div>
         <div class="field">
           <label for="dishPrice" data-i18n="dishPriceLabel">Цена (сом)</label>
@@ -571,6 +581,13 @@ const ADMIN_TRANSLATIONS = {
     curLabel:"сом",
     dishPhotoLabel:"Фото блюда", dishPhotoHint:"Нажмите, чтобы выбрать фото<br>(JPG/PNG, до 5 МБ)",
     dishCategoryLabel:"Категория", dishNameLabel:"Название", dishNamePh:"Например: Плов",
+    dishNameKyLabel:"Название (кыргызча)", dishNameKyPh:"Мисалы: Палоо", dishDescKyLabel:"Сүрөттөмө (кыргызча)", dishDescKyPh:"Тамак эмнеден турат",
+    autoTranslateHint:"Английский перевод подставляется автоматически на сайте. Кыргызский — бесплатный переводчик справляется плохо, поэтому лучше указать вручную (если оставить пустым, будет показан русский текст).",
+    categoriesLabel:"Категории", addCategoryBtn:"Добавить категорию", noCategoriesYet:"Пока нет категорий",
+    newCategoryPrompt:"Название новой категории:", renameCategoryPrompt:"Новое название категории:",
+    categoryAddedToast:"Категория добавлена", categoryUpdatedToast:"Категория обновлена", categoryDeletedToast:"Категория удалена",
+    categoryHasDishesError:"В этой категории ещё {count} блюд(о) — сначала перенесите или удалите их.",
+    confirmDeleteCategory:"Удалить категорию «{name}»?",
     dishDescLabel:"Описание / состав", dishDescPh:"Из чего состоит блюдо", dishPriceLabel:"Цена (сом)",
     dishAvailableLabel:"В наличии", dishAvailableSub:"Если выключено — гости увидят «нет в наличии»",
     dishPublishedLabel:"Опубликовано", dishPublishedSub:"Показывать это блюдо на сайте прямо сейчас",
@@ -622,6 +639,13 @@ const ADMIN_TRANSLATIONS = {
     curLabel:"сом",
     dishPhotoLabel:"Тамактын сүрөтү", dishPhotoHint:"Сүрөт тандоо үчүн басыңыз<br>(JPG/PNG, 5 МБга чейин)",
     dishCategoryLabel:"Категория", dishNameLabel:"Аталышы", dishNamePh:"Мисалы: Плов",
+    dishNameKyLabel:"Аталышы (кыргызча)", dishNameKyPh:"Мисалы: Палоо", dishDescKyLabel:"Сүрөттөмөсү (кыргызча)", dishDescKyPh:"Тамак эмнеден турат",
+    autoTranslateHint:"Англисче которуу сайтта өзү коюлат. Кыргызча котормону акысыз кызмат начар аткарат, ошондуктан колдон жазган жакшы (бош калтырсаңыз, орусча текст көрсөтүлөт).",
+    categoriesLabel:"Категориялар", addCategoryBtn:"Категория кошуу", noCategoriesYet:"Азырынча категория жок",
+    newCategoryPrompt:"Жаңы категориянын аталышы:", renameCategoryPrompt:"Категориянын жаңы аталышы:",
+    categoryAddedToast:"Категория кошулду", categoryUpdatedToast:"Категория жаңыртылды", categoryDeletedToast:"Категория өчүрүлдү",
+    categoryHasDishesError:"Бул категорияда дагы {count} тамак бар — алгач аларды которуңуз же өчүрүңүз.",
+    confirmDeleteCategory:"«{name}» категориясын өчүрөсүзбү?",
     dishDescLabel:"Сүрөттөмө / курамы", dishDescPh:"Тамак эмнеден турат", dishPriceLabel:"Баасы (сом)",
     dishAvailableLabel:"Бар", dishAvailableSub:"Өчүрүлсө — коноктор «жок» деп көрөт",
     dishPublishedLabel:"Жарыяланды", dishPublishedSub:"Бул тамакты сайтта азыр эле көрсөтүү",
@@ -673,6 +697,13 @@ const ADMIN_TRANSLATIONS = {
     curLabel:"som",
     dishPhotoLabel:"Dish photo", dishPhotoHint:"Click to choose a photo<br>(JPG/PNG, up to 5 MB)",
     dishCategoryLabel:"Category", dishNameLabel:"Name", dishNamePh:"E.g.: Plov",
+    dishNameKyLabel:"Name (Kyrgyz)", dishNameKyPh:"E.g.: Palоо", dishDescKyLabel:"Description (Kyrgyz)", dishDescKyPh:"What the dish contains",
+    autoTranslateHint:"English is auto-translated on the site. The free translator handles Kyrgyz poorly, so it\u2019s best entered by hand (leave blank to fall back to Russian).",
+    categoriesLabel:"Categories", addCategoryBtn:"Add category", noCategoriesYet:"No categories yet",
+    newCategoryPrompt:"New category name:", renameCategoryPrompt:"New category name:",
+    categoryAddedToast:"Category added", categoryUpdatedToast:"Category updated", categoryDeletedToast:"Category deleted",
+    categoryHasDishesError:"This category still has {count} dish(es) — move or delete them first.",
+    confirmDeleteCategory:"Delete category \u201c{name}\u201d?",
     dishDescLabel:"Description / ingredients", dishDescPh:"What the dish contains", dishPriceLabel:"Price (som)",
     dishAvailableLabel:"In stock", dishAvailableSub:"When off, guests will see \u201cout of stock\u201d",
     dishPublishedLabel:"Published", dishPublishedSub:"Show this dish on the site right now",
@@ -721,6 +752,7 @@ function applyAdminTranslations(){
   if(typeof renderStats === "function") renderStats();
   if(typeof renderExpenseList === "function") renderExpenseList();
   if(typeof renderPromosList === "function" && PROMOS.length) renderPromosList();
+  if(typeof renderCategoryChips === "function" && CATEGORIES.length) renderCategoryChips();
 }
 document.addEventListener("click", (e)=>{
   const btn = e.target.closest(".lang-switch button");
@@ -777,6 +809,7 @@ async function loadData(){
     return;
   }
   renderCategorySelect();
+  renderCategoryChips();
   renderList();
 }
 
@@ -789,6 +822,68 @@ function escapeHtml(str){
 function renderCategorySelect(){
   const sel = document.getElementById("dishCategory");
   sel.innerHTML = CATEGORIES.map(c=> `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+}
+
+/* ---------- category management (добавить/переименовать/удалить категорию) ---------- */
+function renderCategoryChips(){
+  const el = document.getElementById("categoryChips");
+  if(!el) return;
+  if(!CATEGORIES.length){
+    el.innerHTML = `<span style="color:var(--ink-soft);font-size:0.85rem;">${escapeHtml(at("noCategoriesYet"))}</span>`;
+    return;
+  }
+  el.innerHTML = CATEGORIES.map(c=>`
+    <span class="cat-chip" data-cat-id="${c.id}">
+      ${escapeHtml(c.name)}
+      <button type="button" class="cat-chip-rename" data-id="${c.id}" aria-label="${escapeHtml(at("editLabel"))}"><i class="fa-solid fa-pen"></i></button>
+      <button type="button" class="cat-chip-delete" data-id="${c.id}" aria-label="${escapeHtml(at("deleteLabel"))}"><i class="fa-solid fa-xmark"></i></button>
+    </span>
+  `).join("");
+  el.querySelectorAll(".cat-chip-rename").forEach(btn=>{
+    btn.addEventListener("click", ()=> renameCategory(btn.dataset.id));
+  });
+  el.querySelectorAll(".cat-chip-delete").forEach(btn=>{
+    btn.addEventListener("click", ()=> deleteCategory(btn.dataset.id));
+  });
+}
+
+document.getElementById("addCategoryBtn").addEventListener("click", async ()=>{
+  const name = prompt(at("newCategoryPrompt"));
+  if(!name || !name.trim()) return;
+  const { error } = await supabaseClient.from("categories").insert({
+    name: name.trim(),
+    icon: "fa-utensils",
+    sort_order: CATEGORIES.length
+  });
+  if(error){ showToast(at("genericErrorPrefix") + error.message); return; }
+  showToast(at("categoryAddedToast"));
+  await loadData();
+});
+
+async function renameCategory(id){
+  const cat = CATEGORIES.find(c=>c.id===id);
+  if(!cat) return;
+  const name = prompt(at("renameCategoryPrompt"), cat.name);
+  if(!name || !name.trim() || name.trim() === cat.name) return;
+  const { error } = await supabaseClient.from("categories").update({ name: name.trim() }).eq("id", id);
+  if(error){ showToast(at("genericErrorPrefix") + error.message); return; }
+  showToast(at("categoryUpdatedToast"));
+  await loadData();
+}
+
+async function deleteCategory(id){
+  const cat = CATEGORIES.find(c=>c.id===id);
+  if(!cat) return;
+  const dishesInCat = DISHES.filter(d=>d.category_id===id).length;
+  if(dishesInCat > 0){
+    alert(at("categoryHasDishesError").replace("{count}", dishesInCat));
+    return;
+  }
+  if(!confirm(at("confirmDeleteCategory").replace("{name}", cat.name))) return;
+  const { error } = await supabaseClient.from("categories").delete().eq("id", id);
+  if(error){ showToast(at("genericErrorPrefix") + error.message); return; }
+  showToast(at("categoryDeletedToast"));
+  await loadData();
 }
 
 /* ---------- render dish list ---------- */
@@ -867,11 +962,9 @@ function openForm(id){
     document.getElementById("formTitle").textContent = at("dishFormEditTitle");
     document.getElementById("dishCategory").value = d.category_id;
     document.getElementById("dishName").value = d.name;
-    document.getElementById("dishDesc").value = d.description || "";
     document.getElementById("dishNameKy").value = d.name_ky || "";
-    document.getElementById("dishNameEn").value = d.name_en || "";
+    document.getElementById("dishDesc").value = d.description || "";
     document.getElementById("dishDescKy").value = d.description_ky || "";
-    document.getElementById("dishDescEn").value = d.description_en || "";
     document.getElementById("dishPrice").value = d.price;
     document.getElementById("dishAvailable").checked = d.is_available;
     document.getElementById("dishPublished").checked = d.is_published;
@@ -919,9 +1012,7 @@ dishForm.addEventListener("submit", async (e) => {
       name: document.getElementById("dishName").value.trim(),
       description: document.getElementById("dishDesc").value.trim(),
       name_ky: document.getElementById("dishNameKy").value.trim() || null,
-      name_en: document.getElementById("dishNameEn").value.trim() || null,
       description_ky: document.getElementById("dishDescKy").value.trim() || null,
-      description_en: document.getElementById("dishDescEn").value.trim() || null,
       price: Number(document.getElementById("dishPrice").value),
       photo_url: photoUrl,
       is_available: document.getElementById("dishAvailable").checked,
