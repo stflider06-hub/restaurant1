@@ -240,7 +240,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .dish-row-name{ font-family:var(--font-display); font-weight:700; font-size:0.94rem; color:var(--ink); }
 .dish-row-desc{ font-size:0.78rem; color:var(--ink-soft); line-height:1.4;
   display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.dish-row-price{ font-weight:800; font-size:1rem; color:var(--primary); font-family:var(--font-display); margin-top:2px; }
+.dish-row-price{ font-weight:700; font-size:1rem; color:var(--primary); margin-top:2px; }
 .dish-row-actions{ flex-shrink:0; display:flex; align-items:center; justify-content:flex-end; padding:8px 12px 12px; }
 .dish-row-add{
   width:38px; height:38px; border-radius:12px;
@@ -313,7 +313,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .qty-control{ display:flex; align-items:center; gap:14px; background:var(--bg-alt); border-radius:999px; padding:6px 8px; border:1px solid var(--line); }
 .qty-btn{ width:36px; height:36px; border-radius:50%; background:var(--bg-card); box-shadow:var(--shadow-sm); font-size:0.85rem; display:flex; align-items:center; justify-content:center; }
 .qty-val{ min-width:20px; text-align:center; font-weight:800; }
-.modal-price{ font-size:1.35rem; font-weight:800; color:var(--primary); font-family:var(--font-display); }
+.modal-price{ font-size:1.35rem; font-weight:700; color:var(--primary); }
 .modal-add-btn{
   margin-top:22px; width:100%; height:50px; padding:0 16px;
   background:var(--primary); color:#fff; border-radius:16px;
@@ -442,9 +442,12 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .promo-dot.active{ background:var(--primary); width:18px; border-radius:4px; }
 
 /* ============ PHONE INPUT WITH WHATSAPP ICON ============ */
-.phone-input-wrap{ position:relative; }
-.phone-input-wrap i{ position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#25D366; font-size:1.05rem; pointer-events:none; }
-.phone-input-wrap input{ padding-left:40px !important; }
+.phone-input-wrap{ position:relative; display:flex; align-items:center; gap:6px; background:var(--bg-alt); border:1px solid var(--line); border-radius:var(--radius-sm); padding:0 14px; }
+.phone-input-wrap i{ color:#25D366; font-size:1.05rem; flex-shrink:0; }
+.phone-country-select{ border:none; background:none; font-family:inherit; font-size:0.88rem; font-weight:700; color:var(--ink); flex-shrink:0; padding:12px 2px; }
+.phone-input-wrap .cart-input{ flex:1; min-width:0; border:none; background:none; padding:12px 0 !important; }
+.phone-input-wrap .cart-input:focus{ outline:none; }
+.phone-input-wrap:has(.field-error){ border-color:var(--danger); }
 .cart-empty{ text-align:center; color:var(--ink-soft); padding:60px 20px; font-size:0.92rem; }
 .cart-item{ display:flex; gap:12px; background:var(--bg-card); border-radius:var(--radius-sm); padding:10px; border:1px solid var(--line); align-items:center; }
 .cart-item-thumb{ width:52px; height:52px; border-radius:12px; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; }
@@ -464,7 +467,7 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 textarea.cart-input{ resize:vertical; min-height:44px; }
 .cart-input:focus{ outline:none; border-color:var(--primary); }
 .cart-input.field-error{ border-color:var(--danger); }
-.cart-total-row{ display:flex; justify-content:space-between; font-weight:800; font-size:1.15rem; margin-bottom:16px; font-family:var(--font-display); color:var(--ink); }
+.cart-total-row{ display:flex; justify-content:space-between; font-weight:700; font-size:1.15rem; margin-bottom:16px; color:var(--ink); }
 .checkout-btn{
   width:100%; height:52px; padding:0 16px;
   background:linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -499,7 +502,7 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 .btn-outline-gray{ height:50px; border-radius:16px; background:var(--bg-alt); color:var(--ink); border:1px solid var(--line); font-weight:700; font-size:1rem; display:flex; align-items:center; justify-content:center; }
 .payment-waiting-banner{ background:#FFF4CC; color:#8A6714; font-weight:700; font-size:0.88rem; text-align:center; padding:12px 16px; border-radius:var(--radius-sm); margin-bottom:18px; }
 .payment-summary-row{ display:flex; justify-content:space-between; font-size:0.9rem; padding:6px 0; color:var(--ink); }
-.payment-total-row{ display:flex; justify-content:space-between; font-weight:800; font-size:1.2rem; font-family:var(--font-display); color:var(--ink); padding:12px 0; border-top:1px solid var(--line); margin-top:6px; }
+.payment-total-row{ display:flex; justify-content:space-between; font-weight:700; font-size:1.2rem; color:var(--ink); padding:12px 0; border-top:1px solid var(--line); margin-top:6px; }
 .payment-section{ margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
 .payment-section-label{ font-size:0.78rem; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.03em; margin-bottom:10px; }
 .payment-method-row{ display:flex; align-items:center; justify-content:space-between; background:var(--bg-card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; }
@@ -525,7 +528,7 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 .history-item-top{ display:flex; justify-content:space-between; align-items:center; font-weight:700; color:var(--ink); font-size:0.9rem; }
 .history-item-sub{ font-size:0.78rem; color:var(--ink-soft); margin-top:3px; }
 .history-item-bottom{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid var(--line); }
-.history-item-total{ font-weight:800; color:var(--primary); font-family:var(--font-display); font-size:0.98rem; }
+.history-item-total{ font-weight:700; color:var(--primary); font-size:0.98rem; }
 .history-track-btn{ font-size:0.78rem; font-weight:700; color:var(--primary); }
 .history-track-btn:hover{ text-decoration:underline; }
 .order-status-badge{
@@ -710,7 +713,15 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
         <input type="text" id="customerNameInput" class="cart-input" data-i18n-placeholder="namePlaceholder" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
         <div class="phone-input-wrap">
           <i class="fa-brands fa-whatsapp"></i>
-          <input type="tel" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
+          <select id="customerPhoneCountry" class="phone-country-select">
+            <option value="+996">🇰🇬 +996</option>
+            <option value="+7">🇷🇺 +7</option>
+            <option value="+7">🇰🇿 +7</option>
+            <option value="+998">🇺🇿 +998</option>
+            <option value="+992">🇹🇯 +992</option>
+            <option value="+993">🇹🇲 +993</option>
+          </select>
+          <input type="tel" inputmode="numeric" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="20" autocomplete="tel" required>
         </div>
         <textarea id="customerCommentInput" class="cart-input" data-i18n-placeholder="commentPlaceholder" placeholder="Комментарий к заказу (по желанию)" maxlength="200" rows="2"></textarea>
       </div>
@@ -1055,7 +1066,7 @@ let realtimeChannel = null;
 const catNav = document.getElementById("catNav");
 function renderCatNav(){
   catNav.innerHTML = CATEGORIES.map(c =>
-    `<button class="cat-btn" data-cat="${c.id}"><i class="fa-solid ${c.icon}"></i>${c.label}</button>`
+    `<button class="cat-btn" data-cat="${c.id}">${c.label}</button>`
   ).join("");
   catNav.querySelectorAll(".cat-btn").forEach(btn=>{
     btn.addEventListener("click", ()=>{
@@ -1105,7 +1116,7 @@ function renderMenu(){
     anyMatch = true;
     return `
       <section class="menu-cat-block" id="section-${cat.id}">
-        <h2 class="menu-section-title"><i class="fa-solid ${cat.icon}"></i>${cat.label}</h2>
+        <h2 class="menu-section-title">${cat.label}</h2>
         <div class="dish-list">
           ${dishes.map(d=>dishRowHTML(d)).join("")}
         </div>
@@ -1433,99 +1444,33 @@ searchClearBtn.addEventListener("click", ()=>{
 
 const customerNameInput = document.getElementById("customerNameInput");
 const customerPhoneInput = document.getElementById("customerPhoneInput");
+const customerPhoneCountry = document.getElementById("customerPhoneCountry");
 const customerCommentInput = document.getElementById("customerCommentInput");
 
-/* Автоформат номера под Кыргызстан: +996 (XXX) XXX-XXX
-   Раньше при каждом нажатии клавиши поле полностью перезаписывалось (customerPhoneInput.value = ...),
-   из-за чего браузер переносил курсор в конец строки — стереть или поправить цифру в середине
-   (например, внутри скобок) было невозможно. Теперь храним чистые цифры номера отдельно от
-   отображаемого форматирования и на каждое нажатие Backspace/Delete/цифры точно вычисляем,
-   какую цифру убрать или куда вставить новую, а курсор возвращаем на то же смысловое место. */
-let phoneDigits = ""; // только цифры номера, без +996 и без скобок/пробелов/тире
-
-function renderKgPhone(digits){
-  let out = "+996";
-  if(digits.length){
-    out += " (" + digits.slice(0,3);
-    if(digits.length >= 3) out += ")";
-    if(digits.length > 3) out += " " + digits.slice(3,6);
-    if(digits.length > 6) out += "-" + digits.slice(6,9);
-  }
-  return out;
+/* Номер телефона / WhatsApp — код страны выбирается отдельным списком (Кыргызстан, Россия,
+   Казахстан, Узбекистан, Таджикистан, Туркменистан), а само поле принимает только цифры.
+   Специально не форматируем номер живым вводом (никаких скобок/тире на лету) — это то, что
+   раньше ломало курсор при редактировании; вместо этого аккуратно группируем цифры только
+   когда поле теряет фокус. */
+function phoneGroupDigits(digits){
+  return digits.replace(/(\d{3})(?=\d)/g, "$1 ").trim();
 }
-const KG_PHONE_PREFIX_LEN = "+996".length;
-function kgPhoneDigitIndexAtCaret(formatted, caretPos){
-  const from = Math.max(caretPos, KG_PHONE_PREFIX_LEN);
-  return formatted.slice(KG_PHONE_PREFIX_LEN, from).replace(/\D/g, "").length;
-}
-function kgPhoneCaretPosForDigitIndex(formatted, idx){
-  if(idx <= 0){
-    const parenPos = formatted.indexOf("(");
-    return parenPos >= 0 ? parenPos + 1 : formatted.length;
-  }
-  let count = 0;
-  for(let i=KG_PHONE_PREFIX_LEN; i<formatted.length; i++){
-    if(/\d/.test(formatted[i])){
-      count++;
-      if(count === idx) return i+1;
-    }
-  }
-  return formatted.length;
-}
-function setKgPhoneField(digits, caretDigitIndex){
-  phoneDigits = digits.slice(0, 9);
-  const formatted = renderKgPhone(phoneDigits);
-  customerPhoneInput.value = formatted;
-  const pos = kgPhoneCaretPosForDigitIndex(formatted, caretDigitIndex);
-  customerPhoneInput.setSelectionRange(pos, pos);
-}
-customerPhoneInput.addEventListener("focus", ()=>{
-  if(!customerPhoneInput.value){ customerPhoneInput.value = "+996 "; phoneDigits = ""; }
-});
-customerPhoneInput.addEventListener("beforeinput", (e)=>{
-  const el = customerPhoneInput;
-  const start = el.selectionStart, end = el.selectionEnd;
-  const value = el.value;
-  const idxStart = kgPhoneDigitIndexAtCaret(value, start);
-  const idxEnd = kgPhoneDigitIndexAtCaret(value, end);
-
-  if(e.inputType === "deleteContentBackward" || e.inputType === "deleteContentForward"){
-    e.preventDefault();
-    let from = idxStart, to = idxEnd;
-    if(from === to){
-      if(e.inputType === "deleteContentBackward"){
-        if(from === 0) return;
-        from -= 1;
-      } else {
-        if(to >= phoneDigits.length) return;
-        to += 1;
-      }
-    }
-    setKgPhoneField(phoneDigits.slice(0, from) + phoneDigits.slice(to), from);
-    return;
-  }
-  if(e.inputType === "insertText" || e.inputType === "insertFromPaste" || e.inputType === "insertCompositionText"){
-    const raw = e.data != null ? e.data : (e.dataTransfer ? e.dataTransfer.getData("text") : "");
-    let insertDigits = String(raw || "").replace(/\D/g, "");
-    e.preventDefault();
-    if(!insertDigits) return;
-    if(insertDigits.length > 1){
-      // вставка/автозаполнение целиком: если скопировали номер вместе с кодом страны или
-      // ведущим нулём, срезаем его — но только у самого вставляемого куска, набор по одной
-      // цифре это не затрагивает
-      if(insertDigits.startsWith("996")) insertDigits = insertDigits.slice(3);
-      else if(insertDigits.startsWith("0")) insertDigits = insertDigits.slice(1);
-    }
-    const merged = (phoneDigits.slice(0, idxStart) + insertDigits + phoneDigits.slice(idxEnd)).slice(0, 9);
-    setKgPhoneField(merged, Math.min(idxStart + insertDigits.length, merged.length));
-    return;
-  }
-});
 customerPhoneInput.addEventListener("input", ()=>{
-  const digitsNow = customerPhoneInput.value.replace(/\D/g, "").replace(/^996/, "");
-  if(digitsNow !== phoneDigits){
-    setKgPhoneField(digitsNow, digitsNow.length);
+  const pos = customerPhoneInput.selectionStart;
+  const before = customerPhoneInput.value;
+  const digitsOnly = before.replace(/\D/g, "").slice(0, 15);
+  if(digitsOnly !== before){
+    const removedBefore = before.slice(0, pos).replace(/\D/g, "").length;
+    customerPhoneInput.value = digitsOnly;
+    const newPos = Math.min(removedBefore, digitsOnly.length);
+    customerPhoneInput.setSelectionRange(newPos, newPos);
   }
+});
+customerPhoneInput.addEventListener("blur", ()=>{
+  customerPhoneInput.value = phoneGroupDigits(customerPhoneInput.value.replace(/\D/g, ""));
+});
+customerPhoneInput.addEventListener("focus", ()=>{
+  customerPhoneInput.value = customerPhoneInput.value.replace(/\D/g, "");
 });
 
 /* ===================== ПОДТВЕРЖДЕНИЕ ЗАКАЗА → ОПЛАТА =====================
@@ -1582,7 +1527,6 @@ function openPaymentOverlay(){
   document.getElementById("paymentWaitingBanner").style.display = "none";
   customerNameInput.value = "";
   customerPhoneInput.value = "";
-  phoneDigits = "";
   customerCommentInput.value = "";
   customerPhoneInput.classList.remove("field-error");
   const listEl = document.getElementById("paymentItemsList");
@@ -1615,17 +1559,17 @@ document.getElementById("paymentHelpBtn").addEventListener("click", ()=>{
 document.getElementById("payNowBtn").addEventListener("click", async ()=>{
   if(!pendingOrder) return;
 
-  const phoneValue = customerPhoneInput.value.trim();
-  const phoneDigitsOnly = phoneValue.replace(/\D/g, "").replace(/^996/, "");
-  if(!phoneValue || phoneDigitsOnly.length < 9){
+  const phoneDigitsOnly = customerPhoneInput.value.replace(/\D/g, "");
+  if(!phoneDigitsOnly || phoneDigitsOnly.length < 7){
     customerPhoneInput.classList.add("field-error");
     customerPhoneInput.focus();
     alert(t("phoneRequired"));
     return;
   }
   customerPhoneInput.classList.remove("field-error");
+  const fullPhone = customerPhoneCountry.value + " " + phoneDigitsOnly;
   pendingOrder.customerName = customerNameInput.value.trim();
-  pendingOrder.customerPhone = phoneValue;
+  pendingOrder.customerPhone = fullPhone;
   pendingOrder.customerComment = customerCommentInput.value.trim();
 
   if(!supabaseClient){
@@ -1669,7 +1613,6 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
     cart = {};
     customerNameInput.value = "";
     customerPhoneInput.value = "";
-    phoneDigits = "";
     customerCommentInput.value = "";
     syncCart();
 
@@ -1991,11 +1934,87 @@ let RAW_CATEGORIES = [];
 let RAW_DISHES = [];
 
 // Picks the field for the currently selected language, falling back to the
-// Russian (default) text if that dish/category hasn't been translated yet.
+// Russian (default) text if that dish/category hasn't been translated yet
+// (the auto-translate pass below fills the gap live, on the client, for English only).
 function localizedText(base, ky, en){
   if(currentLang === "ky") return (ky && ky.trim()) ? ky : base;
   if(currentLang === "en") return (en && en.trim()) ? en : base;
   return base;
+}
+
+/* ===================== АВТОПЕРЕВОД (когда в базе нет готового английского текста) =====================
+   Админ пишет название/описание на русском (и, если нужно, вручную на кыргызском — бесплатный
+   переводчик справляется с кыргызским ненадёжно). Английский подставляется автоматически через
+   MyMemory и кешируется в localStorage. */
+const TRANSLATE_CACHE_KEY = "dastarkhan_translate_cache";
+let translateCache = (function(){
+  try{ return JSON.parse(localStorage.getItem(TRANSLATE_CACHE_KEY) || "{}"); }catch(e){ return {}; }
+})();
+function saveTranslateCache(){
+  try{ localStorage.setItem(TRANSLATE_CACHE_KEY, JSON.stringify(translateCache)); }catch(e){ /* ignore */ }
+}
+async function autoTranslate(text, targetLang){
+  const clean = (text||"").trim();
+  if(!clean) return "";
+  const key = targetLang + ":" + clean;
+  if(translateCache[key]) return translateCache[key];
+  try{
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(clean)}&langpair=ru|${targetLang}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const translated = data && data.responseData && data.responseData.translatedText;
+    if(translated && translated.trim() && translated.trim().toLowerCase() !== clean.toLowerCase()){
+      translateCache[key] = translated.trim();
+      saveTranslateCache();
+      return translated.trim();
+    }
+  }catch(e){ /* сеть/лимит сервиса — молча остаёмся на русском тексте */ }
+  return clean;
+}
+let autoTranslateRunId = 0;
+async function scheduleAutoTranslate(){
+  // Бесплатный сервис переводит на английский хорошо, а вот на кыргызский — ненадёжно
+  // (иногда путает язык или мешает русские/английские слова в кыргызский текст). Показывать
+  // это клиентам нельзя, поэтому автоперевод включаем только для английского; для кыргызского
+  // используется то, что заполнено вручную в базе, иначе — русский текст как и раньше.
+  if(currentLang !== "en") return;
+  const runId = ++autoTranslateRunId;
+  const lang = currentLang;
+
+  const catTargets = RAW_CATEGORIES.filter(c=>{
+    const already = lang==="ky" ? c.name_ky : c.name_en;
+    return !already || !already.trim();
+  });
+  const dishTargets = RAW_DISHES.filter(d=>{
+    const already = lang==="ky" ? d.name_ky : d.name_en;
+    return !already || !already.trim();
+  });
+  if(!catTargets.length && !dishTargets.length) return;
+
+  await Promise.all([
+    ...catTargets.map(async c=>{
+      const translated = await autoTranslate(c.name, lang);
+      if(runId !== autoTranslateRunId) return;
+      const cat = CATEGORIES.find(x=>x.id===c.id);
+      if(cat) cat.label = translated;
+    }),
+    ...dishTargets.map(async d=>{
+      const [tName, tDesc] = await Promise.all([
+        autoTranslate(d.name, lang),
+        d.description ? autoTranslate(d.description, lang) : Promise.resolve("")
+      ]);
+      if(runId !== autoTranslateRunId) return;
+      const dish = MENU.find(x=>x.id===d.id);
+      if(dish){ dish.name = tName; if(d.description) dish.desc = tDesc; }
+    })
+  ]);
+  if(runId !== autoTranslateRunId) return;
+  renderCatNav();
+  renderMenu();
+  requestAnimationFrame(()=>{
+    if(activeCat) setActiveCat(activeCat);
+    initFadeUp();
+  });
 }
 
 function remapMenuForLanguage(){
@@ -2018,6 +2037,7 @@ function remapMenuForLanguage(){
     price:Number(d.price),
     unavailable: !d.is_available
   }));
+  scheduleAutoTranslate();
 }
 
 function subscribeRealtime(){
