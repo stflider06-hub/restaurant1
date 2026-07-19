@@ -687,14 +687,6 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
   <div class="full-overlay-body">
     <p class="full-overlay-sub" data-i18n="confirmSub">Проверьте, что всё верно. После создания изменить его уже не получится.</p>
     <div class="confirm-list" id="confirmList"></div>
-    <div class="cart-customer-fields">
-      <input type="text" id="customerNameInput" class="cart-input" data-i18n-placeholder="namePlaceholder" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
-      <div class="phone-input-wrap">
-        <i class="fa-brands fa-whatsapp"></i>
-        <input type="tel" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
-      </div>
-      <textarea id="customerCommentInput" class="cart-input" data-i18n-placeholder="commentPlaceholder" placeholder="Комментарий к заказу (по желанию)" maxlength="200" rows="2"></textarea>
-    </div>
     <div class="confirm-actions">
       <button class="btn-black" id="confirmProceedBtn" data-i18n="confirmBtn">Подтвердить</button>
       <button class="btn-outline-gray" id="confirmChangeBtn" data-i18n="changeBtn">Изменить</button>
@@ -712,6 +704,18 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
     <div class="payment-waiting-banner" id="paymentWaitingBanner" style="display:none;" data-i18n="waitingBanner">Ожидаем оплату, чтобы начать готовить</div>
     <div id="paymentItemsList"></div>
     <div class="payment-total-row"><span data-i18n="totalLabel">Итого</span><span id="paymentTotal">0 сом</span></div>
+
+    <div class="payment-section">
+      <div class="payment-section-label" data-i18n="customerDetailsLabel">Ваши данные</div>
+      <div class="cart-customer-fields">
+        <input type="text" id="customerNameInput" class="cart-input" data-i18n-placeholder="namePlaceholder" placeholder="Ваше имя (по желанию)" maxlength="60" autocomplete="name">
+        <div class="phone-input-wrap">
+          <i class="fa-brands fa-whatsapp"></i>
+          <input type="tel" id="customerPhoneInput" class="cart-input" data-i18n-placeholder="phonePlaceholder" placeholder="Номер телефона *" maxlength="30" autocomplete="tel" required>
+        </div>
+        <textarea id="customerCommentInput" class="cart-input" data-i18n-placeholder="commentPlaceholder" placeholder="Комментарий к заказу (по желанию)" maxlength="200" rows="2"></textarea>
+      </div>
+    </div>
 
     <div class="payment-section">
       <div class="payment-section-label" data-i18n="paymentMethodLabel">Способ оплаты</div>
@@ -812,6 +816,7 @@ const TRANSLATIONS = {
     searchPlaceholder: "Поиск блюд…",
     searchEmpty: "Ничего не найдено",
     namePlaceholder: "Ваше имя (по желанию)",
+    customerDetailsLabel: "Ваши данные",
     phonePlaceholder: "Номер телефона *",
     commentPlaceholder: "Комментарий к заказу (по желанию)",
     totalLabel: "Итого",
@@ -867,6 +872,7 @@ const TRANSLATIONS = {
     searchPlaceholder: "Тамак издөө…",
     searchEmpty: "Эч нерсе табылган жок",
     namePlaceholder: "Атыңыз (каалосуз боюнча)",
+    customerDetailsLabel: "Сиздин маалыматыңыз",
     phonePlaceholder: "Телефон номери *",
     commentPlaceholder: "Буйрутмага комментарий (каалосуна жараша)",
     totalLabel: "Жалпы суммасы",
@@ -922,6 +928,7 @@ const TRANSLATIONS = {
     searchPlaceholder: "Search dishes…",
     searchEmpty: "Nothing found",
     namePlaceholder: "Your name (optional)",
+    customerDetailsLabel: "Your details",
     phonePlaceholder: "Phone number *",
     commentPlaceholder: "Order comment (optional)",
     totalLabel: "Total",
@@ -1553,11 +1560,6 @@ function openConfirmOverlay(){
       <div>${e.dish.price*e.qty} ${t("curLabel")}</div>
     </div>
   `).join("");
-  customerNameInput.value = "";
-  customerPhoneInput.value = "";
-  phoneDigits = "";
-  customerCommentInput.value = "";
-  customerPhoneInput.classList.remove("field-error");
   confirmOverlay.classList.add("open");
   document.getElementById("tabBar").style.display = "none";
   if(typeof updateFloatingCartBar === "function") updateFloatingCartBar();
@@ -1573,26 +1575,17 @@ document.getElementById("confirmChangeBtn").addEventListener("click", ()=>{
   switchScreen("cart");
 });
 document.getElementById("confirmProceedBtn").addEventListener("click", ()=>{
-  const customerPhone = customerPhoneInput.value.trim();
-  const phoneDigitsOnly = customerPhone.replace(/\D/g, "").replace(/^996/, "");
-  if(!customerPhone || phoneDigitsOnly.length < 9){
-    customerPhoneInput.classList.add("field-error");
-    customerPhoneInput.focus();
-    alert(t("phoneRequired"));
-    return;
-  }
-  customerPhoneInput.classList.remove("field-error");
-
-  pendingOrder.customerName = customerNameInput.value.trim();
-  pendingOrder.customerPhone = customerPhone;
-  pendingOrder.customerComment = customerCommentInput.value.trim();
-
   confirmOverlay.classList.remove("open");
   openPaymentOverlay();
 });
 
 function openPaymentOverlay(){
   document.getElementById("paymentWaitingBanner").style.display = "none";
+  customerNameInput.value = "";
+  customerPhoneInput.value = "";
+  phoneDigits = "";
+  customerCommentInput.value = "";
+  customerPhoneInput.classList.remove("field-error");
   const listEl = document.getElementById("paymentItemsList");
   listEl.innerHTML = pendingOrder.entries.map(e=>`
     <div class="payment-summary-row">
@@ -1622,6 +1615,20 @@ document.getElementById("paymentHelpBtn").addEventListener("click", ()=>{
 
 document.getElementById("payNowBtn").addEventListener("click", async ()=>{
   if(!pendingOrder) return;
+
+  const phoneValue = customerPhoneInput.value.trim();
+  const phoneDigitsOnly = phoneValue.replace(/\D/g, "").replace(/^996/, "");
+  if(!phoneValue || phoneDigitsOnly.length < 9){
+    customerPhoneInput.classList.add("field-error");
+    customerPhoneInput.focus();
+    alert(t("phoneRequired"));
+    return;
+  }
+  customerPhoneInput.classList.remove("field-error");
+  pendingOrder.customerName = customerNameInput.value.trim();
+  pendingOrder.customerPhone = phoneValue;
+  pendingOrder.customerComment = customerCommentInput.value.trim();
+
   if(!supabaseClient){
     alert(t("noConnection"));
     return;
