@@ -142,6 +142,8 @@ h1,h2,h3{ font-family:var(--font-display); font-weight:800; }
 .cat-chip button{ width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--ink-soft); font-size:0.7rem; border:none; background:none; }
 .cat-chip button:hover{ background:var(--line); color:var(--ink); }
 .cat-chip button.cat-chip-delete:hover{ background:var(--red-soft); color:var(--red); }
+.cat-chip button:disabled{ opacity:0.3; cursor:default; }
+.cat-chip button:disabled:hover{ background:none; color:var(--ink-soft); }
 
 .cat-group{ margin-bottom:30px; }
 .cat-group h2{ font-size:1.05rem; margin-bottom:12px; display:flex; align-items:center; gap:9px; color:var(--ink); }
@@ -279,6 +281,7 @@ input:checked + .slider::before{ transform:translateX(18px); }
     <button class="tab-btn" data-tab="orders"><i class="fa-solid fa-receipt"></i> <span data-i18n="tabOrders">Заказы</span> <span class="tab-badge" id="newOrdersBadge" style="display:none;"></span></button>
     <button class="tab-btn" data-tab="expenses"><i class="fa-solid fa-wallet"></i> <span data-i18n="tabExpenses">Расходы</span></button>
     <button class="tab-btn" data-tab="promos"><i class="fa-solid fa-bullhorn"></i> <span data-i18n="tabPromos">Акции</span></button>
+    <button class="tab-btn" data-tab="settings"><i class="fa-solid fa-building"></i> <span data-i18n="tabSettings">Реквизиты</span></button>
     <button class="tab-btn" data-tab="stats"><i class="fa-solid fa-chart-column"></i> <span data-i18n="tabStats">Статистика</span></button>
   </div>
 
@@ -345,6 +348,42 @@ input:checked + .slider::before{ transform:translateX(18px); }
       <button class="btn btn-add" id="addPromoBtn"><i class="fa-solid fa-plus"></i> <span data-i18n="addPromoBtn">Добавить</span></button>
     </div>
     <div id="promosList"><div class="empty-state" data-i18n="loadingText">Загрузка…</div></div>
+  </div>
+
+  <div id="settingsTab" style="display:none;">
+    <div class="toolbar">
+      <div>
+        <h1 data-i18n="settingsTitle">Реквизиты заведения</h1>
+        <div class="count" data-i18n="settingsSub">Адрес, WhatsApp и реквизиты для оплаты — используются на сайте и в сообщениях клиентам</div>
+      </div>
+    </div>
+    <div id="settingsBox">
+      <form id="settingsForm">
+        <div class="field">
+          <label for="setAddress" data-i18n="setAddressLabel">Адрес заведения</label>
+          <input type="text" id="setAddress" data-i18n-ph="setAddressPh" placeholder="ул. Чуй 123, Бишкек">
+        </div>
+        <div class="field">
+          <label for="setWhatsapp" data-i18n="setWhatsappLabel">Номер WhatsApp заведения</label>
+          <input type="text" id="setWhatsapp" data-i18n-ph="setWhatsappPh" placeholder="996559751050">
+        </div>
+        <div class="field">
+          <label for="setBank" data-i18n="setBankLabel">Банк получателя</label>
+          <input type="text" id="setBank" data-i18n-ph="setBankPh" placeholder="Мбанк">
+        </div>
+        <div class="field">
+          <label for="setRecipient" data-i18n="setRecipientLabel">Имя получателя</label>
+          <input type="text" id="setRecipient" data-i18n-ph="setRecipientPh" placeholder="Байдоолот А.">
+        </div>
+        <div class="field">
+          <label for="setPaymentPhone" data-i18n="setPaymentPhoneLabel">Номер для перевода (телефон/карта)</label>
+          <input type="text" id="setPaymentPhone" data-i18n-ph="setPaymentPhonePh" placeholder="+996 559 751 050">
+        </div>
+        <div class="modal-actions" style="max-width:420px;">
+          <button type="submit" class="btn-save" id="settingsSave" data-i18n="settingsSaveBtn">Сохранить</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <div id="statsTab" style="display:none;">
@@ -583,7 +622,16 @@ const ADMIN_TRANSLATIONS = {
     dishCategoryLabel:"Категория", dishNameLabel:"Название", dishNamePh:"Например: Плов",
     dishNameKyLabel:"Название (кыргызча)", dishNameKyPh:"Мисалы: Палоо", dishDescKyLabel:"Сүрөттөмө (кыргызча)", dishDescKyPh:"Тамак эмнеден турат",
     autoTranslateHint:"Английский перевод подставляется автоматически на сайте. Кыргызский — бесплатный переводчик справляется плохо, поэтому лучше указать вручную (если оставить пустым, будет показан русский текст).",
-    categoriesLabel:"Категории", addCategoryBtn:"Добавить категорию", noCategoriesYet:"Пока нет категорий",
+    categoriesLabel:"Категории", addCategoryBtn:"Добавить категорию", noCategoriesYet:"Пока нет категорий", moveUpLabel:"Переместить раньше", moveDownLabel:"Переместить позже",
+    tabSettings:"Реквизиты", settingsTitle:"Реквизиты заведения",
+    settingsSub:"Адрес, WhatsApp и реквизиты для оплаты — используются на сайте и в сообщениях клиентам",
+    setAddressLabel:"Адрес заведения", setAddressPh:"ул. Чуй 123, Бишкек",
+    setWhatsappLabel:"Номер WhatsApp заведения", setWhatsappPh:"996559751050",
+    setBankLabel:"Банк получателя", setBankPh:"Мбанк",
+    setRecipientLabel:"Имя получателя", setRecipientPh:"Байдоолот А.",
+    setPaymentPhoneLabel:"Номер для перевода (телефон/карта)", setPaymentPhonePh:"+996 559 751 050",
+    settingsSaveBtn:"Сохранить", settingsSavedToast:"Реквизиты сохранены",
+    settingsTableMissing:"Таблица реквизитов ещё не создана в базе — выполните SQL-миграцию в Supabase, чтобы включить этот раздел.",
     newCategoryPrompt:"Название новой категории:", renameCategoryPrompt:"Новое название категории:",
     categoryAddedToast:"Категория добавлена", categoryUpdatedToast:"Категория обновлена", categoryDeletedToast:"Категория удалена",
     categoryHasDishesError:"В этой категории ещё {count} блюд(о) — сначала перенесите или удалите их.",
@@ -641,7 +689,16 @@ const ADMIN_TRANSLATIONS = {
     dishCategoryLabel:"Категория", dishNameLabel:"Аталышы", dishNamePh:"Мисалы: Плов",
     dishNameKyLabel:"Аталышы (кыргызча)", dishNameKyPh:"Мисалы: Палоо", dishDescKyLabel:"Сүрөттөмөсү (кыргызча)", dishDescKyPh:"Тамак эмнеден турат",
     autoTranslateHint:"Англисче которуу сайтта өзү коюлат. Кыргызча котормону акысыз кызмат начар аткарат, ошондуктан колдон жазган жакшы (бош калтырсаңыз, орусча текст көрсөтүлөт).",
-    categoriesLabel:"Категориялар", addCategoryBtn:"Категория кошуу", noCategoriesYet:"Азырынча категория жок",
+    categoriesLabel:"Категориялар", addCategoryBtn:"Категория кошуу", noCategoriesYet:"Азырынча категория жок", moveUpLabel:"Мурунураак жылдыруу", moveDownLabel:"Кийинчерээк жылдыруу",
+    tabSettings:"Реквизиттер", settingsTitle:"Мекеменин реквизиттери",
+    settingsSub:"Дарек, WhatsApp жана төлөм реквизиттери — сайтта жана кардарларга билдирүүлөрдө колдонулат",
+    setAddressLabel:"Мекеменин дареги", setAddressPh:"Чүй көч. 123, Бишкек",
+    setWhatsappLabel:"Мекеменин WhatsApp номери", setWhatsappPh:"996559751050",
+    setBankLabel:"Алуучунун банкы", setBankPh:"Мбанк",
+    setRecipientLabel:"Алуучунун аты", setRecipientPh:"Байдоолот А.",
+    setPaymentPhoneLabel:"Которуу үчүн номер (телефон/карта)", setPaymentPhonePh:"+996 559 751 050",
+    settingsSaveBtn:"Сактоо", settingsSavedToast:"Реквизиттер сакталды",
+    settingsTableMissing:"Реквизиттер таблицасы базада азырынча түзүлгөн эмес — бул бөлүмдү иштетүү үчүн Supabase\u2019де SQL-миграцияны аткарыңыз.",
     newCategoryPrompt:"Жаңы категориянын аталышы:", renameCategoryPrompt:"Категориянын жаңы аталышы:",
     categoryAddedToast:"Категория кошулду", categoryUpdatedToast:"Категория жаңыртылды", categoryDeletedToast:"Категория өчүрүлдү",
     categoryHasDishesError:"Бул категорияда дагы {count} тамак бар — алгач аларды которуңуз же өчүрүңүз.",
@@ -699,7 +756,16 @@ const ADMIN_TRANSLATIONS = {
     dishCategoryLabel:"Category", dishNameLabel:"Name", dishNamePh:"E.g.: Plov",
     dishNameKyLabel:"Name (Kyrgyz)", dishNameKyPh:"E.g.: Palоо", dishDescKyLabel:"Description (Kyrgyz)", dishDescKyPh:"What the dish contains",
     autoTranslateHint:"English is auto-translated on the site. The free translator handles Kyrgyz poorly, so it\u2019s best entered by hand (leave blank to fall back to Russian).",
-    categoriesLabel:"Categories", addCategoryBtn:"Add category", noCategoriesYet:"No categories yet",
+    categoriesLabel:"Categories", addCategoryBtn:"Add category", noCategoriesYet:"No categories yet", moveUpLabel:"Move earlier", moveDownLabel:"Move later",
+    tabSettings:"Business info", settingsTitle:"Business details",
+    settingsSub:"Address, WhatsApp and payment details — used across the site and in messages to customers",
+    setAddressLabel:"Cafe address", setAddressPh:"123 Chuy St, Bishkek",
+    setWhatsappLabel:"Cafe WhatsApp number", setWhatsappPh:"996559751050",
+    setBankLabel:"Recipient bank", setBankPh:"MBank",
+    setRecipientLabel:"Recipient name", setRecipientPh:"Baidoolot A.",
+    setPaymentPhoneLabel:"Payment number (phone/card)", setPaymentPhonePh:"+996 559 751 050",
+    settingsSaveBtn:"Save", settingsSavedToast:"Details saved",
+    settingsTableMissing:"The settings table hasn\u2019t been created in the database yet — run the SQL migration in Supabase to enable this section.",
     newCategoryPrompt:"New category name:", renameCategoryPrompt:"New category name:",
     categoryAddedToast:"Category added", categoryUpdatedToast:"Category updated", categoryDeletedToast:"Category deleted",
     categoryHasDishesError:"This category still has {count} dish(es) — move or delete them first.",
@@ -832,19 +898,39 @@ function renderCategoryChips(){
     el.innerHTML = `<span style="color:var(--ink-soft);font-size:0.85rem;">${escapeHtml(at("noCategoriesYet"))}</span>`;
     return;
   }
-  el.innerHTML = CATEGORIES.map(c=>`
+  el.innerHTML = CATEGORIES.map((c,i)=>`
     <span class="cat-chip" data-cat-id="${c.id}">
+      <button type="button" class="cat-chip-move" data-id="${c.id}" data-dir="up" ${i===0?"disabled":""} aria-label="${escapeHtml(at("moveUpLabel"))}"><i class="fa-solid fa-chevron-left"></i></button>
       ${escapeHtml(c.name)}
+      <button type="button" class="cat-chip-move" data-id="${c.id}" data-dir="down" ${i===CATEGORIES.length-1?"disabled":""} aria-label="${escapeHtml(at("moveDownLabel"))}"><i class="fa-solid fa-chevron-right"></i></button>
       <button type="button" class="cat-chip-rename" data-id="${c.id}" aria-label="${escapeHtml(at("editLabel"))}"><i class="fa-solid fa-pen"></i></button>
       <button type="button" class="cat-chip-delete" data-id="${c.id}" aria-label="${escapeHtml(at("deleteLabel"))}"><i class="fa-solid fa-xmark"></i></button>
     </span>
   `).join("");
+  el.querySelectorAll(".cat-chip-move").forEach(btn=>{
+    btn.addEventListener("click", ()=> moveCategory(btn.dataset.id, btn.dataset.dir));
+  });
   el.querySelectorAll(".cat-chip-rename").forEach(btn=>{
     btn.addEventListener("click", ()=> renameCategory(btn.dataset.id));
   });
   el.querySelectorAll(".cat-chip-delete").forEach(btn=>{
     btn.addEventListener("click", ()=> deleteCategory(btn.dataset.id));
   });
+}
+
+async function moveCategory(id, dir){
+  const idx = CATEGORIES.findIndex(c=>c.id===id);
+  if(idx < 0) return;
+  const swapWith = dir === "up" ? idx-1 : idx+1;
+  if(swapWith < 0 || swapWith >= CATEGORIES.length) return;
+  const reordered = CATEGORIES.slice();
+  [reordered[idx], reordered[swapWith]] = [reordered[swapWith], reordered[idx]];
+  // перенумеровываем все категории подряд 1..N — заодно чинит любые случайные совпадения sort_order
+  const updates = reordered.map((c, i) => supabaseClient.from("categories").update({ sort_order: i+1 }).eq("id", c.id));
+  const results = await Promise.all(updates);
+  const err = results.find(r=>r.error);
+  if(err){ showToast(at("genericErrorPrefix") + err.error.message); return; }
+  await loadData();
 }
 
 document.getElementById("addCategoryBtn").addEventListener("click", async ()=>{
@@ -1215,6 +1301,47 @@ async function deletePromo(id){
   await loadPromos();
 }
 
+/* ---------- реквизиты заведения (адрес, WhatsApp, реквизиты для оплаты) ----------
+   Хранятся в одной строке таблицы business_settings (id=1). Если таблицы ещё нет (миграция не
+   выполнена), используем те же значения, что раньше были зашиты в коде — сайт и админка продолжают
+   работать как обычно, просто без возможности редактирования из админки, пока таблица не создана. */
+let BUSINESS_SETTINGS = null;
+
+async function loadSettings(){
+  const { data, error } = await supabaseClient.from("business_settings").select("*").eq("id", 1).maybeSingle();
+  if(error || !data){
+    document.getElementById("settingsBox").insertAdjacentHTML("afterbegin",
+      `<div class="form-error show" id="settingsMissingNotice">${escapeHtml(at("settingsTableMissing"))}</div>`);
+    return;
+  }
+  BUSINESS_SETTINGS = data;
+  document.getElementById("setAddress").value = data.cafe_address || "";
+  document.getElementById("setWhatsapp").value = data.cafe_whatsapp || "";
+  document.getElementById("setBank").value = data.payment_bank || "";
+  document.getElementById("setRecipient").value = data.payment_recipient_name || "";
+  document.getElementById("setPaymentPhone").value = data.payment_phone || "";
+}
+
+document.getElementById("settingsForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const saveBtn = document.getElementById("settingsSave");
+  saveBtn.disabled = true;
+  saveBtn.textContent = at("savingText");
+  const payload = {
+    cafe_address: document.getElementById("setAddress").value.trim(),
+    cafe_whatsapp: document.getElementById("setWhatsapp").value.trim(),
+    payment_bank: document.getElementById("setBank").value.trim(),
+    payment_recipient_name: document.getElementById("setRecipient").value.trim(),
+    payment_phone: document.getElementById("setPaymentPhone").value.trim()
+  };
+  const { error } = await supabaseClient.from("business_settings").update(payload).eq("id", 1);
+  saveBtn.disabled = false;
+  saveBtn.textContent = at("settingsSaveBtn");
+  if(error){ showToast(at("genericErrorPrefix") + error.message); return; }
+  showToast(at("settingsSavedToast"));
+  await loadSettings();
+});
+
 /* ---------- tabs ---------- */
 document.querySelectorAll(".tab-btn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
@@ -1225,6 +1352,7 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     document.getElementById("ordersTab").style.display = tab==="orders" ? "" : "none";
     document.getElementById("expensesTab").style.display = tab==="expenses" ? "" : "none";
     document.getElementById("promosTab").style.display = tab==="promos" ? "" : "none";
+    document.getElementById("settingsTab").style.display = tab==="settings" ? "" : "none";
     document.getElementById("statsTab").style.display = tab==="stats" ? "" : "none";
     if(tab==="orders"){
       newOrdersSinceView = 0;
@@ -1580,6 +1708,64 @@ function renderOrders(){
   listEl.querySelectorAll("[data-action]").forEach(btn=>{
     btn.addEventListener("click", ()=> runOrderAction(btn.dataset.action, btn.dataset.orderId));
   });
+  scheduleAdminOrderTranslate();
+}
+
+/* ---------- живой перевод названий блюд в списке заказов (по языку админки, а не языку клиента) ----------
+   order_items хранит dish_name как "снимок" на момент заказа (на языке клиента) — этого недостаточно,
+   если админ переключил язык панели. Вместо снимка берём актуальное блюдо по dish_id и переводим его
+   под текущий adminLang: русский/кыргызский — как на клиентском сайте (кыргызский только если заполнен
+   вручную), английский — через тот же бесплатный переводчик, что и на сайте, с кешем. */
+const ADMIN_TRANSLATE_CACHE_KEY = "dastarkhan_admin_translate_cache";
+let adminTranslateCache = (function(){
+  try{ return JSON.parse(localStorage.getItem(ADMIN_TRANSLATE_CACHE_KEY) || "{}"); }catch(e){ return {}; }
+})();
+function saveAdminTranslateCache(){
+  try{ localStorage.setItem(ADMIN_TRANSLATE_CACHE_KEY, JSON.stringify(adminTranslateCache)); }catch(e){ /* ignore */ }
+}
+async function adminAutoTranslate(text, targetLang){
+  const clean = (text||"").trim();
+  if(!clean) return "";
+  const key = targetLang + ":" + clean;
+  if(adminTranslateCache[key]) return adminTranslateCache[key];
+  try{
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(clean)}&langpair=ru|${targetLang}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const translated = data && data.responseData && data.responseData.translatedText;
+    if(translated && translated.trim() && translated.trim().toLowerCase() !== clean.toLowerCase()){
+      adminTranslateCache[key] = translated.trim();
+      saveAdminTranslateCache();
+      return translated.trim();
+    }
+  }catch(e){ /* сеть/лимит — молча остаёмся на русском */ }
+  return clean;
+}
+function adminLocalizedDishName(it){
+  const dish = DISHES.find(d=>d.id===it.dish_id);
+  const base = dish ? dish.name : it.dish_name;
+  if(adminLang === "ru") return base;
+  if(adminLang === "ky") return (dish && dish.name_ky && dish.name_ky.trim()) ? dish.name_ky : base;
+  // en — сначала кеш, если ещё не переведено — покажем русский текст и переведём в фоне
+  const cached = adminTranslateCache["en:" + base];
+  return cached || base;
+}
+let adminOrderTranslateRunId = 0;
+async function scheduleAdminOrderTranslate(){
+  if(adminLang !== "en") return;
+  const runId = ++adminOrderTranslateRunId;
+  const names = new Set();
+  Object.values(ORDER_ITEMS_BY_ORDER).forEach(items=>{
+    items.forEach(it=>{
+      const dish = DISHES.find(d=>d.id===it.dish_id);
+      const base = dish ? dish.name : it.dish_name;
+      if(!adminTranslateCache["en:" + base]) names.add(base);
+    });
+  });
+  if(!names.size) return;
+  await Promise.all([...names].map(n=> adminAutoTranslate(n, "en")));
+  if(runId !== adminOrderTranslateRunId) return;
+  if(adminLang === "en") renderOrders();
 }
 
 function orderCardHTML(o){
@@ -1601,7 +1787,7 @@ function orderCardHTML(o){
       </div>` : ""}
       ${o.comment ? `<div class="order-comment"><i class="fa-solid fa-comment-dots"></i> ${escapeHtml(o.comment)}</div>` : ""}
       <div class="order-items-list">
-        ${items.map(it=>`<div><span>${escapeHtml(it.dish_name)} × ${it.qty}${it.note ? `<div class="order-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(it.note)}</div>` : ""}</span><span>${Number(it.price)*it.qty} ${at("curLabel")}</span></div>`).join("") || `<div style="color:var(--ink-soft);">${at("noItems")}</div>`}
+        ${items.map(it=>`<div><span>${escapeHtml(adminLocalizedDishName(it))} × ${it.qty}${it.note ? `<div class="order-item-note"><i class="fa-solid fa-pen"></i> ${escapeHtml(it.note)}</div>` : ""}</span><span>${Number(it.price)*it.qty} ${at("curLabel")}</span></div>`).join("") || `<div style="color:var(--ink-soft);">${at("noItems")}</div>`}
       </div>
       <div class="order-total-row"><span>${at("totalLabel")}</span><span>${Number(o.total)} ${at("curLabel")}</span></div>
       ${actions.length ? `<div class="order-actions">${actions.map(a=>
@@ -1693,6 +1879,7 @@ applyAdminTranslations();
   await loadOrders();
   await loadExpenses();
   await loadPromos();
+  await loadSettings();
   subscribeOrdersRealtime();
 })();
 </script>
