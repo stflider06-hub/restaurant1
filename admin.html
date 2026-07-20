@@ -591,10 +591,12 @@ const supabaseClient = (typeof window.supabase !== "undefined")
 const PHOTO_BUCKET = "dish-photos";
 
 const CAFE_NAME = "Дастархан";
-const CAFE_ADDRESS = "ул. Чуй 123, Бишкек";
-// Номер, на который клиент переводит оплату (WhatsApp и номер для перевода — один и тот же).
-const PAYMENT_PHONE = "+996 559 751 050";
-const PAYMENT_RECIPIENT_NAME = "Байдоолот";
+let CAFE_ADDRESS = "ул. Чуй 123, Бишкек";
+// Номер, на который клиент переводит оплату — теперь редактируется во вкладке «Реквизиты»;
+// значения ниже — запасные, используются только пока таблица business_settings не загрузилась.
+let PAYMENT_PHONE = "+996 559 751 050";
+let PAYMENT_RECIPIENT_NAME = "Байдоолот";
+let PAYMENT_BANK = "";
 
 /* ===================== ЯЗЫКИ (RU / KY / EN) ===================== */
 const ADMIN_LANG_KEY = "dastarkhan_admin_lang";
@@ -662,7 +664,7 @@ const ADMIN_TRANSLATIONS = {
     promoSaveError:"Не удалось сохранить акцию", promoDeleteErrorPrefix:"Ошибка удаления: ", promoDeletedToast:"Акция удалена", promoLoadErrorPrefix:"Не удалось загрузить акции: ",
     waGreeting:"Здравствуйте! Это {cafe}.\nВаш заказ №{id} принят, вот что вы заказали:\n\n",
     waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\nИтого к оплате: {total} сом.\n",
-    waPaymentLine:"Переводом на номер {phone} (получатель: {name}).\n",
+    waPaymentLine:"Переводом в {bank} на номер {phone} (получатель: {name}).\n",
     waReceiptLine:"Пожалуйста, отправьте чек после оплаты — как только получим, сразу начнём готовить.",
     waReadyMessage:"Ваш заказ №{id} в {cafe} готов! Можете забирать по адресу: {address}. Ждём вас 🙂"
   },
@@ -729,7 +731,7 @@ const ADMIN_TRANSLATIONS = {
     promoSaveError:"Акция сакталган жок", promoDeleteErrorPrefix:"Өчүрүү катасы: ", promoDeletedToast:"Акция өчүрүлдү", promoLoadErrorPrefix:"Акциялар жүктөлгөн жок: ",
     waGreeting:"Саламатсызбы! Бул {cafe}.\n№{id} буйрутмаңыз кабыл алынды, сиз тандагандар:\n\n",
     waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\nТөлөнүүчү сумма: {total} сом.\n",
-    waPaymentLine:"{phone} номерине которуу (алуучу: {name}).\n",
+    waPaymentLine:"{bank} аркылуу {phone} номерине которуу (алуучу: {name}).\n",
     waReceiptLine:"Төлөгөндөн кийин чекти жөнөтүңүз — алганыбыз менен даярдоону баштайбыз.",
     waReadyMessage:"№{id} буйрутмаңыз {cafe} жеринде даяр! {address} дареги боюнча алып кетсеңиз болот. Күтөбүз 🙂"
   },
@@ -796,7 +798,7 @@ const ADMIN_TRANSLATIONS = {
     promoSaveError:"Could not save the promo", promoDeleteErrorPrefix:"Delete error: ", promoDeletedToast:"Promo deleted", promoLoadErrorPrefix:"Could not load promos: ",
     waGreeting:"Hello! This is {cafe}.\nYour order #{id} has been received, here's what you ordered:\n\n",
     waItemLine:"• {name} × {qty} — {sum} som\n", waTotalLine:"\nTotal due: {total} som.\n",
-    waPaymentLine:"By transfer to {phone} (recipient: {name}).\n",
+    waPaymentLine:"By transfer via {bank} to {phone} (recipient: {name}).\n",
     waReceiptLine:"Please send the receipt after payment — we'll start cooking as soon as we get it.",
     waReadyMessage:"Your order #{id} at {cafe} is ready! You can pick it up at: {address}. See you soon 🙂"
   }
@@ -1315,6 +1317,10 @@ async function loadSettings(){
     return;
   }
   BUSINESS_SETTINGS = data;
+  if(data.cafe_address) CAFE_ADDRESS = data.cafe_address;
+  if(data.payment_phone) PAYMENT_PHONE = data.payment_phone;
+  if(data.payment_recipient_name) PAYMENT_RECIPIENT_NAME = data.payment_recipient_name;
+  if(data.payment_bank) PAYMENT_BANK = data.payment_bank;
   document.getElementById("setAddress").value = data.cafe_address || "";
   document.getElementById("setWhatsapp").value = data.cafe_whatsapp || "";
   document.getElementById("setBank").value = data.payment_bank || "";
@@ -1815,7 +1821,7 @@ function buildPaymentRequestMessage(order, items){
     text += at("waItemLine").replace("{name}", it.dish_name).replace("{qty}", it.qty).replace("{sum}", Number(it.price)*it.qty);
   });
   text += at("waTotalLine").replace("{total}", Number(order.total));
-  text += at("waPaymentLine").replace("{phone}", PAYMENT_PHONE).replace("{name}", PAYMENT_RECIPIENT_NAME);
+  text += at("waPaymentLine").replace("{bank}", PAYMENT_BANK || "—").replace("{phone}", PAYMENT_PHONE).replace("{name}", PAYMENT_RECIPIENT_NAME);
   text += at("waReceiptLine");
   return text;
 }
