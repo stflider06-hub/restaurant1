@@ -527,6 +527,9 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 .history-item:hover{ border-color:var(--primary); box-shadow:var(--shadow-sm); }
 .history-item-top{ display:flex; justify-content:space-between; align-items:center; font-weight:700; color:var(--ink); font-size:0.9rem; }
 .history-item-sub{ font-size:0.78rem; color:var(--ink-soft); margin-top:3px; }
+.history-item-details{ margin-top:10px; padding-top:10px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:6px; }
+.history-item-detail-row{ display:flex; justify-content:space-between; gap:10px; font-size:0.82rem; color:var(--ink); }
+.history-item-detail-row em{ color:var(--primary); font-style:italic; }
 .history-item-bottom{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid var(--line); }
 .history-item-total{ font-weight:700; color:var(--primary); font-size:0.98rem; }
 .history-track-btn{ font-size:0.78rem; font-weight:700; color:var(--primary); }
@@ -791,9 +794,9 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 /* ===================== DATA ===================== */
 // Номер WhatsApp заведения (в международном формате, без +).
 // Используется для кнопки «Написать в WhatsApp» в шапке и для раздела «Помощь» на экране оплаты.
-const CAFE_WHATSAPP = "996559751050";
+let CAFE_WHATSAPP = "996559751050";
 const CAFE_NAME = "Дастархан";
-const CAFE_ADDRESS = "ул. Чуй 123, Бишкек"; // замените на реальный адрес заведения
+let CAFE_ADDRESS = "ул. Чуй 123, Бишкек"; // запасной адрес — используется, пока не загрузятся реквизиты из админки (вкладка «Реквизиты»)
 
 // Реквизиты для перевода оплаты (пока нет подключённого онлайн-эквайринга — оплата переводом
 // по номеру телефона, подтверждается вручную администратором в админке после получения чека).
@@ -1028,12 +1031,26 @@ document.addEventListener("click", (e)=>{
 });
 
 // Ссылка «Написать в WhatsApp» в шапке сайта — просто открывает чат с заведением
-const whatsappContactBtn = document.getElementById("whatsappContactBtn");
-if(whatsappContactBtn){
-  whatsappContactBtn.href = `https://wa.me/${CAFE_WHATSAPP}?text=${encodeURIComponent("Здравствуйте! У меня вопрос по заказу в "+CAFE_NAME)}`;
+function applyBusinessDisplay(){
+  const whatsappContactBtn = document.getElementById("whatsappContactBtn");
+  if(whatsappContactBtn){
+    whatsappContactBtn.href = `https://wa.me/${CAFE_WHATSAPP}?text=${encodeURIComponent("Здравствуйте! У меня вопрос по заказу в "+CAFE_NAME)}`;
+  }
+  const cafeAddressLabel = document.getElementById("cafeAddressLabel");
+  if(cafeAddressLabel) cafeAddressLabel.textContent = CAFE_ADDRESS;
 }
-const cafeAddressLabel = document.getElementById("cafeAddressLabel");
-if(cafeAddressLabel) cafeAddressLabel.textContent = CAFE_ADDRESS;
+applyBusinessDisplay();
+
+// Реквизиты (адрес, WhatsApp) теперь редактируются в админке, вкладка «Реквизиты» — если таблица
+// ещё не создана в базе, тихо остаёмся на запасных значениях выше, ничего не ломается.
+async function loadBusinessSettings(){
+  if(!supabaseClient) return;
+  const { data, error } = await supabaseClient.from("business_settings").select("*").eq("id", 1).maybeSingle();
+  if(error || !data) return;
+  if(data.cafe_address) CAFE_ADDRESS = data.cafe_address;
+  if(data.cafe_whatsapp) CAFE_WHATSAPP = data.cafe_whatsapp;
+  applyBusinessDisplay();
+}
 
 // Подключение к базе данных (Supabase) — меню теперь редактируется из админки,
 // а не хранится в коде. Если база недоступна, ниже есть аварийный запасной список.
@@ -1452,13 +1469,35 @@ const customerCommentInput = document.getElementById("customerCommentInput");
    Специально не форматируем номер живым вводом (никаких скобок/тире на лету) — это то, что
    раньше ломало курсор при редактировании; вместо этого аккуратно группируем цифры только
    когда поле теряет фокус. */
-function phoneGroupDigits(digits){
-  return digits.replace(/(\d{3})(?=\d)/g, "$1 ").trim();
+// Формат группировки цифр — свой для каждой страны (только визуально, при потере фокуса поля;
+// сам ввод остаётся простым, без риска сломать курсор).
+const PHONE_FORMATS = {
+  "+996": { max: 9,  groups: [3,2,2,2] },  // Кыргызстан: XXX XX XX XX
+  "+7":   { max: 10, groups: [3,3,2,2] },  // Россия / Казахстан: XXX XXX XX XX
+  "+998": { max: 9,  groups: [2,3,2,2] },  // Узбекистан: XX XXX XX XX
+  "+992": { max: 9,  groups: [2,3,2,2] },  // Таджикистан: XX XXX XX XX
+  "+993": { max: 8,  groups: [2,2,2,2] }   // Туркменистан: XX XX XX XX
+};
+function phoneGroupDigits(digits, dialCode){
+  const fmt = PHONE_FORMATS[dialCode] || { max: 15, groups: [3,3,3,3,3] };
+  digits = digits.slice(0, fmt.max);
+  let out = [], i = 0;
+  for(const g of fmt.groups){
+    if(i >= digits.length) break;
+    out.push(digits.slice(i, i+g));
+    i += g;
+  }
+  if(i < digits.length) out.push(digits.slice(i));
+  return out.join(" ");
+}
+function currentPhoneMax(){
+  const fmt = PHONE_FORMATS[customerPhoneCountry.value];
+  return fmt ? fmt.max : 15;
 }
 customerPhoneInput.addEventListener("input", ()=>{
   const pos = customerPhoneInput.selectionStart;
   const before = customerPhoneInput.value;
-  const digitsOnly = before.replace(/\D/g, "").slice(0, 15);
+  const digitsOnly = before.replace(/\D/g, "").slice(0, currentPhoneMax());
   if(digitsOnly !== before){
     const removedBefore = before.slice(0, pos).replace(/\D/g, "").length;
     customerPhoneInput.value = digitsOnly;
@@ -1467,10 +1506,16 @@ customerPhoneInput.addEventListener("input", ()=>{
   }
 });
 customerPhoneInput.addEventListener("blur", ()=>{
-  customerPhoneInput.value = phoneGroupDigits(customerPhoneInput.value.replace(/\D/g, ""));
+  customerPhoneInput.value = phoneGroupDigits(customerPhoneInput.value.replace(/\D/g, ""), customerPhoneCountry.value);
 });
 customerPhoneInput.addEventListener("focus", ()=>{
   customerPhoneInput.value = customerPhoneInput.value.replace(/\D/g, "");
+});
+customerPhoneCountry.addEventListener("change", ()=>{
+  const digits = customerPhoneInput.value.replace(/\D/g, "").slice(0, currentPhoneMax());
+  customerPhoneInput.value = document.activeElement === customerPhoneInput
+    ? digits
+    : phoneGroupDigits(digits, customerPhoneCountry.value);
 });
 
 /* ===================== ПОДТВЕРЖДЕНИЕ ЗАКАЗА → ОПЛАТА =====================
@@ -1701,12 +1746,38 @@ function historyItemHTML(h, status){
         ${statusBadgeHTML(status)}
       </div>
       <div class="history-item-sub">${new Date(h.createdAt).toLocaleString("ru-RU", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" })}</div>
+      <div class="history-item-details" id="history-details-${h.id}" style="display:none;"></div>
       <div class="history-item-bottom">
         <span class="history-item-total">${h.total} ${t("curLabel")}</span>
         <button type="button" class="history-track-btn" data-id="${h.id}" data-number="${h.orderNumber||''}">${t("trackOrderBtn")}</button>
       </div>
     </div>
   `;
+}
+
+const historyItemsCache = {}; // order_id -> массив order_items, чтобы не запрашивать заново при повторном раскрытии
+async function toggleHistoryItemDetails(orderId){
+  const box = document.getElementById("history-details-" + orderId);
+  if(!box) return;
+  const isOpen = box.style.display !== "none";
+  if(isOpen){ box.style.display = "none"; return; }
+  box.style.display = "block";
+  if(historyItemsCache[orderId]){
+    box.innerHTML = historyItemsCache[orderId];
+    return;
+  }
+  box.innerHTML = '<div style="padding:8px 0;color:var(--ink-soft);font-size:0.8rem;"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+  if(!supabaseClient){ box.innerHTML = ""; return; }
+  const { data, error } = await supabaseClient.from("order_items").select("*").eq("order_id", orderId);
+  if(error || !data || !data.length){ box.innerHTML = ""; return; }
+  const html = data.map(it=> `
+    <div class="history-item-detail-row">
+      <span>${it.qty} × ${escapeHtml(it.dish_name)}${it.note ? ` <em>(${escapeHtml(it.note)})</em>` : ""}</span>
+      <span>${Number(it.price)*it.qty} ${t("curLabel")}</span>
+    </div>
+  `).join("");
+  historyItemsCache[orderId] = html;
+  box.innerHTML = html;
 }
 
 function wireHistoryItemEvents(){
@@ -1716,6 +1787,9 @@ function wireHistoryItemEvents(){
       switchScreen("menu");
       startOrderTracking(btn.dataset.id, btn.dataset.number || null);
     });
+  });
+  document.querySelectorAll(".history-item").forEach(row=>{
+    row.addEventListener("click", ()=> toggleHistoryItemDetails(row.dataset.id));
   });
 }
 
@@ -2059,6 +2133,7 @@ window.addEventListener("resize", ()=>{
 applyTranslations();
 loadMenu(true).then(subscribeRealtime);
 loadPromos();
+loadBusinessSettings();
 </script>
 </body>
 </html>
