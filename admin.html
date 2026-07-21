@@ -368,6 +368,11 @@ input:checked + .slider::before{ transform:translateX(18px); }
           <input type="text" id="setWhatsapp" data-i18n-ph="setWhatsappPh" placeholder="996559751050">
         </div>
         <div class="field">
+          <label for="setHours" data-i18n="setHoursLabel">Часы работы</label>
+          <input type="text" id="setHours" data-i18n-ph="setHoursPh" placeholder="09:00-22:00">
+          <div class="field-hint" data-i18n="setHoursHint">Формат: ЧЧ:ММ-ЧЧ:ММ. Вне этих часов сайт автоматически покажет клиентам «Мы закрыты» и не даст оформить заказ.</div>
+        </div>
+        <div class="field">
           <label for="setBank" data-i18n="setBankLabel">Банк получателя</label>
           <input type="text" id="setBank" data-i18n-ph="setBankPh" placeholder="Мбанк">
         </div>
@@ -609,7 +614,7 @@ const ADMIN_TRANSLATIONS = {
     status_completed:"Завершён", status_cancelled:"Отменён",
     action_request_payment:"Запросить оплату", action_confirm_payment:"Подтвердить оплату",
     action_accept:"Принять", action_preparing:"Готовится", action_ready:"Готово — уведомить клиента",
-    action_complete:"Завершить", action_cancel:"Отменить",
+    action_complete:"Завершить", action_cancel:"Отменить", confirmCancelOrder:"Точно отменить этот заказ? Действие нельзя быстро вернуть назад.",
     tabStats:"Статистика", statRevenueLabel:"Выручка", statOrdersLabel:"Заказов", statAvgLabel:"Средний чек",
     topDishesTitle:"Топ продаж", noSalesYet:"Пока нет продаж за этот период", pcsLabel:"шт.",
     periodToday:"Сегодня", periodWeek:"7 дней", periodMonth:"30 дней", periodAll:"Всё время",
@@ -629,6 +634,7 @@ const ADMIN_TRANSLATIONS = {
     settingsSub:"Адрес, WhatsApp и реквизиты для оплаты — используются на сайте и в сообщениях клиентам",
     setAddressLabel:"Адрес заведения", setAddressPh:"ул. Чуй 123, Бишкек",
     setWhatsappLabel:"Номер WhatsApp заведения", setWhatsappPh:"996559751050",
+    setHoursLabel:"Часы работы", setHoursPh:"09:00-22:00", setHoursHint:"Формат: ЧЧ:ММ-ЧЧ:ММ. Вне этих часов сайт автоматически покажет клиентам «Мы закрыты» и не даст оформить заказ.",
     setBankLabel:"Банк получателя", setBankPh:"Мбанк",
     setRecipientLabel:"Имя получателя", setRecipientPh:"Байдоолот А.",
     setPaymentPhoneLabel:"Номер для перевода (телефон/карта)", setPaymentPhonePh:"+996 559 751 050",
@@ -662,11 +668,11 @@ const ADMIN_TRANSLATIONS = {
     promoCountLabel:"Всего акций", noPromosYet:"Пока нет ни одной акции — добавьте первую", confirmDeletePromo:"Удалить эту акцию?",
     promoFormEditTitle:"Редактировать акцию", promoFormNewTitle:"Новая акция", promoUpdatedToast:"Акция обновлена", promoAddedToast:"Акция добавлена",
     promoSaveError:"Не удалось сохранить акцию", promoDeleteErrorPrefix:"Ошибка удаления: ", promoDeletedToast:"Акция удалена", promoLoadErrorPrefix:"Не удалось загрузить акции: ",
-    waGreeting:"Здравствуйте! Это {cafe}.\nВаш заказ №{id} принят, вот что вы заказали:\n\n",
-    waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\nИтого к оплате: {total} сом.\n",
-    waPaymentLine:"Переводом в {bank} на номер {phone} (получатель: {name}).\n",
-    waReceiptLine:"Пожалуйста, отправьте чек после оплаты — как только получим, сразу начнём готовить.",
-    waReadyMessage:"Ваш заказ №{id} в {cafe} готов! Можете забирать по адресу: {address}. Ждём вас 🙂"
+    waGreeting:"Здравствуйте! Это {cafe} 🍲\n\nВаш заказ №{id} принят:\n",
+    waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\n💰 Итого к оплате: {total} сом\n",
+    waPaymentLine:"\n💳 Оплата:\nБанк: {bank}\nПолучатель: {name}\nНомер: {phone}\n",
+    waReceiptLine:"\n📸 Пожалуйста, отправьте чек после оплаты — как только получим, сразу начнём готовить!",
+    waReadyMessage:"🎉 Ваш заказ №{id} в {cafe} готов!\n📍 Забрать: {address}\n\nЖдём вас 🙂"
   },
   ky: {
     openSite:"Сайтты ачуу", logout:"Чыгуу", tabMenu:"Меню", tabOrders:"Буйрутмалар",
@@ -676,7 +682,7 @@ const ADMIN_TRANSLATIONS = {
     status_completed:"Аякталды", status_cancelled:"Жокко чыгарылды",
     action_request_payment:"Төлөм суроо", action_confirm_payment:"Төлөмдү ырастоо",
     action_accept:"Кабыл алуу", action_preparing:"Даярдалууда", action_ready:"Даяр — кардарга кабарлоо",
-    action_complete:"Аяктоо", action_cancel:"Жокко чыгаруу",
+    action_complete:"Аяктоо", action_cancel:"Жокко чыгаруу", confirmCancelOrder:"Бул буйрутманы чын эле жокко чыгарасызбы? Бул аракетти тез эле артка кайтарууга болбойт.",
     tabStats:"Статистика", statRevenueLabel:"Түшүм", statOrdersLabel:"Буйрутмалар", statAvgLabel:"Орточо чек",
     topDishesTitle:"Эң көп сатылгандар", noSalesYet:"Бул мезгилде сатуулар жок", pcsLabel:"даана",
     periodToday:"Бүгүн", periodWeek:"7 күн", periodMonth:"30 күн", periodAll:"Бардык убакыт",
@@ -696,6 +702,7 @@ const ADMIN_TRANSLATIONS = {
     settingsSub:"Дарек, WhatsApp жана төлөм реквизиттери — сайтта жана кардарларга билдирүүлөрдө колдонулат",
     setAddressLabel:"Мекеменин дареги", setAddressPh:"Чүй көч. 123, Бишкек",
     setWhatsappLabel:"Мекеменин WhatsApp номери", setWhatsappPh:"996559751050",
+    setHoursLabel:"Иштөө убактысы", setHoursPh:"09:00-22:00", setHoursHint:"Формат: СС:ММ-СС:ММ. Бул убакыттан тышкары сайт кардарларга «Биз жабыкпыз» деп автоматтык түрдө көрсөтөт жана буйрутма берүүгө уруксат бербейт.",
     setBankLabel:"Алуучунун банкы", setBankPh:"Мбанк",
     setRecipientLabel:"Алуучунун аты", setRecipientPh:"Байдоолот А.",
     setPaymentPhoneLabel:"Которуу үчүн номер (телефон/карта)", setPaymentPhonePh:"+996 559 751 050",
@@ -729,11 +736,11 @@ const ADMIN_TRANSLATIONS = {
     promoCountLabel:"Бардыгы акция", noPromosYet:"Азырынча бир да акция жок — биринчисин кошуңуз", confirmDeletePromo:"Бул акцияны өчүрөсүзбү?",
     promoFormEditTitle:"Акцияны түзөтүү", promoFormNewTitle:"Жаңы акция", promoUpdatedToast:"Акция жаңыртылды", promoAddedToast:"Акция кошулду",
     promoSaveError:"Акция сакталган жок", promoDeleteErrorPrefix:"Өчүрүү катасы: ", promoDeletedToast:"Акция өчүрүлдү", promoLoadErrorPrefix:"Акциялар жүктөлгөн жок: ",
-    waGreeting:"Саламатсызбы! Бул {cafe}.\n№{id} буйрутмаңыз кабыл алынды, сиз тандагандар:\n\n",
-    waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\nТөлөнүүчү сумма: {total} сом.\n",
-    waPaymentLine:"{bank} аркылуу {phone} номерине которуу (алуучу: {name}).\n",
-    waReceiptLine:"Төлөгөндөн кийин чекти жөнөтүңүз — алганыбыз менен даярдоону баштайбыз.",
-    waReadyMessage:"№{id} буйрутмаңыз {cafe} жеринде даяр! {address} дареги боюнча алып кетсеңиз болот. Күтөбүз 🙂"
+    waGreeting:"Саламатсызбы! Бул {cafe} 🍲\n\n№{id} буйрутмаңыз кабыл алынды:\n",
+    waItemLine:"• {name} × {qty} — {sum} сом\n", waTotalLine:"\n💰 Төлөнүүчү сумма: {total} сом\n",
+    waPaymentLine:"\n💳 Төлөм:\nБанк: {bank}\nАлуучу: {name}\nНомер: {phone}\n",
+    waReceiptLine:"\n📸 Төлөгөндөн кийин чекти жөнөтүңүз — алганыбыз менен даярдоону баштайбыз!",
+    waReadyMessage:"🎉 №{id} буйрутмаңыз {cafe} жеринде даяр!\n📍 Алып кетүү: {address}\n\nКүтөбүз 🙂"
   },
   en: {
     openSite:"Open site", logout:"Log out", tabMenu:"Menu", tabOrders:"Orders",
@@ -743,7 +750,7 @@ const ADMIN_TRANSLATIONS = {
     status_completed:"Completed", status_cancelled:"Cancelled",
     action_request_payment:"Request payment", action_confirm_payment:"Confirm payment",
     action_accept:"Accept", action_preparing:"Start cooking", action_ready:"Ready — notify customer",
-    action_complete:"Complete", action_cancel:"Cancel",
+    action_complete:"Complete", action_cancel:"Cancel", confirmCancelOrder:"Are you sure you want to cancel this order? This can\u2019t be quickly undone.",
     tabStats:"Stats", statRevenueLabel:"Revenue", statOrdersLabel:"Orders", statAvgLabel:"Avg. order",
     topDishesTitle:"Best sellers", noSalesYet:"No sales yet for this period", pcsLabel:"pcs",
     periodToday:"Today", periodWeek:"7 days", periodMonth:"30 days", periodAll:"All time",
@@ -763,6 +770,7 @@ const ADMIN_TRANSLATIONS = {
     settingsSub:"Address, WhatsApp and payment details — used across the site and in messages to customers",
     setAddressLabel:"Cafe address", setAddressPh:"123 Chuy St, Bishkek",
     setWhatsappLabel:"Cafe WhatsApp number", setWhatsappPh:"996559751050",
+    setHoursLabel:"Working hours", setHoursPh:"09:00-22:00", setHoursHint:"Format: HH:MM-HH:MM. Outside these hours the site automatically shows customers \u201cWe\u2019re closed\u201d and blocks checkout.",
     setBankLabel:"Recipient bank", setBankPh:"MBank",
     setRecipientLabel:"Recipient name", setRecipientPh:"Baidoolot A.",
     setPaymentPhoneLabel:"Payment number (phone/card)", setPaymentPhonePh:"+996 559 751 050",
@@ -796,11 +804,11 @@ const ADMIN_TRANSLATIONS = {
     promoCountLabel:"Total promos", noPromosYet:"No promos yet — add your first one", confirmDeletePromo:"Delete this promo?",
     promoFormEditTitle:"Edit promo", promoFormNewTitle:"New promo", promoUpdatedToast:"Promo updated", promoAddedToast:"Promo added",
     promoSaveError:"Could not save the promo", promoDeleteErrorPrefix:"Delete error: ", promoDeletedToast:"Promo deleted", promoLoadErrorPrefix:"Could not load promos: ",
-    waGreeting:"Hello! This is {cafe}.\nYour order #{id} has been received, here's what you ordered:\n\n",
-    waItemLine:"• {name} × {qty} — {sum} som\n", waTotalLine:"\nTotal due: {total} som.\n",
-    waPaymentLine:"By transfer via {bank} to {phone} (recipient: {name}).\n",
-    waReceiptLine:"Please send the receipt after payment — we'll start cooking as soon as we get it.",
-    waReadyMessage:"Your order #{id} at {cafe} is ready! You can pick it up at: {address}. See you soon 🙂"
+    waGreeting:"Hello! This is {cafe} 🍲\n\nYour order #{id} has been received:\n",
+    waItemLine:"• {name} × {qty} — {sum} som\n", waTotalLine:"\n💰 Total due: {total} som\n",
+    waPaymentLine:"\n💳 Payment:\nBank: {bank}\nRecipient: {name}\nNumber: {phone}\n",
+    waReceiptLine:"\n📸 Please send the receipt after payment — we'll start cooking as soon as we get it!",
+    waReadyMessage:"🎉 Your order #{id} at {cafe} is ready!\n📍 Pickup: {address}\n\nSee you soon 🙂"
   }
 };
 let adminLang = (function(){
@@ -1323,6 +1331,7 @@ async function loadSettings(){
   if(data.payment_bank) PAYMENT_BANK = data.payment_bank;
   document.getElementById("setAddress").value = data.cafe_address || "";
   document.getElementById("setWhatsapp").value = data.cafe_whatsapp || "";
+  document.getElementById("setHours").value = data.working_hours || "";
   document.getElementById("setBank").value = data.payment_bank || "";
   document.getElementById("setRecipient").value = data.payment_recipient_name || "";
   document.getElementById("setPaymentPhone").value = data.payment_phone || "";
@@ -1336,6 +1345,7 @@ document.getElementById("settingsForm").addEventListener("submit", async (e)=>{
   const payload = {
     cafe_address: document.getElementById("setAddress").value.trim(),
     cafe_whatsapp: document.getElementById("setWhatsapp").value.trim(),
+    working_hours: document.getElementById("setHours").value.trim(),
     payment_bank: document.getElementById("setBank").value.trim(),
     payment_recipient_name: document.getElementById("setRecipient").value.trim(),
     payment_phone: document.getElementById("setPaymentPhone").value.trim()
@@ -1709,7 +1719,11 @@ function renderOrders(){
   }
   listEl.innerHTML = ORDERS.map(orderCardHTML).join("");
   listEl.querySelectorAll("[data-status-to]").forEach(btn=>{
-    btn.addEventListener("click", ()=> updateOrderStatus(btn.dataset.orderId, btn.dataset.statusTo));
+    btn.addEventListener("click", ()=> {
+      const to = btn.dataset.statusTo;
+      if(to === "cancelled" && !confirm(at("confirmCancelOrder"))) return;
+      updateOrderStatus(btn.dataset.orderId, to);
+    });
   });
   listEl.querySelectorAll("[data-action]").forEach(btn=>{
     btn.addEventListener("click", ()=> runOrderAction(btn.dataset.action, btn.dataset.orderId));
