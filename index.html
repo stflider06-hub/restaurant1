@@ -143,6 +143,19 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 }
 .header-meta span i{ color:var(--primary); }
 
+/* ============ CLOSED BANNER (вне рабочих часов) ============ */
+.closed-banner{
+  display:none; align-items:center; gap:14px;
+  background:linear-gradient(135deg, #262421, #16140f); color:#fff;
+  padding:16px 20px;
+}
+.closed-banner-icon{ width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex-shrink:0; }
+.closed-banner-title{ font-weight:800; font-size:0.95rem; }
+.closed-banner-sub{ font-size:0.8rem; opacity:0.72; margin-top:2px; }
+body.site-closed .dish-row-add,
+body.site-closed .dish-row-stepper,
+body.site-closed .modal-add-btn{ pointer-events:none; opacity:0.45; }
+
 /* ============ CATEGORY NAV ============ */
 .cat-nav-wrap{
   position:sticky; top:0; z-index:20;
@@ -355,15 +368,15 @@ h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.16;
 .tab-bar-badge.show{ transform:scale(1); }
 
 /* ============ ADD-TO-CART TOAST ============ */
-.add-toast{
-  position:fixed; left:50%; bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px + 66px); z-index:210;
-  transform:translate(-50%, 16px); opacity:0; pointer-events:none;
-  background:var(--gradient-primary); color:#fff; font-weight:700; font-size:0.86rem;
-  padding:12px 22px; border-radius:100px; box-shadow:var(--gradient-glow);
-  display:flex; align-items:center; gap:10px; white-space:nowrap;
-  transition:opacity 0.28s ease, transform 0.28s ease;
+@keyframes cartBounce{
+  0%   { transform:scale(1); }
+  30%  { transform:scale(1.12) rotate(-3deg); }
+  55%  { transform:scale(0.96) rotate(2deg); }
+  80%  { transform:scale(1.05); }
+  100% { transform:scale(1); }
 }
-.add-toast.show{ opacity:1; transform:translate(-50%, 0); }
+.floating-cart-bar.pulse{ animation:cartBounce 0.55s cubic-bezier(.34,1.56,.64,1); }
+.tab-bar-btn.pulse i{ animation:cartBounce 0.55s cubic-bezier(.34,1.56,.64,1); }
 
 /* ============ FLOATING CART BAR (появляется, когда в корзине есть товары) ============ */
 .floating-cart-bar{
@@ -500,7 +513,24 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 .btn-black{ height:50px; border-radius:16px; background:var(--ink); color:#fff; font-weight:700; font-size:1rem; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
 .btn-black:hover{ background:#000; }
 .btn-outline-gray{ height:50px; border-radius:16px; background:var(--bg-alt); color:var(--ink); border:1px solid var(--line); font-weight:700; font-size:1rem; display:flex; align-items:center; justify-content:center; }
-.payment-waiting-banner{ background:#FFF4CC; color:#8A6714; font-weight:700; font-size:0.88rem; text-align:center; padding:12px 16px; border-radius:var(--radius-sm); margin-bottom:18px; }
+.payment-success-state{
+  position:absolute; inset:0; z-index:5; background:var(--bg);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:32px; gap:12px;
+}
+.payment-success-icon{
+  width:96px; height:96px; border-radius:50%; background:var(--gradient-primary);
+  color:#fff; font-size:2.4rem; display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--gradient-glow); animation:successPop 0.5s cubic-bezier(.34,1.56,.64,1); margin-bottom:6px;
+}
+@keyframes successPop{
+  0%{ transform:scale(0); opacity:0; }
+  60%{ transform:scale(1.15); opacity:1; }
+  100%{ transform:scale(1); }
+}
+.payment-success-state h2{ font-size:1.4rem; color:var(--ink); }
+.payment-success-number{ font-weight:800; color:var(--primary); font-size:1.05rem; }
+.payment-success-sub{ color:var(--ink-soft); font-size:0.92rem; max-width:300px; }
 .payment-summary-row{ display:flex; justify-content:space-between; font-size:0.9rem; padding:6px 0; color:var(--ink); }
 .payment-total-row{ display:flex; justify-content:space-between; font-weight:700; font-size:1.2rem; color:var(--ink); padding:12px 0; border-top:1px solid var(--line); margin-top:6px; }
 .payment-section{ margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
@@ -546,6 +576,12 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 /* ============ FOOTER ============ */
 .site-footer{ text-align:center; padding:38px 20px 22px; color:var(--ink-soft); font-size:0.82rem; background:var(--bg-alt); border-top:1px solid var(--line); }
 .site-footer strong{ color:var(--ink); font-family:var(--font-display); }
+.site-footer-brand{ font-family:var(--font-display); font-weight:800; font-size:1.15rem; color:var(--ink); margin-bottom:8px; }
+.site-footer-line{ margin-bottom:6px; }
+.site-footer-line a{ color:var(--ink-soft); }
+.site-footer-line a:hover{ color:var(--primary); }
+.site-footer-line i{ color:#25D366; margin-right:4px; }
+.site-footer-copy{ font-size:0.74rem; opacity:0.75; margin-top:10px; }
 
 /* ============ MOBILE ============ */
 @media (max-width:480px){
@@ -600,10 +636,18 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
     <p class="header-desc" data-i18n="headerDesc">Нажмите на блюдо, чтобы увидеть состав и фото, добавьте в корзину и оформите заказ в один клик.</p>
     <div class="header-meta">
       <span><i class="fa-solid fa-location-dot"></i> <span id="cafeAddressLabel"></span></span>
-      <span><i class="fa-solid fa-clock"></i> <span data-i18n="hours">09:00–23:00</span></span>
+      <span><i class="fa-solid fa-clock"></i> <span id="hoursLabel" data-i18n="hours">09:00–23:00</span></span>
     </div>
   </div>
 </header>
+
+<div class="closed-banner" id="closedBanner" style="display:none;">
+  <div class="closed-banner-icon"><i class="fa-solid fa-moon"></i></div>
+  <div class="closed-banner-text">
+    <div class="closed-banner-title" data-i18n="closedTitle">Сейчас мы закрыты</div>
+    <div class="closed-banner-sub" id="closedBannerHours"></div>
+  </div>
+</div>
 
 <div class="container">
   <div class="promo-carousel" id="promoCarousel">
@@ -639,7 +683,10 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 </div>
 
 <footer class="site-footer">
-  <span data-i18n="footerText">Демо-шаблон меню для кафе и ресторанов</span> · <strong>Дастархан</strong> · <span data-i18n="footerMade">сделано для показа клиентам</span>
+  <div class="site-footer-brand">Дастархан</div>
+  <div class="site-footer-line" id="footerAddressLine"></div>
+  <div class="site-footer-line"><a id="footerWhatsappLine" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> <span id="footerWhatsappText"></span></a></div>
+  <div class="site-footer-copy">© <span id="footerYear"></span> <span data-i18n="footerCopy">Дастархан. Все права защищены.</span></div>
 </footer>
 </div>
 <!-- /screenMenu -->
@@ -701,12 +748,17 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
 
 <!-- Экран оплаты -->
 <div class="full-overlay" id="paymentOverlay">
+  <div class="payment-success-state" id="paymentSuccessState" style="display:none;">
+    <div class="payment-success-icon"><i class="fa-solid fa-check"></i></div>
+    <h2 data-i18n="successTitle">Заказ успешно оформлен!</h2>
+    <p class="payment-success-number" id="paymentSuccessNumber"></p>
+    <p class="payment-success-sub" data-i18n="waitingBanner">Ожидаем оплату, чтобы начать готовить</p>
+  </div>
   <div class="full-overlay-head">
     <h2 data-i18n="paymentTitle">Оплата</h2>
     <div class="lang-switch"><button type="button" data-lang="ru">RU</button><button type="button" data-lang="ky">KY</button><button type="button" data-lang="en">EN</button></div>
   </div>
   <div class="full-overlay-body">
-    <div class="payment-waiting-banner" id="paymentWaitingBanner" style="display:none;" data-i18n="waitingBanner">Ожидаем оплату, чтобы начать готовить</div>
     <div id="paymentItemsList"></div>
     <div class="payment-total-row"><span data-i18n="totalLabel">Итого</span><span id="paymentTotal">0 сом</span></div>
 
@@ -766,8 +818,6 @@ textarea.cart-input{ resize:vertical; min-height:44px; }
   </div>
 </div>
 <!-- /screenOrders -->
-
-<div class="add-toast" id="addToast"><i class="fa-solid fa-circle-check"></i> <span id="addToastText"></span></div>
 
 <button type="button" class="floating-cart-bar" id="floatingCartBar">
   <span class="floating-cart-bar-left"><span class="floating-cart-bar-count" id="floatingCartBarCount">0</span> <i class="fa-solid fa-cart-shopping"></i> <span data-i18n="goToCartBtn">В корзину</span></span>
@@ -830,6 +880,10 @@ const TRANSLATIONS = {
     searchEmpty: "Ничего не найдено",
     namePlaceholder: "Ваше имя (по желанию)",
     customerDetailsLabel: "Ваши данные",
+    successTitle: "Заказ успешно оформлен!",
+    footerCopy: "Дастархан. Все права защищены.",
+    closedTitle: "Сейчас мы закрыты",
+    closedHoursSub: "Работаем: {hours}. Будем рады видеть вас в рабочее время!",
     phonePlaceholder: "Номер телефона *",
     commentPlaceholder: "Комментарий к заказу (по желанию)",
     totalLabel: "Итого",
@@ -886,6 +940,10 @@ const TRANSLATIONS = {
     searchEmpty: "Эч нерсе табылган жок",
     namePlaceholder: "Атыңыз (каалосуз боюнча)",
     customerDetailsLabel: "Сиздин маалыматыңыз",
+    successTitle: "Буйрутма ийгиликтүү түзүлдү!",
+    footerCopy: "Дастархан. Бардык укуктар корголгон.",
+    closedTitle: "Азыр биз жабыкпыз",
+    closedHoursSub: "Иштөө убактысы: {hours}. Жумуш убагында күтөбүз!",
     phonePlaceholder: "Телефон номери *",
     commentPlaceholder: "Буйрутмага комментарий (каалосуна жараша)",
     totalLabel: "Жалпы суммасы",
@@ -942,6 +1000,10 @@ const TRANSLATIONS = {
     searchEmpty: "Nothing found",
     namePlaceholder: "Your name (optional)",
     customerDetailsLabel: "Your details",
+    successTitle: "Order placed successfully!",
+    footerCopy: "Dastarkhan. All rights reserved.",
+    closedTitle: "We're closed right now",
+    closedHoursSub: "Open hours: {hours}. See you then!",
     phonePlaceholder: "Phone number *",
     commentPlaceholder: "Order comment (optional)",
     totalLabel: "Total",
@@ -1038,19 +1100,60 @@ function applyBusinessDisplay(){
   }
   const cafeAddressLabel = document.getElementById("cafeAddressLabel");
   if(cafeAddressLabel) cafeAddressLabel.textContent = CAFE_ADDRESS;
+  const footerAddressLine = document.getElementById("footerAddressLine");
+  if(footerAddressLine) footerAddressLine.textContent = CAFE_ADDRESS;
+  const footerWhatsappText = document.getElementById("footerWhatsappText");
+  if(footerWhatsappText) footerWhatsappText.textContent = "+" + CAFE_WHATSAPP.replace(/(\d{3})(\d{3})(\d{3})(\d{3})/, "$1 $2 $3 $4");
+  const footerWhatsappLine = document.getElementById("footerWhatsappLine");
+  if(footerWhatsappLine) footerWhatsappLine.href = `https://wa.me/${CAFE_WHATSAPP}`;
+  const footerYear = document.getElementById("footerYear");
+  if(footerYear) footerYear.textContent = new Date().getFullYear();
 }
 applyBusinessDisplay();
 
 // Реквизиты (адрес, WhatsApp) теперь редактируются в админке, вкладка «Реквизиты» — если таблица
 // ещё не создана в базе, тихо остаёмся на запасных значениях выше, ничего не ломается.
+let WORKING_HOURS = "09:00-23:00"; // запасное значение, пока не загрузятся реквизиты из админки
+
+function parseWorkingHours(str){
+  const m = (str||"").match(/^\s*(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})\s*$/);
+  if(!m) return null;
+  return { startH:+m[1], startM:+m[2], endH:+m[3], endM:+m[4] };
+}
+function isOpenNow(){
+  const parsed = parseWorkingHours(WORKING_HOURS);
+  if(!parsed) return true; // формат не распознан — не мешаем работе сайта
+  const now = new Date();
+  let nowMin = now.getHours()*60 + now.getMinutes();
+  const startMin = parsed.startH*60 + parsed.startM;
+  let endMin = parsed.endH*60 + parsed.endM;
+  if(endMin <= startMin) endMin += 24*60; // на случай работы через полночь
+  if(endMin > 24*60 && nowMin < startMin) nowMin += 24*60;
+  return nowMin >= startMin && nowMin < endMin;
+}
+function updateClosedState(){
+  const closed = !isOpenNow();
+  const banner = document.getElementById("closedBanner");
+  if(banner) banner.style.display = closed ? "flex" : "none";
+  document.body.classList.toggle("site-closed", closed);
+  const hoursEl = document.getElementById("closedBannerHours");
+  if(hoursEl) hoursEl.textContent = t("closedHoursSub").replace("{hours}", WORKING_HOURS.replace("-", "–"));
+  if(typeof renderCartPanel === "function") renderCartPanel();
+}
+
 async function loadBusinessSettings(){
   if(!supabaseClient) return;
   const { data, error } = await supabaseClient.from("business_settings").select("*").eq("id", 1).maybeSingle();
   if(error || !data) return;
   if(data.cafe_address) CAFE_ADDRESS = data.cafe_address;
   if(data.cafe_whatsapp) CAFE_WHATSAPP = data.cafe_whatsapp;
+  if(data.working_hours) WORKING_HOURS = data.working_hours;
+  const hoursLabel = document.getElementById("hoursLabel");
+  if(hoursLabel && data.working_hours) hoursLabel.textContent = data.working_hours.replace("-", "–");
   applyBusinessDisplay();
+  updateClosedState();
 }
+setInterval(updateClosedState, 60000);
 
 // Подключение к базе данных (Supabase) — меню теперь редактируется из админки,
 // а не хранится в коде. Если база недоступна, ниже есть аварийный запасной список.
@@ -1324,8 +1427,25 @@ function addToCart(id, qty, note){
   const noteNow = note ? note : (existing ? existing.note : "");
   cart[id] = { qty: qtyNow, note: noteNow || "" };
   syncCart();
-  const d = MENU.find(x=>x.id===id);
-  if(d) showAddToast(d.name);
+  pulseCartIcon();
+}
+let cartPulseTimer = null, tabPulseTimer = null;
+function pulseCartIcon(){
+  if(floatingCartBar && floatingCartBar.classList.contains("show")){
+    floatingCartBar.classList.remove("pulse");
+    void floatingCartBar.offsetWidth;
+    floatingCartBar.classList.add("pulse");
+    clearTimeout(cartPulseTimer);
+    cartPulseTimer = setTimeout(()=> floatingCartBar.classList.remove("pulse"), 600);
+  }
+  const tabCartBtn = document.querySelector('.tab-bar-btn[data-screen="cart"]');
+  if(tabCartBtn){
+    tabCartBtn.classList.remove("pulse");
+    void tabCartBtn.offsetWidth;
+    tabCartBtn.classList.add("pulse");
+    clearTimeout(tabPulseTimer);
+    tabPulseTimer = setTimeout(()=> tabCartBtn.classList.remove("pulse"), 600);
+  }
 }
 function setQty(id, qty){
   if(qty<=0){ delete cart[id]; } else { cart[id] = { qty, note: (cart[id] && cart[id].note) || "" }; }
@@ -1360,15 +1480,6 @@ function syncCart(){
   renderCartPanel();
   if(typeof refreshAllRowActions === "function") refreshAllRowActions();
   updateFloatingCartBar();
-}
-
-let addToastTimer = null;
-function showAddToast(name){
-  const toast = document.getElementById("addToast");
-  document.getElementById("addToastText").textContent = t("addedToCart").replace("{name}", name);
-  toast.classList.add("show");
-  clearTimeout(addToastTimer);
-  addToastTimer = setTimeout(()=> toast.classList.remove("show"), 1600);
 }
 
 function renderCartPanel(){
@@ -1406,7 +1517,7 @@ function renderCartPanel(){
     });
   }
   cartTotalEl.textContent = cartTotal() + " " + t("curLabel");
-  checkoutBtn.disabled = entries.length===0;
+  checkoutBtn.disabled = entries.length===0 || !isOpenNow();
 }
 
 /* ===================== SCREENS / TAB BAR ===================== */
@@ -1569,7 +1680,7 @@ document.getElementById("confirmProceedBtn").addEventListener("click", ()=>{
 });
 
 function openPaymentOverlay(){
-  document.getElementById("paymentWaitingBanner").style.display = "none";
+  document.getElementById("paymentSuccessState").style.display = "none";
   customerNameInput.value = "";
   customerPhoneInput.value = "";
   customerCommentInput.value = "";
@@ -1652,8 +1763,8 @@ document.getElementById("payNowBtn").addEventListener("click", async ()=>{
     saveOrderToHistory(orderId, orderNumber, total);
     startOrderTracking(orderId, orderNumber);
 
-    document.getElementById("paymentWaitingBanner").style.display = "block";
-    payBtn.style.display = "none";
+    document.getElementById("paymentSuccessNumber").textContent = "№" + orderNumber;
+    document.getElementById("paymentSuccessState").style.display = "flex";
 
     cart = {};
     customerNameInput.value = "";
@@ -2131,6 +2242,7 @@ window.addEventListener("resize", ()=>{
 
 /* ===================== INIT ===================== */
 applyTranslations();
+updateClosedState();
 loadMenu(true).then(subscribeRealtime);
 loadPromos();
 loadBusinessSettings();
